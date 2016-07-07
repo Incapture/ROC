@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <link rel="stylesheet" href="/webix/webix.css" type="text/css">
+  <script src="/webix/webix.js" type="text/javascript"></script>
+  <title>Rapture Operator Console</title>
+</head>
+<body>
+    <script type="text/javascript" charset="utf-8">
+    webix.ui({
+      type : "line",
+      rows:[
+          { view:"toolbar", id:"toolbar", elements: [
+            {
+						        view: "icon", icon: "bars",
+						              click: function(){
+							                     if( $$("menu").config.hidden){
+								                             $$("menu").show();
+							                      }
+							                      else
+								                            $$("menu").hide();
+						              }
+					  },
+            {
+              view:"label",
+              label:"Rapture Operator Console"
+            }
+          ]}
+      ]
+    });
+
+    webix.ui({
+      type: "space",
+      rows: [
+        { view: "template", template: "Workorders", type: "header"},
+        { type: "space", cols: [
+        { view:"calendar",
+    id:"my_calendar",
+    //date:new Date(2012,3,16),
+    weekHeader:true,
+    events:webix.Date.isHoliday,
+    calendarDateFormat: "%Y-%m-%d",
+    width:300,
+    height:250 },
+        { view: "datatable", "columns" : [
+          { id:"wid",	header:"WorkOrder ID", width:100},
+					{ id:"startT",	header:"Start Time",width:200},
+					{ id:"endT",	header:"End Time" , width:200},
+					{ id:"status",	header:"Status", 	width:100}
+				],
+				autoheight:true,
+				autowidth:true,
+				data: [
+					{ id:1, wid:"WRD12234", startT:"10:02 July 7 2016", endT:"10:05 July 7 2016", status:"Completed"},
+          { id:2, wid:"WRD12232", startT:"10:10 July 7 2016", endT:"10:15 July 7 2016", status:"Completed"}
+				]}]}
+      ]
+    });
+    webix.ui({
+			view: "sidemenu",
+			id: "menu",
+			width: 200,
+			position: "left",
+			state:function(state){
+				var toolbarHeight = $$("toolbar").$height;
+				state.top = toolbarHeight;
+				state.height -= toolbarHeight;
+			},
+			css: "my_menu",
+			body:{
+
+				view:"list",
+				borderless:true,
+				scroll: false,
+
+				template: "<span class='webix_icon fa-#icon#'></span> #value#",
+				data:[
+					{id: 1, value: "Workorders", icon: "user"},
+					{id: 2, value: "Schedule", icon: "cube"},
+					{id: 3, value: "Status", icon: "line-chart"},
+					{id: 4, value: "Data", icon: "database"},
+					{id: 5, value: "Settings", icon: "cog"}
+				],
+				select:true,
+				type:{
+					height: 40
+				}
+			}
+		});
+    </script>
+</body>
+</html>

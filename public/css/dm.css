@@ -1,0 +1,247 @@
+.scroller {
+    max-height: 250px !important;
+    overflow-y: scroll;
+}​
+
+div#editor {
+        height: 500px;
+    }
+
+#acediff-gutter svg {
+    background-color: #efefef;
+}
+
+#acediff-left-editor {
+    height: 400px;
+}
+#acediff-right-editor {
+    height: 400px;
+}
+
+.dm-fw {
+   width: 30px;
+}
+
+.acediff-diff {
+    background-color: #68727f;
+    border-top: 1px solid #a2d7f2;
+    border-bottom: 1px solid #a2d7f2;
+    position: absolute;
+    z-index: 4;
+}
+.acediff-diff.targetOnly {
+    height: 0px !important;
+    border-top: 1px solid #a2d7f2;
+    border-bottom: 0px;
+    position: absolute;
+}
+.acediff-connector {
+    fill: #d8f2ff;
+    stroke: #a2d7f2;
+}
+
+.acediff-copy-left {
+    float: right;
+}
+.acediff-copy-right,
+.acediff-copy-left {
+    position: relative;
+}
+.acediff-copy-right div {
+    color: #000000;
+    text-shadow: 1px 1px #ffffff;
+    position: absolute;
+    margin: 2px 3px;
+    cursor: pointer;
+}
+.acediff-copy-right div:hover {
+    color: #004ea0;
+}
+.acediff-copy-left div {
+    color: #000000;
+    text-shadow: 1px 1px #ffffff;
+    position: absolute;
+    right: 0px;
+    margin: 2px 3px;
+    cursor: pointer;
+}
+.acediff-copy-left div:hover {
+    color: #c98100;
+}
+
+li {
+    text-align: center;
+}
+.icon-large {
+    font-size: 14pt;
+}
+.wrd {
+    padding-top: 5px !important;
+}
+
+.x_panel {
+    position: relative;
+    width: 100%;
+    margin-bottom: 10px;
+    /*padding: 10px 17px;*/
+    display: inline-block;
+    background: #fff;
+    border: 1px solid #E6E9ED;
+    background-clip: padding-box;
+    box-sizing: border-box;
+    background-size: 100% 100%;
+    -webkit-background-size: 100% 100%;
+    -webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    -webkit-column-break-inside: avoid;
+    -moz-column-break-inside: avoid;
+    column-break-inside: avoid;
+    opacity: 1;
+    -moz-transition: all .2s ease;
+    -o-transition: all .2s ease;
+    -webkit-transition: all .2s ease;
+    -ms-transition: all .2s ease;
+    transition: all .2s ease;
+}
+
+.x_title {
+    border-bottom: 2px solid #E6E9ED;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    background-color: #d9edf7;
+    padding: 1px 20px 2px;
+    margin-bottom: 10px;
+}
+
+.x_title .filter {
+    width: 40%;
+    float: right;
+}
+
+.x_title h2 {
+    margin: 5px 0 6px;
+    float: left;
+    display: block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.x_title h2 small {
+    margin-left: 10px;
+}
+
+.x_title span {
+    color: #BDBDBD;
+}
+
+.x_content {
+    padding: 0 5px 6px;
+    position: relative;
+    width: 100%;
+    float: left;
+    clear: both;
+    margin-top: 5px;
+}
+
+.x_content h4 {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.fixed_height_320 {
+    height: 320px;
+}
+
+.fixed_height_390 {
+    height: 390px;
+}
+
+.fixed_height_200 {
+    height: 200px;
+}
+
+.panel_toolbox {
+    float: right;
+    min-width: 30px;
+}
+
+.panel_toolbox>li {
+    float: left;
+}
+
+.panel_toolbox>li>a {
+    padding: 5px;
+    /*color: #C5C7CB;*/
+    font-size: 14px;
+}
+
+.panel_toolbox>li>a:hover {
+    background: #F5F7FA;
+}
+
+body {
+  padding-top: 80px;
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: 400;
+}
+
+.thumbnail { height: 280px !important; }
+.btn-droppable { width: 180px; height: 30px; padding-left: 4px; }
+.btn-draggable { width: 160px; }
+      
+.form-actions-grp {
+    text-align: center;
+}
+
+.form-actions-grp > .link {
+    font-size: 90%;
+}
+
+.required-field-symbol {
+    color: red;
+}
+
+.post-script {
+    font-size: 80%;
+}
+
+.centered-text {
+    text-align: center;
+}
+
+.valid-input:focus {
+    border-color: rgba(16, 117, 9, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(16, 117, 9, 0.6);
+    outline: 0 none;
+}
+
+.invalid-input:focus {
+    border-color: rgba(237, 17, 21, 0.8);
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset, 0 0 8px rgba(237, 17, 21, 0.6);
+    outline: 0 none;
+}
+
+#meter-wrapper {
+    border:1px solid grey;
+    height:15px;
+    width: 150px;
+    border-radius:3px;
+}
+#meter {
+    width:0px;
+    height:15px;
+    border-radius:3px;
+}
+.meter-danger {
+    background-color: red;
+}
+.meter-warning {
+    background-color: #f0ad4e;
+}
+.meter-success {
+    background-color: green;
+}
