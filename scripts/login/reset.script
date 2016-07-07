@@ -1,0 +1,15 @@
+// Reset a password given the right information
+
+user = web['user'];
+hashPass = web['password'];
+token = web['token'];
+
+context = #login.resetPassword(user, hashPass, token);
+
+
+// Eventually something like this, but without the cookie?
+
+if (context != null) do
+   control['responseCode'] = 302;
+   control['pageRedirection'] = web['redirect'];
+end

@@ -1,0 +1,18 @@
+// Login checks
+
+user = web['user'];
+hashPass = web['password'];
+
+context = #login.loginWithHash(user, hashPass);
+
+if (context != null) do
+   control['responseCode'] = 302;
+   cookie = {};
+   cookie['delete'] = false;
+   cookie['path'] = '/';
+   cookie['value'] = context['context'];
+   control['cookieMap']['raptureContext'] = cookie;
+   control['pageRedirection'] = web['redirect'];
+else do
+   control['responseCode'] = 401;
+end

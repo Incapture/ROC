@@ -1,0 +1,11 @@
+// Logout
+
+   println("IN LOGOUT CODE");
+
+   control['responseCode'] = 302;
+   cookie = {};
+   cookie['delete'] = true;
+   cookie['path'] = '/';
+   cookie['value'] = "";
+   control['cookieMap']['raptureContext'] = cookie;
+   control['pageRedirection'] = web['redirect'];

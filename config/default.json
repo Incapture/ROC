@@ -1,0 +1,8 @@
+{
+  "rapture": "http://localhost:8080",
+  "api_user": "rapture",
+  "api_password": "rapture",
+  "port": 8000,
+  "api_server" : "localhost",
+  "api_port" : 8665
+}
