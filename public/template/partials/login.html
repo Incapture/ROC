@@ -1,0 +1,18 @@
+<div> <!--layout rows with type "space" are created-->
+ <div height="35">Header {{app}}</div> <!--Webix template is initialized -->
+ <div view="cols" type="wide" margin="10"> <!--Webix layout cols are initialized-->
+     <div>
+         <input type="text" placeholder="Type here" ng-model="app">
+     </div>
+     <div view="resizer"></div>
+     <div view="tabview">
+       <div header="Tab1">
+          1. Some content here
+       </div>
+       <div header="Tab2">
+          2. Other content here
+       </div>
+   </div>
+ </div>
+ <div height="35">Footer</div>
+</div>
