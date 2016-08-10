@@ -1,0 +1,1 @@
+#doc.createDocRepo('//sss.inven', 'NREP {} USING MONGODB { prefix=\'sss.inven\'}');

@@ -1,0 +1,54 @@
+// Process one of the inventory files, as a CSV from a spreadsheet
+
+f = file('sss1.csv');
+company = "BNP";
+fileDate = "20160729";
+
+// Some flags to help with processing and where we are
+foundHeaders = false;
+headers = [];
+docs = [];
+
+for l in f do
+  x = split(l, ',', true);
+  if (!foundHeaders) do
+    if (x[1] == 'Item') do
+      headers = normalize(x);
+      foundHeaders = true;
+    end
+  else do
+    doc = {};
+    count = 0;
+    for i = 0 to size(x)-1 do
+      if size(x[i]) > 0 do
+        doc[headers[i]] = normalizeValue(headers[i],x[i]);
+        count = count+1;
+      end
+    end
+    if (count > 10) do
+      uri = "//sss.inven/${fileDate}/${company}/" + doc['Cusip'];
+      println(uri + " - " + json(doc));
+      doc --> uri;
+    end
+  end
+end
+
+def normalizeField(f)
+  f = replace(f, ' ', '');
+  return f;
+end
+
+def normalize(arr)
+  return map(normalizeField, arr);
+end
+
+
+def normalizeValue(fieldName, value)
+  numericFields = [ 'Orig', 'Current', 'WAOLS','NWAC','GWAC','MTR','Margin','WALA','FICO', 'LTV', 'CLTV(HPI)', '#Loans',
+'1MCPR','3MCPR','6MCPR','OAS','EffectiveDuration','Proj1MCPR','Proj3MCPR','Proj6MCPR','Yield@15CPR','Yield@10CPR' ];
+    if (fieldName in numericFields) do
+      //println("Convert ${value}");
+      return cast(replace(value, ',', ''), 'number');
+    end
+    return value;
+end

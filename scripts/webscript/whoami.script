@@ -1,0 +1,3 @@
+// Returns who this user is
+
+println(json(#user.getWhoAmI()));

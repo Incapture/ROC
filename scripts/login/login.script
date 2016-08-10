@@ -10,9 +10,10 @@ if (context != null) do
    cookie = {};
    cookie['delete'] = false;
    cookie['path'] = '/';
+   control['message'] = context['context'];
    cookie['value'] = context['context'];
    control['cookieMap']['raptureContext'] = cookie;
-   control['pageRedirection'] = web['redirect'];
+   //control['pageRedirection'] = web['redirect'];
 else do
    control['responseCode'] = 401;
 end
