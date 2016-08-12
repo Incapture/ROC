@@ -1,0 +1,32 @@
+
+res = {};
+webix = {};
+webix['view'] = 'datatable';
+
+docs = #audit.getRecentLogEntries('/kernel', 100);
+
+columns = [];
+columns = columns + { 'id' : 'category', 'header' : 'Category'};
+columns = columns + { 'id' : 'entryId', 'header' : 'EntryId', 'fillspace' : 2};
+columns = columns + { 'id' : 'level', 'header' : 'Level'};
+columns = columns + { 'id' : 'logId', 'header' : 'LogId'};
+columns = columns + { 'id' : 'message', 'header' : 'Message', 'fillspace' : 4};
+columns = columns + { 'id' : 'user', 'header' : 'User'};
+columns = columns + { 'id' : 'when', 'header' : 'When', 'fillspace' : 2};
+
+webix.columns = columns;
+webix.data = docs;
+
+res.webix = webix;
+
+config = {};
+config.title = "Kernel Audit Log";
+config.id = "auditlog";
+
+footer = {};
+buttons = [];
+config.footer = footer;
+
+res.config = config;
+
+println(json(res));

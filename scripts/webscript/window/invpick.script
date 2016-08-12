@@ -1,0 +1,46 @@
+// Return a webix style body of a window, with some directives
+// to manage that window
+
+res = {};
+webix = {};
+webix.view = "layout";
+rows = [];
+firstRow = [];
+cal = {};
+cal.view = "calendar";
+cal.weekHeader = true;
+cal.id = 'invcal';
+firstRow = firstRow + cal;
+picker = {};
+picker.id = 'invorg';
+picker.view = "list";
+picker.width = 250;
+picker.template = "#title#";
+picker.select = true;
+picker.data = [ { 'id' : 'BNP', 'title': 'BNP'}];
+firstRow = firstRow + picker;
+rows = rows + { 'cols' : firstRow };
+webix.rows = rows;
+
+res.webix = webix;
+
+config = {};
+config.title = "Inventory Picker";
+config.id = "invpick";
+
+footer = {};
+buttons = [];
+button = {};
+button.title = "Launch";
+button.script = "invview";
+params = [];
+params = params + { 'name' : 'd', 'id' : 'invcal', 'type' : 'calendar'};
+params = params + { 'name' : 'o', 'id' : 'invorg', 'type' : 'list'};
+button.params = params;
+buttons = buttons + button;
+footer.buttons = buttons;
+config.footer = footer;
+
+res.config = config;
+
+println(json(res));

@@ -1,0 +1,13 @@
+// Returns the sidemenu data for the application
+
+menu = [];
+inven = [];
+inven = inven + { 'id' : 'pickInven',  'script' : 'invpick', 'icon' : 'cubes', 'value' : 'Choose Inventory'};
+menu = menu + { 'id' : 'inven', 'icon' : 'dashboard', 'value' : 'Inventory', 'data' : inven };
+
+oper = [];
+oper = oper + { 'id' : 'audit', 'script' : 'auditlog', 'icon' : 'tty', 'value' : 'Audit Log'};
+
+menu = menu + { 'id' : 'oper', 'icon' : 'wrench', 'value' : 'Operations', 'data' : oper};
+
+println(json(menu));

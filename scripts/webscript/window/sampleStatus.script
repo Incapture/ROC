@@ -1,0 +1,30 @@
+res = {};
+webix = {};
+webix.view = "dataview";
+webix.xCount = 2;
+webix.yCount = 2;
+webix.template = "<div class='webix_strong'>#source#</div>Date: #date# #status#";
+webix.data = [
+  { "source" : "BNP", "date" : "20160806", "status" : "Loaded"},
+  { "source" : "BNP", "date" : "20160807", "status" : "Loaded"},
+  { "source" : "BNP", "date" : "20160808", "status" : "Loaded"},
+  { "source" : "BNP", "date" : "20160809", "status" : "Reprocessing"},
+  { "source" : "BNP", "date" : "20160810", "status" : "Loaded"},
+  { "source" : "BNP", "date" : "20160811", "status" : "Loaded"}
+
+];
+
+res.webix = webix;
+
+config = {};
+config.title = "Load Status";
+config.id = "invload";
+
+footer = {};
+buttons = [];
+footer.buttons = buttons;
+config.footer = footer;
+
+res.config = config;
+
+println(json(res));

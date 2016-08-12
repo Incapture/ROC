@@ -1,0 +1,66 @@
+// d is date
+// o is org
+
+company = "BNP"; // web['o'];
+fileDate = "20160729"; // web['d'];
+
+res = {};
+webix = {};
+webix['view'] = 'datatable';
+
+rootUri = "//sss.inven/${fileDate}/${company}";
+
+docs = #doc.listDocsByUriPrefix(rootUri, 1);
+
+createdHeaders = false;
+columns = [];
+data = [];
+tf = {};
+tf['content'] = 'textFilter';
+
+for x in keys(docs) do
+  d <-- x;
+  if (!createdHeaders) do
+    for y in keys(d) do
+      column = {};
+      column['id'] = y;
+      t = typeof(d[y]);
+      //println("${y} is ${t}");
+      if t == 'number' || t == 'integer' do
+        column['sort'] = 'int';
+        column['header'] = [ y, tf];
+        if t == 'integer' do
+          column['format'] = 'intFormat';
+        else do
+          column['format'] = 'numberFormat';
+        end
+      else do
+        headers = [
+          y,
+          tf
+        ];
+        column['header'] = headers;
+      end
+      columns = columns + column;
+    end
+    createdHeaders = true;
+    webix['columns'] = columns;
+  end
+  data = data + d;
+end
+
+webix['data'] = data;
+
+res.webix = webix;
+
+config = {};
+config.title = "Inventory for " + web['d'] + " from " + web['o'];
+config.id = "invview";
+
+footer = {};
+buttons = [];
+config.footer = footer;
+
+res.config = config;
+
+println(json(res));
