@@ -1,0 +1,36 @@
+// A window that lists the system properties of an environment
+
+
+res = {};
+webix = {};
+webix['view'] = 'datatable';
+
+props = #admin.getSystemProperties([]);
+d = [];
+for x in keys(props) do
+  en = {};
+  en.p = x;
+  en.v = props[x];
+  d = d + en;
+end
+
+columns = [];
+columns = columns + { 'id' : 'p', 'header' : 'Property'};
+columns = columns + { 'id' : 'v', 'header' : 'Value', 'fillspace' : 8};
+
+webix.columns = columns;
+webix.data = d;
+
+res.webix = webix;
+
+config = {};
+config.title = "System Properties";
+config.id = "sysprop";
+
+footer = {};
+buttons = [];
+config.footer = footer;
+
+res.config = config;
+
+println(json(res));
