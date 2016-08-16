@@ -26,7 +26,7 @@ for l in f do
       end
     end
     if (count > 10) do
-      uri = "//sss.inven/${fileDate}/${company}/" + doc['Cusip'];
+      uri = "document://sss.inven/${fileDate}/${company}/" + doc['Cusip'];
       println(uri + " - " + json(doc));
       doc --> uri;
     end

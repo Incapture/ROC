@@ -55,19 +55,37 @@ roc.noLoginDisplay = function() {
       ]},
       { id: "body", cols: [
         roc.sideMenu,
-        { view: "form", id: "loginForm", elements: [
-          { view: "text", name: "user", label: "User", placeholder: "Username"},
-          { view: "text", name: "password", label: "Password", type: "password", placeholder: "Password"},
-          { margin:5, cols: [
-           { view: "button", value: "Login", type: "form", click:"roc.loginButton"},
-           { view: "button", value: "Cancel"}
-         ]}
-        ]
-      },
-      {}
+        {}
       ]}
     ]
   });
+
+  webix.ui( {
+    view: "window",
+    id: "loginWindow",
+    position: "center",
+    modal : true,
+    head: {
+      view: "toolbar",
+      cols: [
+        { view: "label", label: "Login", align: "center"}
+      ]
+    },
+    move: true,
+    body: {
+      rows: [
+          { view: "form", id: "loginForm", elements: [
+            { view: "text", name: "user", label: "User", placeholder: "Username"},
+            { view: "text", name: "password", label: "Password", type: "password", placeholder: "Password"},
+            { margin:5, cols: [
+             { view: "button", value: "Login", type: "form", click:"roc.loginButton"},
+             { view: "button", value: "Cancel"}
+           ]}
+         ]
+        }
+      ]
+    }
+  }).show();
 };
 
 roc.loginButton = function() {
@@ -79,6 +97,7 @@ roc.loginButton = function() {
 
   loginApi.login(user, password, function(text, data) {
     console.log("text is " + text);
+    $$("loginWindow").close();
     // This will be something like: {"message":"266c8098-f780-44d9-8cd2-b5684c281dbe"}
     // The uuid is basically what we should be passing in the x-rapture field of ANY
     // subsequent request

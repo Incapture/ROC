@@ -8,6 +8,7 @@ menu = menu + { 'id' : 'inven', 'icon' : 'dashboard', 'value' : 'Inventory', 'da
 oper = [];
 oper = oper + { 'id' : 'audit', 'script' : 'auditlog', 'icon' : 'tty', 'value' : 'Audit Log'};
 oper = oper + { 'id' : 'sysprop', 'script' : 'sysprop', 'icon' : 'tty', 'value' : 'System Properties'};
+oper = oper + { 'id' : 'tjob', 'script' : 'todaysJobs', 'icon' : 'tty', 'value' : 'Daily Jobs'};
 
 menu = menu + { 'id' : 'oper', 'icon' : 'wrench', 'value' : 'Operations', 'data' : oper};
 

@@ -1,0 +1,31 @@
+Some todo notes
+
+Change color of top bar by code in Reflex.
+
+Define some workflows for loading the data (can be dummy)
+Schedule those workflows to run at a given time
+Make sure ScheduleServer code is running on RaptureWebServer
+Create a workflow for daily checking the status of the inventories
+Create a repository to store that status
+
+Create a view of that status (can page through by date)
+Create a pageable window view approach (which sends the current params + a next/prev), and 
+  the action is to call the same script for the window with an option to just return the data (or maybe a simple replacement of the body will work)
+
+Create a workflow/order status page (similar to the above)
+Create a schedule view if possible (that looks like the IDP schedule code)
+Steal some of that status code for IDP to build a more complete view of the status (more workflows basically)
+
+Make login a modal window, not a frame in the display.
+Maybe make the messages icon get its count from a script, and its display from another script (working the same way as the other windows)
+
+If that works, make the view some kind of notification window, and then use notifications before.
+
+Create a YieldBook test status message window?
+
+Make sure the back end RIM code still works with RaptureWebServer (may need to hack some locations).
+
+Schedule/Job examples are in RaptureFS/Plugins/TBASchedule/prod ...
+Web scripts for IDP are in IDPWeb
+Pages are probably jsp in IDPWebServer
+

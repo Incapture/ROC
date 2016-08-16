@@ -7,6 +7,7 @@ fileDate = "20160729"; // web['d'];
 res = {};
 webix = {};
 webix['view'] = 'datatable';
+webix['id'] = "${company}${fileDate}";
 
 rootUri = "//sss.inven/${fileDate}/${company}";
 
@@ -18,6 +19,9 @@ data = [];
 tf = {};
 tf['content'] = 'textFilter';
 
+nf = {};
+nf['content'] = 'numberFilter';
+
 for x in keys(docs) do
   d <-- x;
   if (!createdHeaders) do
@@ -28,7 +32,8 @@ for x in keys(docs) do
       //println("${y} is ${t}");
       if t == 'number' || t == 'integer' do
         column['sort'] = 'int';
-        column['header'] = [ y, tf];
+        column['header'] = [ y, nf];
+        column['css'] = { "text-align":"right"};
         if t == 'integer' do
           column['format'] = 'intFormat';
         else do
@@ -56,6 +61,7 @@ res.webix = webix;
 config = {};
 config.title = "Inventory for " + web['d'] + " from " + web['o'];
 config.id = "invview";
+config.excel = webix.id;
 
 footer = {};
 buttons = [];

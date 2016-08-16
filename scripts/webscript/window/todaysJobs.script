@@ -1,0 +1,63 @@
+// Return a display view of todays jobs...
+
+
+res = {};
+webix = {};
+webix['view'] = 'datatable';
+
+prevTime = null;
+defaultColor = 'green';
+alternateColor = 'blue';
+isPrevColorDefault = false;
+
+rep = [];
+jobs = #schedule.getCurrentDayJobs();
+for rec in jobs do
+    entry = {};
+    entry['allDay'] = false;
+    entry['start'] = rec['when'];       // job start time
+    entry['title'] = rec['eventName'];  // job description
+    entry['id'] = rec['eventContext'];  // job uri
+
+    if rec['infoContext'] == 'true' do  // job is active
+        currTime = rec['when'];
+        //println(prevTime + " - " + currTime);
+        if currTime.equals(prevTime) do
+            // use a different color from previous event at same time slot
+            entry['color'] = isPrevColorDefault ? alternateColor : defaultColor;
+            isPrevColorDefault = !isPrevColorDefault;
+        else do
+            entry['color'] = defaultColor;
+            isPrevColorDefault = true;
+        end
+    else do
+        entry['color'] = 'gray';        // job is inactive
+    end
+
+    prevTime = rec['when'];
+    rep = rep + entry;
+end
+
+columns = [];
+columns = columns + { 'id' : 'start', 'header' : 'Start', 'fillspace' : 2};
+columns = columns + { 'id' : 'title', 'header' : 'Title', 'fillspace' : 4};
+columns = columns + { 'id' : 'id', 'header' : 'ID', 'fillspace' : 2};
+columns = columns + { 'id' : 'color', 'header' : 'Status'};
+
+webix.columns = columns;
+webix.data = rep;
+
+res.webix = webix;
+
+config = {};
+config.title = "Today's Jobs";
+config.id = "tjob";
+config.color = "rocOrange";
+
+footer = {};
+buttons = [];
+config.footer = footer;
+
+res.config = config;
+
+println(json(res));

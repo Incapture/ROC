@@ -61,12 +61,16 @@ rocWindow.show = function(windowName, params) {
        var webixConfig = val.webix;
        var x = JSON.parse(JSON.stringify(rocWindow.windowTemplate));
        x.head.cols[0].label = val.config.title;
+       if (val.config.color) {
+         x.head.cols[0].css = val.config.color;
+       }
        x.id = val.config.id;
        x.head.cols[1].click = "$$('" + val.config.id + "').close();";
 
        // Now setup buttons
-       if (val.config.footer.buttons) {
+       if (val.config.footer.buttons || val.config.excel) {
           x.body.rows[0] = webixConfig;
+          if (val.config.footer.buttons) {
           for(var i=0; i< val.config.footer.buttons.length; i++) {
             var b = {};
             b.view = "button";
@@ -75,6 +79,15 @@ rocWindow.show = function(windowName, params) {
             b.click = "rocWindow.go(" + JSON.stringify(val.config.footer.buttons[i].params) + ", '" + val.config.footer.buttons[i].script + "');";
             x.body.rows[1].cols.push(b);
           }
+        }
+        if (val.config.excel) {
+          var b = {};
+          b.view = "button";
+          b.label = "Excel";
+          b.width = 50;
+          b.click = "webix.toExcel($$('" + val.webix.id + "'), { filename : '" + val.webix.id + "'});";
+          x.body.rows[1].cols.push(b);
+        }
        } else {
          x.body = webixConfig;
        }

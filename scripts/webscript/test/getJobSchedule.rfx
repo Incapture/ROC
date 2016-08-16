@@ -1,0 +1,38 @@
+// Need to return json for an event set
+// id, title, start, url
+
+rep = [];
+prevTime = null;
+defaultColor = 'green';
+alternateColor = 'blue';
+isPrevColorDefault = false;
+
+res = #schedule.getCurrentDayJobs();
+for rec in res do
+    entry = {};
+    entry['allDay'] = false;
+    entry['start'] = rec['when'];       // job start time
+    entry['title'] = rec['eventName'];  // job description
+    entry['id'] = rec['eventContext'];  // job uri
+
+    if rec['infoContext'] == 'true' do  // job is active
+        currTime = rec['when'];
+        //println(prevTime + " - " + currTime);
+        if currTime.equals(prevTime) do
+            // use a different color from previous event at same time slot
+            entry['color'] = isPrevColorDefault ? alternateColor : defaultColor;
+            isPrevColorDefault = !isPrevColorDefault;
+        else do
+            entry['color'] = defaultColor;
+            isPrevColorDefault = true;
+        end
+    else do
+        entry['color'] = 'gray';        // job is inactive
+    end
+
+    prevTime = rec['when'];
+    rep = rep + entry;
+end
+
+println(json(rep));
+

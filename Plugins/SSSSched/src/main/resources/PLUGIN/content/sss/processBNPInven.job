@@ -1,0 +1,12 @@
+{
+   "jobURI":"job://sss/processBNPInven",
+   "description":"Process the Mortgage inventory file from BNP",
+   "scriptURI":"script://sss/processBNPInven",
+   "cronSpec":"00 08 * * * *",
+   "timeZone":"America/New_York",
+   "params":{
+
+   },
+   "autoActivate":true,
+   "activated":true
+}
