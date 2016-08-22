@@ -3,6 +3,7 @@
 menu = [];
 inven = [];
 inven = inven + { 'id' : 'pickInven',  'script' : 'invpick', 'icon' : 'cubes', 'value' : 'Choose Inventory'};
+inven = inven + { 'id' : 'tranview',  'script' : 'tranview', 'icon' : 'cubes', 'value' : 'Transactions'};
 menu = menu + { 'id' : 'inven', 'icon' : 'dashboard', 'value' : 'Inventory', 'data' : inven };
 
 oper = [];

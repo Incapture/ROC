@@ -1,0 +1,73 @@
+// d is date
+// o is org
+
+d = "20160719"; // web['o'];
+
+res = {};
+webix = {};
+webix['view'] = 'datatable';
+webix['id'] = "${d}";
+
+rootUri = "//tran";
+
+docs = #doc.listDocsByUriPrefix(rootUri, 2);
+
+createdHeaders = false;
+columns = [];
+data = [];
+tf = {};
+tf['content'] = 'textFilter';
+
+nf = {};
+nf['content'] = 'numberFilter';
+
+for x in keys(docs) do
+  d <-- x;
+  if (!createdHeaders) do
+    for y in keys(d) do
+      column = {};
+      column['id'] = y;
+      t = typeof(d[y]);
+      //println("${y} is ${t}");
+      if t == 'number' || t == 'integer' do
+        column['sort'] = 'int';
+        column['header'] = [ y, nf];
+        column['css'] = { "text-align":"right"};
+        if t == 'integer' do
+          column['format'] = 'intFormat';
+        else do
+          column['format'] = 'numberFormat';
+        end
+      else do
+        headers = [
+          y,
+          tf
+        ];
+        column['header'] = headers;
+      end
+      columns = columns + column;
+    end
+    createdHeaders = true;
+    webix['columns'] = columns;
+  end
+  data = data + d;
+end
+
+webix['data'] = data;
+
+res.webix = webix;
+
+config = {};
+config.title = "Transactions";
+config.id = "tranview";
+config.excel = webix.id;
+config.color = "rocGreen";
+
+footer = {};
+buttons = [];
+config.footer = footer;
+
+
+res.config = config;
+
+println(json(res));

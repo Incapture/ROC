@@ -1,0 +1,1 @@
+#doc.createDocRepo('//tran', 'NREP {} USING MONGODB { prefix=\'tran\'}');

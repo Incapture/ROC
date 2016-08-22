@@ -1,0 +1,960 @@
+{
+  "fields" : [
+    {
+      "name" : "TTRDR",
+      "field" : "Trader"
+    },
+    {
+      "name" : "TARBN",
+      "field" : "ArbitrageNo"
+    },
+    {
+        "name" : "TKMKT"
+    },
+    {
+        "name" : "TKTIN",
+        "field" : "ReturnInterest"
+    },
+    {
+        "name" : "TKICC"
+    },
+    {
+        "name" : "TKIC2"
+    },
+    {
+        "name" : "TKIC3"
+    },
+    {
+        "name" : "TKMDT"
+    },
+    {
+        "name" : "TKCSP",
+        "field" : "Cusip"
+    },
+    {
+        "name" : "TKSFX"
+    },
+    {
+        "name" : "TTRDT",
+        "field" : "TransactionDate"
+    },
+    {
+        "name" : "TTRNO",
+        "field" : "TransactionNo"
+    },
+    {
+        "name" : "TTRNP",
+        "field" : "TransactionPrice"
+    },
+    {
+        "name" : "TCTPR",
+        "field" : "CalcTransactionPrice"
+    },
+    {
+        "name" : "TMKDP"
+    },
+    {
+        "name" : "TMKPR"
+    },
+    {
+        "name" : "TCNSS"
+    },
+    {
+        "name" : "TTRNA"
+    },
+    {
+        "name" : "TCTAM"
+    },
+    {
+        "name" : "TCMAM"
+    },
+    {
+        "name" : "TCCAM"
+    },
+    {
+        "name" : "TSTAM"
+    },
+    {
+        "name" : "TTCOM"
+    },
+    {
+        "name" : "TCMOR"
+    },
+    {
+        "name" : "TCMOV"
+    },
+    {
+        "name" : "TNAME"
+    },
+    {
+        "name" : "TCRVI"
+    },
+    {
+        "name" : "TPSIN"
+    },
+    {
+        "name" : "TCACT"
+    },
+    {
+        "name" : "TSPCD"
+    },
+    {
+        "name" : "TSTDT"
+    },
+    {
+        "name" : "TDBEI"
+    },
+    {
+        "name" : "TPRIN"
+    },
+    {
+        "name" : "TAINT"
+    },
+    {
+        "name" : "TFLAM"
+    },
+    {
+        "name" : "TCFLM"
+    },
+    {
+        "name" : "TMTNO"
+    },
+    {
+        "name" : "TRTID"
+    },
+    {
+        "name" : "TRMIL"
+    },
+    {
+        "name" : "TRPOL"
+    },
+    {
+        "name" : "TTBAM"
+    },
+    {
+        "name" : "TCOMC"
+    },
+    {
+        "name" : "TTTOC"
+    },
+    {
+        "name" : "TSAMT"
+    },
+    {
+        "name" : "TDOVR"
+    },
+    {
+        "name" : "TVERF"
+    },
+    {
+        "name" : "TTIME"
+    },
+    {
+        "name" : "TDATE"
+    },
+    {
+        "name" : "TJIOF"
+    },
+    {
+        "name" : "TFSOD"
+    },
+    {
+        "name" : "TFADJ"
+    },
+    {
+        "name" : "TCLAM"
+    },
+    {
+        "name" : "TWICF"
+    },
+    {
+        "name" : "TDACT"
+    },
+    {
+        "name" : "TVUSR"
+    },
+    {
+        "name" : "TBDSF"
+    },
+    {
+        "name" : "TUSER"
+    },
+    {
+        "name" : "TPOCG"
+    },
+    {
+        "name" : "TPODT"
+    },
+    {
+        "name" : "TPONO"
+    },
+    {
+        "name" : "TPOFA"
+    },
+    {
+        "name" : "TUPNO"
+    },
+    {
+        "name" : "TMHIN"
+    },
+    {
+        "name" : "TBACT"
+    },
+    {
+        "name" : "TSPNO"
+    },
+    {
+        "name" : "TACAM"
+    },
+    {
+        "name" : "TFTCH"
+    },
+    {
+        "name" : "TDYLD"
+    },
+    {
+        "name" : "TFMAM"
+    },
+    {
+        "name" : "TFACM"
+    },
+    {
+        "name" : "TCLFG"
+    },
+    {
+        "name" : "TGTID"
+    },
+    {
+        "name" : "TSGAC"
+    },
+    {
+        "name" : "TCLST"
+    },
+    {
+        "name" : "TASDT"
+    },
+    {
+        "name" : "TBAOV"
+    },
+    {
+        "name" : "TCCNS"
+    },
+    {
+        "name" : "TPIOV"
+    },
+    {
+        "name" : "TTFEE"
+    },
+    {
+        "name" : "TSCOR"
+    },
+    {
+        "name" : "TSCOV"
+    },
+    {
+        "name" : "TTSCR"
+    },
+    {
+        "name" : "TNCFF"
+    },
+    {
+        "name" : "TMSFF"
+    },
+    {
+        "name" : "TCHSC"
+    },
+    {
+        "name" : "TPOOL"
+    },
+    {
+        "name" : "TCFDL"
+    },
+    {
+        "name" : "TFDAD"
+    },
+    {
+        "name" : "TCLDM"
+    },
+    {
+        "name" : "TFDSD"
+    },
+    {
+        "name" : "TCMIN"
+    },
+    {
+        "name" : "TDVDT"
+    },
+    {
+        "name" : "TTNSC"
+    },
+    {
+        "name" : "TSECC"
+    },
+    {
+        "name" : "TSTCC"
+    },
+    {
+        "name" : "TEXRT"
+    },
+    {
+        "name" : "TVLDT"
+    },
+    {
+        "name" : "TNIOF"
+    },
+    {
+        "name" : "TPWFG"
+    },
+    {
+        "name" : "TIDFG"
+    },
+    {
+        "name" : "TENCD"
+    },
+    {
+        "name" : "TDPCD"
+    },
+    {
+        "name" : "TPOFM"
+    },
+    {
+        "name" : "TWIDP"
+    },
+    {
+        "name" : "TETID"
+    },
+    {
+        "name" : "TTBXF"
+    },
+    {
+        "name" : "TEDFG"
+    },
+    {
+        "name" : "TKCUR"
+    },
+    {
+        "name" : "TSTSC"
+    },
+    {
+        "name" : "TSERF"
+    },
+    {
+        "name" : "TPAOF"
+    },
+    {
+        "name" : "TBERT"
+    },
+    {
+        "name" : "TDFBC"
+    },
+    {
+        "name" : "TTMMF"
+    },
+    {
+        "name" : "TAMCD"
+    },
+    {
+        "name" : "TTASP"
+    },
+    {
+        "name" : "TTCEF"
+    },
+    {
+        "name" : "TGRPA"
+    },
+    {
+        "name" : "TLSML"
+    },
+    {
+        "name" : "TTFE2"
+    },
+    {
+        "name" : "TTFE3"
+    },
+    {
+        "name" : "TTFE4"
+    },
+    {
+        "name" : "TPAZP"
+    },
+    {
+        "name" : "TMBDA"
+    },
+    {
+        "name" : "TCNTA"
+    },
+    {
+        "name" : "TCNFA"
+    },
+    {
+        "name" : "TCNCA"
+    },
+    {
+        "name" : "TCNSA"
+    },
+    {
+        "name" : "TCNFM"
+    },
+    {
+        "name" : "TXPTP"
+    },
+    {
+        "name" : "TBLOT"
+    },
+    {
+        "name" : "TRPMR"
+    },
+    {
+        "name" : "TRMRD"
+    },
+    {
+        "name" : "TRZMD"
+    },
+    {
+        "name" : "TRMPR"
+    },
+    {
+        "name" : "TSLTY"
+    },
+    {
+        "name" : "TMKUP"
+    },
+    {
+        "name" : "TAUES"
+    },
+    {
+        "name" : "TSCUC"
+    },
+    {
+        "name" : "TMKPH"
+    },
+    {
+        "name" : "TAUEI"
+    },
+    {
+        "name" : "THANM"
+    },
+    {
+        "name" : "TTGCA"
+    },
+    {
+        "name" : "TTGMF"
+    },
+    {
+        "name" : "TTDRG"
+    },
+    {
+        "name" : "TOLNK"
+    },
+    {
+        "name" : "TOLNO"
+    },
+    {
+        "name" : "TZSTF"
+    },
+    {
+        "name" : "TLTAM"
+    },
+    {
+        "name" : "TFLRC"
+    },
+    {
+        "name" : "TPMOD"
+    },
+    {
+        "name" : "TACBC"
+    },
+    {
+        "name" : "TPYAC"
+    },
+    {
+        "name" : "TSDOF"
+    },
+    {
+        "name" : "TECRT"
+    },
+    {
+        "name" : "TEFCR"
+    },
+    {
+        "name" : "TSFKG"
+    },
+    {
+        "name" : "TCFCM"
+    },
+    {
+        "name" : "TDFCM"
+    },
+    {
+        "name" : "TCYLD"
+    },
+    {
+        "name" : "TFPAZ"
+    },
+    {
+        "name" : "TCHOD"
+    },
+    {
+        "name" : "TCHOV"
+    },
+    {
+        "name" : "TTXB1"
+    },
+    {
+        "name" : "TTXB2"
+    },
+    {
+        "name" : "TOASD"
+    },
+    {
+        "name" : "TOAOP"
+    },
+    {
+        "name" : "TOAPR"
+    },
+    {
+        "name" : "TPROA"
+    },
+    {
+        "name" : "TOAFA"
+    },
+    {
+        "name" : "TOAYL"
+    },
+    {
+        "name" : "TTPPY"
+    },
+    {
+        "name" : "TBPPY"
+    },
+    {
+        "name" : "TCHCK"
+    },
+    {
+        "name" : "TPTRD"
+    },
+    {
+        "name" : "THRID"
+    },
+    {
+        "name" : "TXDAI"
+    },
+    {
+        "name" : "TESPC"
+    },
+    {
+        "name" : "TGPSI"
+    },
+    {
+        "name" : "TEXTS"
+    },
+    {
+        "name" : "TPDFL"
+    },
+    {
+        "name" : "TFMDA"
+    },
+    {
+        "name" : "TEFPV"
+    },
+    {
+        "name" : "TEFBV"
+    },
+    {
+        "name" : "TPFBV"
+    },
+    {
+        "name" : "TLBYF"
+    },
+    {
+        "name" : "TLTPR"
+    },
+    {
+        "name" : "TLOPL"
+    },
+    {
+        "name" : "TAVDT"
+    },
+    {
+        "name" : "TLAAD"
+    },
+    {
+        "name" : "TDPCN"
+    },
+    {
+        "name" : "TAPCN"
+    },
+    {
+        "name" : "TADAM"
+    },
+    {
+        "name" : "TCMSF"
+    },
+    {
+        "name" : "TBTC1"
+    },
+    {
+        "name" : "TBTC2"
+    },
+    {
+        "name" : "TBTC3"
+    },
+    {
+        "name" : "TSHFG"
+    },
+    {
+        "name" : "TMDCF"
+    },
+    {
+        "name" : "TINCD"
+    },
+    {
+        "name" : "TCDCO"
+    },
+    {
+        "name" : "TSSDT"
+    },
+    {
+        "name" : "TSSPR"
+    },
+    {
+        "name" : "TSXDT"
+    },
+    {
+        "name" : "TSXPR"
+    },
+    {
+        "name" : "TOSTD"
+    },
+    {
+        "name" : "TORPL"
+    },
+    {
+        "name" : "TPYLD"
+    },
+    {
+        "name" : "TPYLT"
+    },
+    {
+        "name" : "TYCDT"
+    },
+    {
+        "name" : "TPZDT"
+    },
+    {
+        "name" : "TWAVP"
+    },
+    {
+        "name" : "TREOF"
+    },
+    {
+        "name" : "TTAPP"
+    },
+    {
+        "name" : "TMCOG"
+    },
+    {
+        "name" : "TCNST"
+    },
+    {
+        "name" : "TFDTF"
+    },
+    {
+        "name" : "TPTPF"
+    },
+    {
+        "name" : "TSSTP"
+    },
+    {
+        "name" : "TSXTP"
+    },
+    {
+        "name" : "TTAZP"
+    },
+    {
+        "name" : "TSSTD"
+    },
+    {
+        "name" : "TSXTD"
+    },
+    {
+        "name" : "TSPRC"
+    },
+    {
+        "name" : "TCNFY"
+    },
+    {
+        "name" : "TSARD"
+    },
+    {
+        "name" : "TSAPR"
+    },
+    {
+        "name" : "TSART"
+    },
+    {
+        "name" : "TDORI"
+    },
+    {
+        "name" : "TDOSI"
+    },
+    {
+        "name" : "TSBTY"
+    },
+    {
+        "name" : "TEID2"
+    },
+    {
+        "name" : "TOBMP"
+    },
+    {
+        "name" : "TCLCN"
+    },
+    {
+        "name" : "TDVRF"
+    },
+    {
+        "name" : "TSYTF"
+    },
+    {
+        "name" : "TSBOA"
+    },
+    {
+        "name" : "TDRID"
+    },
+    {
+        "name" : "TCSDT"
+    },
+    {
+        "name" : "TLITI"
+    },
+    {
+        "name" : "TLIRC"
+    },
+    {
+        "name" : "TPOCM"
+    },
+    {
+        "name" : "TTAAM"
+    },
+    {
+        "name" : "TNNER"
+    },
+    {
+        "name" : "TOFRD"
+    },
+    {
+        "name" : "TOFCD"
+    },
+    {
+        "name" : "TCDEP"
+    },
+    {
+        "name" : "TSYNI"
+    },
+    {
+        "name" : "TTRD2"
+    },
+    {
+        "name" : "TEEXR"
+    },
+    {
+        "name" : "TROFB"
+    },
+    {
+        "name" : "TSLVC"
+    },
+    {
+        "name" : "TEHMS"
+    },
+    {
+        "name" : "TORDT"
+    },
+    {
+        "name" : "TORPR"
+    },
+    {
+        "name" : "TORLD"
+    },
+    {
+        "name" : "TORTI"
+    },
+    {
+        "name" : "TIEDC"
+    },
+    {
+        "name" : "TBCEF"
+    },
+    {
+        "name" : "TPBCS"
+    },
+    {
+        "name" : "TEQFG"
+    },
+    {
+        "name" : "TSPRN"
+    },
+    {
+        "name" : "TSAIN"
+    },
+    {
+        "name" : "TPICO"
+    },
+    {
+        "name" : "TSBID"
+    },
+    {
+        "name" : "TSRSP"
+    },
+    {
+        "name" : "TRFRT"
+    },
+    {
+        "name" : "TMBTT"
+    },
+    {
+        "name" : "TTRRT"
+    },
+    {
+        "name" : "TPIMR"
+    },
+    {
+        "name" : "TCNYL"
+    },
+    {
+        "name" : "TMPOL"
+    },
+    {
+        "name" : "TTLCI"
+    },
+    {
+        "name" : "TFLTD"
+    },
+    {
+        "name" : "TTMCY"
+    },
+    {
+        "name" : "TCAPF"
+    },
+    {
+        "name" : "TCDPI"
+    },
+    {
+        "name" : "TTRPP"
+    },
+    {
+        "name" : "TCTME"
+    },
+    {
+        "name" : "TCDTE"
+    },
+    {
+        "name" : "TRERC"
+    },
+    {
+        "name" : "TSMMY"
+    },
+    {
+        "name" : "TBDPO"
+    },
+    {
+        "name" : "TBDPR"
+    },
+    {
+        "name" : "TBDAI"
+    },
+    {
+        "name" : "TEMPI"
+    },
+    {
+        "name" : "TCHCT"
+    },
+    {
+        "name" : "TSRCE"
+    },
+    {
+        "name" : "TPBPD"
+    },
+    {
+        "name" : "TCTWH"
+    },
+    {
+        "name" : "TTAXT"
+    },
+    {
+        "name" : "TEXVN"
+    },
+    {
+        "name" : "TPRTD"
+    },
+    {
+        "name" : "TPPAI"
+    },
+    {
+        "name" : "TCPID"
+    },
+    {
+        "name" : "TINRT"
+    },
+    {
+        "name" : "TAPIN"
+    },
+    {
+        "name" : "TCKDA"
+    },
+    {
+        "name" : "TCKTM"
+    },
+    {
+        "name" : "TCKUS"
+    },
+    {
+        "name" : "TSCTT"
+    },
+    {
+        "name" : "TOATD"
+    },
+    {
+        "name" : "TTPNC"
+    },
+    {
+        "name" : "TTNIN"
+    },
+    {
+        "name" : "TTNAT"
+    },
+    {
+        "name" : "TTNGL"
+    },
+    {
+        "name" : "TTNGS"
+    },
+    {
+        "name" : "TTNGT"
+    },
+    {
+        "name" : "TSRTO"
+    },
+    {
+        "name" : "TSPRI"
+    },
+    {
+        "name" : "TEPRI"
+    },
+    {
+        "name" : "TTPAM"
+    },
+    {
+        "name" : "THIOF"
+    },
+    {
+        "name" : "TAMPI"
+    },
+    {
+        "name" : "TPNLI"
+    },
+    {
+        "name" : "TBGFD"
+    }
+  ]
+}

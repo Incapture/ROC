@@ -1,0 +1,37 @@
+// Process a tranflip file
+
+f = file('tranfilp.csv');
+
+// Get headers and lookups from a different config doc
+// TBD
+
+foundHeaders = false;
+headers = [];
+docs = [];
+
+ignoreFields = [ 'TDACT', 'TTRDR', 'TARBN', 'TKMKT'];
+numericFields = [ 'TKMKT', 'TKCSP', 'TEFCR', 'TCYLD', 'TLTAM','TCTPR','TMKDP','TMKPR','TBDPR','TINRT','TAINT','TPRIN','TDACT','TPOOL','TCNTA','TCNFA','TCNCA','TCNSA','TCNFM','TSPRN','TMPOL','TBDPO'];
+
+for l in f do
+  x = split(l, ',', true);
+  if (!foundHeaders) do
+    headers = x;
+    foundHeaders = true;
+  else do
+    doc = {};
+    for i=0 to size(x)-1 do
+      a = x[i];
+      a = a.trim();
+      if (size(a) > 0 && (!(headers[i] in ignoreFields))) do
+        if (headers[i] in numericFields) do
+          doc[headers[i]] = cast(a, 'number');
+        else do
+          doc[headers[i]] = a;
+        end
+      end
+    end
+    println(json(doc));
+    uri = 'document://tran/' + doc.TTRDT + '/' + doc.TTRNO;
+    doc --> uri;
+  end
+end
