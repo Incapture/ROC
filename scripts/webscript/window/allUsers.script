@@ -1,0 +1,42 @@
+/*
+    A window that lists all users, their status (active/inactive) and groups
+    ------------------------------------------------------------------------
+    params: none
+
+*/
+
+response = {};
+
+allUsers = #admin.getAllUsers();
+
+data = [];
+for user in allUsers do
+	item = {};
+    item.status = (user.inactive == false) ? "Active" : "Inactive";
+	item.user = user.username;
+	item.groups = #admin.findGroupNamesByUser(user.username);
+	data += item;
+end
+
+columns = [
+	{ "id": "user", "header": "User", "fillspace" : 4 },
+	{ "id": "status", "header": "Status", "fillspace" : 4 },
+	{ "id": "groups", "header": "Associated Groups", "fillspace" : 4 }
+];
+
+webix = {};
+webix.view = "datatable";
+webix.columns = columns;
+webix.data = data;
+
+config = {};
+config.title = "Users";
+config.id = "users";
+footer = {};
+buttons = [];
+config.footer = footer;
+
+response.webix = webix;
+response.config = config;
+
+println(json(response));
