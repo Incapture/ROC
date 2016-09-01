@@ -1,6 +1,8 @@
 var directives = (function() {
     "use strict";
 
+    var componentIds = {};
+
     /*var sideMenu = {
         view: "sidebar",
         id: "menu",
@@ -18,7 +20,10 @@ var directives = (function() {
             return clickHandlers[clickName];
         },
         setPageLayout: function(params) {
-            var menuClick = params["menuClick"];
+            var menuClick = params["menuClick"],
+                menuItemOnAfterSelect = params["menuItemOnAfterSelect"];
+
+            componentIds["menu"] = params["menuId"];
 
             webix.ui({
                 id: params["pageLayoutId"],
@@ -37,7 +42,7 @@ var directives = (function() {
                         align: "left",
                         css: "app_button",                        
                         click: function() {
-                            return menuClick(params["menuId"])
+                            return menuClick(params["menuId"]);
                         }
                     }, {
                         view: "label",
@@ -47,22 +52,20 @@ var directives = (function() {
                         type: "icon",
                         width: 45,
                         css: "app_button",
-                        icon: "envelope-o",
-                        badge: 4
+                        icon: "envelope-o"
                     }, {
                         view: "button",
                         type: "icon",
                         width: 45,
                         css: "app_button",
-                        icon: "bell-o",
-                        badge: 10
+                        icon: "bell-o"
                     }, {
                         view: "button",
                         type: "icon",
                         width: 25,
                         css: "app_button",
                         icon: "sign-out",
-                        click: "roc.logout"
+                        click: params["logoutAction"]
                     }]
                 }, {
                     id: "body", // TODO: is this really needed?
@@ -72,7 +75,9 @@ var directives = (function() {
                             id: params["menuId"],
                             data: [],  // will be set after login
                             on: {
-                                onAfterSelect: params["menuItemOnAfterSelect"]
+                                onAfterSelect: function(id) {
+                                    return menuItemOnAfterSelect(id, params["menuId"]);
+                                }
                             }
                         }, 
                         {}
@@ -131,6 +136,16 @@ var directives = (function() {
                                 align: "center"
                             }]
                     }]
+                }
+            });
+        },
+        setComponentData: function(params) {
+            roc.apiRequest(roc.getUiBindingScript(params.concept, params.componentType), null, {
+                success: function(res) {
+                    $$(componentIds[params.componentType]).define('data', JSON.parse(res.text()));
+                },
+                failure: function(error) {
+                    console.warn(error);
                 }
             });
         }

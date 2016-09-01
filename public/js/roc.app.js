@@ -1,14 +1,14 @@
-var app = (function() {
+(function() {
     "use strict";
 
     var clickHandlers = {
         page: {
             hamburgerMenuClick: function(menuId) {
-                $$(menuId).toggle()
+                $$(menuId).toggle();
             },
             menuItemOnAfterSelect: function() {
                 var script = this.getItem(id).script;
-                    
+
                 script !== "userList" ? rocWindow.show(script, {}) : rocWindow.show2(script, {});
             }
         },
@@ -16,8 +16,7 @@ var app = (function() {
             login: function(windowId, formId, feedbackId) {
                 roc.apiRequest("/login/login", {
                         user: $$(formId).getValues().user,
-                        password: MD5($$(formId).getValues().password),
-                        redirect: "/app/index.html" // TODO: "/" ?
+                        password: MD5($$(formId).getValues().password)
                     }, {
                         success: function(res) {
                             var response = JSON.parse(res.text());
@@ -25,9 +24,10 @@ var app = (function() {
                             if (!response.error) {
                                 $$(windowId).close();
 
-                                console.log("success!");
-
-                                //roc.switchToLoggedOnDisplay(); TODO
+                                directives.setComponentData({
+                                    concept: "default",
+                                    componentType: "menu"
+                                });
                             }
                             else {
                                 $$(feedbackId).config.label = "<span class='error-text'><span class='webix_icon fa-exclamation'></span> " + response.error + "</span>";
@@ -40,6 +40,26 @@ var app = (function() {
                         }
                     }
                 );
+            },
+            logout: function() {
+                roc.apiRequest("/login/logout", {
+                        redirect: "/index.html"
+                    }, {
+                        success: function(res) {
+                            var response = JSON.parse(res.text());
+
+                            if (response.redirect) {
+                                window.location.href = response.redirect;
+                            }
+                            else {
+                                console.warn("redirect not set");
+                            }
+                        },
+                        failure: function(error) {
+                            console.warn(error);
+                        }
+                    }
+                );
             }
         }               
     };
@@ -49,18 +69,22 @@ var app = (function() {
         title: "RBS Transaction Warehouse",
         menuId: "menu",
         menuClick: clickHandlers.page.hamburgerMenuClick,
-        menuItemOnAfterSelect: clickHandlers.page.menuItemOnAfterSelect
+        menuItemOnAfterSelect: clickHandlers.page.menuItemOnAfterSelect,
+        logoutAction: clickHandlers.authentication.logout
     });
 
     roc.apiRequest("/webscript/whoami", null, {
         success: function(res) {
-            var response = res.text();
+            //var response = res.text(); TODO: set other user-related values?
+
+            directives.setComponentData({
+                concept: "default",
+                componentType: "menu"
+            });
 
             console.log(response);
 
             roc.setLoginStatus(true);
-
-            //roc.switchToLoggedOnDisplay(); TODO
         },
         failure: function(error) {
             roc.setLoginStatus(false);
