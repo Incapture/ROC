@@ -3,21 +3,29 @@ var directives = (function() {
 
     var componentIds = {};
 
-    /*var sideMenu = {
-        view: "sidebar",
-        id: "menu",
-        data: [],
-        on: {
-            onAfterSelect: function(id) {
-                var script = this.getItem(id).script;
-                script !== "userList" ? rocWindow.show(script, {}) : rocWindow.show2(script, {});
-            }
-        }
-    };*/
-
     return {
-        clickHandlers: function(clickName, params) {
-            return clickHandlers[clickName];
+        getWindowTemplate: function(params) {
+            return {
+                view: "window",
+                left: params.left,
+                top: params.top,
+                width: params.width,
+                height: params.height,
+                head: {
+                    view: "toolbar",
+                    cols: [
+                        { view: "label", label: "", align: "center" },
+                        { view:"button", type: "icon", icon: "times", width:30 }
+                    ]
+                },
+                move: true,
+                resize: true,
+                body: {
+                    rows: [ // TODO: does removing this work?
+                        {}
+                    ]
+                }
+            }
         },
         setPageLayout: function(params) {
             var menuClick = params["menuClick"],
@@ -139,10 +147,62 @@ var directives = (function() {
                 }
             });
         },
+        showWindow: function(params) {
+            var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
+
+            roc.apiRequest(params.script, params.scriptParameters, {
+                success: function(res) {
+                    var response = JSON.parse(res.text());
+
+                    _thisWindow.id = params.id;
+
+                    _thisWindow.head.cols[0].label = params.title;
+
+                    _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
+
+                    setupContent(params.componentType, response.structure, response.data);
+
+                    function setupContent(componentType, structure, data) {
+                        var content = {};
+
+                        content.id = response.componentId;
+
+                        switch(componentType) {
+                            case "datatable":
+                                content.view = componentType;
+
+                                content.columns = structure;
+
+                                break;
+                            default:
+                                console.error("not a valid component type");
+
+                                break;
+                        }
+
+                        content.data = data;
+
+                        _thisWindow.body = content;
+
+                        webix.ui(_thisWindow).show();
+                    }
+
+                    /* TODO:
+                    function setupClickEvents(webixConfig) {
+                        webixConfig["onClick"] = rocEvents.onClick[script];
+                    }*/
+                },
+                failure: function(error) {
+                    console.warn(error);
+                }
+            });
+
+            return _thisWindow;
+        },
         setComponentData: function(params) {
             roc.apiRequest(roc.getUiBindingScript(params.concept, params.componentType), null, {
                 success: function(res) {
-                    $$(componentIds[params.componentType]).define('data', JSON.parse(res.text()));
+                    $$(componentIds[params.componentType]).define("data", JSON.parse(res.text()));
                 },
                 failure: function(error) {
                     console.warn(error);

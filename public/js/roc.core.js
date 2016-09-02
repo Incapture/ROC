@@ -6,6 +6,9 @@ var roc = (function() {
 			"default": {
 				"pageLayout": "",	// for now, not-logged-in type components (pageLayout, login form etc. will be set in JS, not reflex)
 				"menu": "/webscript/menu/rocmenu"
+			},
+			"userManagement": {
+				"datatable": "/webscript/window/userList"
 			}
 		};	// e.g. of getting specific value: roc.getUiBindingScript("default", "pageLayout") //TODO: change comment example since "default", "pageLayout" is not a valid combination
 

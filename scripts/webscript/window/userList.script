@@ -1,0 +1,40 @@
+/*
+    List all users, their status (active/inactive) and groups
+    ------------------------------------------------------------------------
+    params: none
+
+*/
+
+response = {};
+
+// icons
+editIcon = "<span class='webix_icon fa-pencil'></span>";
+deleteIcon = "<span class='webix_icon fa-times'></span>";
+
+allUsers = #admin.getAllUsers();
+
+data = [];
+for user in allUsers do
+	item = {};
+	item.user = user.username;
+    item.status = (user.inactive == false) ? "Active" : "Inactive";
+    item.email = user.emailAddress;
+    item.password = "*******";	
+	item.groups = #admin.findGroupNamesByUser(user.username);
+	data += item;
+end
+
+columns = [
+	{ "id": "user", "header": "User", "fillspace": 2 },
+	{ "id": "status", "header": "Status", "fillspace": 1 },
+	{ "id": "email", "header": "Email", "fillspace": 3 },
+	{ "id": "password", "header": "Password", "fillspace": 1 },
+	{ "id": "groups", "header": "Associated Groups", "fillspace": 3 },
+	{ "id": "actions", "header": "Actions", "fillspace" : true, "template": editIcon + deleteIcon }
+];
+
+response.data = data;
+response.structure = columns;
+response.componentId = "datatable-userMgmt";
+
+println(json(response));

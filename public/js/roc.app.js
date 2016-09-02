@@ -6,10 +6,20 @@
             hamburgerMenuClick: function(menuId) {
                 $$(menuId).toggle();
             },
-            menuItemOnAfterSelect: function() {
-                var script = this.getItem(id).script;
+            menuItemOnAfterSelect: function(id, menuId) {
+                var item = $$(menuId).getItem(id);
 
-                script !== "userList" ? rocWindow.show(script, {}) : rocWindow.show2(script, {});
+                directives.showWindow({
+                    left: 255,
+                    top: 50,
+                    width: 800,
+                    height: 500,
+                    title: item.value,
+                    id: id,
+                    script: roc.getUiBindingScript(item.concept, item.type),
+                    scriptParameters: {},
+                    componentType: item.type
+                });
             }
         },
         authentication: {
