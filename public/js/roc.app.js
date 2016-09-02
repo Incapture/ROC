@@ -18,7 +18,9 @@
                     id: id,
                     script: roc.getUiBindingScript(item.concept, item.type),
                     scriptParameters: {},
-                    componentType: item.type
+                    componentType: item.type,
+                    clickActions: clickHandlers.userManagement,
+                    someAction: clickHandlers.someAction
                 });
             }
         },
@@ -71,7 +73,29 @@
                     }
                 );
             }
-        }               
+        },
+        userManagement: {
+            "edit-user": function(ev, id) {
+                var elem = $$(this.config.id);
+
+                directives.showWindow({
+                    left: 500,
+                    top: 200,
+                    width: 400,
+                    height: 200,
+                    position: "center",
+                    title: "Editing " + elem.getItem(id.row).user,
+                    id: "user_" + elem.getItem(id.row).user,
+                    script: roc.getUiBindingScript("userManagement", "form"),
+                    scriptParameters: {"username": elem.getItem(id.row).user},
+                    componentType: "form",
+                    clickActions: clickHandlers.userManagement
+                });
+            },
+            "delete-user": function(ev, id) {
+                console.log("TODO: delete (disable) this user -- with a confirmation modal");
+            }
+        }
     };
 
     directives.setPageLayout({
@@ -91,8 +115,6 @@
                 concept: "default",
                 componentType: "menu"
             });
-
-            console.log(response);
 
             roc.setLoginStatus(true);
         },

@@ -20,11 +20,7 @@ var directives = (function() {
                 },
                 move: true,
                 resize: true,
-                body: {
-                    rows: [ // TODO: does removing this work?
-                        {}
-                    ]
-                }
+                body: {}
             }
         },
         setPageLayout: function(params) {
@@ -167,38 +163,40 @@ var directives = (function() {
 
                         content.id = response.componentId;
 
+                        content.view = componentType;
+
                         switch(componentType) {
                             case "datatable":
-                                content.view = componentType;
-
                                 content.columns = structure;
 
                                 break;
+                            case "form":
+                                content.elements = structure;
+
+                                break;
                             default:
-                                console.error("not a valid component type");
+                                console.warn("not a valid component type");
 
                                 break;
                         }
 
-                        content.data = data;
+                        if (data) content.data = data;
+
+                        content.onClick = params.clickActions;
+
+                        if (params.position) _thisWindow.position = params.position;
 
                         _thisWindow.body = content;
 
                         webix.ui(_thisWindow).show();
                     }
-
-                    /* TODO:
-                    function setupClickEvents(webixConfig) {
-                        webixConfig["onClick"] = rocEvents.onClick[script];
-                    }*/
                 },
                 failure: function(error) {
                     console.warn(error);
                 }
             });
-
-            return _thisWindow;
         },
+        // for non-window components
         setComponentData: function(params) {
             roc.apiRequest(roc.getUiBindingScript(params.concept, params.componentType), null, {
                 success: function(res) {

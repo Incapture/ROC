@@ -8,8 +8,8 @@
 response = {};
 
 // icons
-editIcon = "<span class='webix_icon fa-pencil'></span>";
-deleteIcon = "<span class='webix_icon fa-times'></span>";
+editIcon = "<span class='webix_icon fa-pencil edit-user'></span>";
+deleteIcon = "<span class='webix_icon fa-times delete-user'></span>";
 
 allUsers = #admin.getAllUsers();
 

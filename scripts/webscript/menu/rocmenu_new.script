@@ -1,0 +1,10 @@
+// Returns the sidemenu data for the application
+
+menu = [];
+
+oper = [];
+oper = oper + { 'id' : 'userManagement', 'concept': 'userManagement', 'type': 'datatable', 'icon' : 'tty', 'value' : 'User Management' };
+oper = oper + { 'id' : 'userManagement2', 'concept': 'userManagement', 'type': 'datatable', 'icon' : 'tty', 'value' : 'User Management 2' };
+menu = menu + { 'id' : 'oper', 'icon' : 'wrench', 'value' : 'Operations', 'data' : oper};
+
+println(json(menu));
