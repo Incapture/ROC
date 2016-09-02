@@ -1,0 +1,24 @@
+/*
+    Information about a single user with the ability to edit
+    ---------------------------------------------------------
+    params: username
+
+*/
+
+response = {};
+
+user = #admin.getUser(web["username"]);
+
+elements = [
+	{ "align": "left", "inputWidth": 300, "label": "Email", "labelWidth": 100, "name": "email", "value": user.emailAddress, "view": "text" },
+    { "cols": [
+    	{},
+		{ "align": "center", "value": "update email", "view": "button" }, //TODO: can this be converted to a template?
+		{}
+    ] }
+];
+
+response.structure = elements;
+response.componentId = "user_" + web["username"];
+
+println(json(response));

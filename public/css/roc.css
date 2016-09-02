@@ -245,3 +245,28 @@ h2 {
 .meter-success {
     background-color: green;
 }
+
+/* ROC styles */
+.rocRed {
+    background-color: #e74c3c;
+}
+.rocYellow {
+    background-color: #f1c40f;
+}
+.rocBlue {
+    background-color: #3498db;
+}
+.rocGreen {
+    background-color: #2ecc71;
+}
+.rocOrange {
+    background-color: #f39c12;
+}
+
+.rocNumber .webix_column {
+    text-align: right;
+}
+
+.error-text {
+    color: red;
+}
