@@ -100,7 +100,7 @@
 
     directives.setPageLayout({
         pageLayoutId: "mainView",
-        title: "RBS Transaction Warehouse",
+        title: "Rapture Operator Console",
         menuId: "menu",
         menuClick: clickHandlers.page.hamburgerMenuClick,
         menuItemOnAfterSelect: clickHandlers.page.menuItemOnAfterSelect,

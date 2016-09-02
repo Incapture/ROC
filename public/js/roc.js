@@ -48,7 +48,7 @@ roc.noLoginDisplay = function() {
 							$$("menu").toggle()
 						}
 					},
-          { view: "label", label: "RBS Transaction warehouse" },
+          { view: "label", label: "Rapture Operator Console" },
           {},
 					{ view: "button", type: "icon", width: 45, css: "app_button", icon: "envelope-o",  badge:4},
 					{ view: "button", type: "icon", width: 45, css: "app_button", icon: "bell-o",  badge:10}

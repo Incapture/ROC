@@ -143,6 +143,27 @@ var directives = (function() {
                 }
             });
         },
+        
+        showEntityWindow: function(params) {
+            // Show a window that displays information about entities - a tree table
+            // params.entityUri is the entity to display
+            var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
+            // Compute initial view
+            roc.apiRequest('/webscript/entity/entityInfo', { id : '/', entityUri : params.entityUri }, {
+               success : function(res) {
+                   var response = JSON.parse(res.text);
+                   _thisWindow.id = params.id;
+                   _thisWindow.head.cols[0].label = params.title;
+                   _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
+                   // Now we need to inject into a standard template our columns,
+                   // our data, and also modify the data to allow for cell clicking if a column
+                   // is an entityKey
+                   // We also need to bind the expandData request thing to call a function that makes another
+                   // entityInfo call
+                   webix.ui(_thisWindow).show();
+               } 
+            });
+        },
         showWindow: function(params) {
             var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
 
