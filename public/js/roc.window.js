@@ -54,6 +54,35 @@ rocWindow.go = function(params, script) {
     rocWindow.show(script, vals);
 };
 
+rocWindow.showEntity = function(entityName) {
+    var params = {};
+    params.entity = entityName;
+    webix.ajax().headers({'xrapture' : roc.xRapture}).get('/webscript/entity/entityInfo', params,
+      function(text, data) {
+          var val = JSON.parse(text);
+          var x = JSON.parse(JSON.stringify(rocWindow.windowTemplate));
+          var dataTree = {};
+          x.id = entityName;
+          x.head.cols[1].click = "$$('" + entityName + "').close();";
+          x.head.cols[0].label = entityName;
+          dataTree.view = "treetable";
+          dataTree.columns = val.columns;
+          dataTree.select = "cell";
+          for(var i=0; i< dataTree.columns.length; i++) {
+            if (dataTree.columns[i].id == "id") {
+                dataTree.columns[i].template = "{common.treetable()} #id#";
+            }
+          }
+          dataTree.data = val.data;
+          dataTree.on = {};
+          dataTree.on.onAfterSelect = function(id) {
+            var x = id;
+          }
+          x.body = dataTree;
+          webix.ui(x).show();
+      });
+};
+
 rocWindow.show = function(windowName, params) {
   webix.ajax().headers({'x-rapture' : roc.xRapture}).get('/webscript/window/' + windowName, params,
      function(text, data) {

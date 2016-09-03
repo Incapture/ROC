@@ -7,22 +7,31 @@
 // We return back data prefixed with that id, which will be a partial uri (so we should)
 // append that back as needed.
 
-entityUri = '//standard/country'; //web['entity'];
+entityUri = web['entity']; // '//standard/country'; //web['entity'];
 id = '/'; // web['id'];
 
 e = #entity.getEntity(entityUri);
 s = #transform.getStructure(e.structureUri);
 
 ret = {};
+idField = {};
 columns = [];
 for f in s.fields do
     field = #transform.getField(f.fieldUri);
     column = {};
-    column.name = f.key;
+    column.id = f.key;
+    column.header = f.key;
     column.field = f.fieldUri;
     column.type = field.fieldType;
-    columns = columns + column;
+    column.adjust = "data";
+    if (f.key == "id") do
+      idField = column;
+    else do
+      columns = columns + column;
+    end
 end
+
+columns = [idField] + columns;
 
 ret.columns = columns;
 data = [];
@@ -37,17 +46,17 @@ for k in keys(valMap) do
     if true == vm.folder do
         dval.webix_kids = true;
         dval.id = fullId;
+        dval.value = vm.name;
     else do
         //println("Loading ${fullId}");
         dval = fromjson(#entity.getEntityDocument(entityUri, fullId));
         dval.webix_kids = false;
-        dval.id = fullId;
+        dval.id = vm.name;
+        dval.value = vm.name;
     end
     data = data + dval;
 end
 
-//ret.data = data;
+ret.data = data;
 
 println(json(ret));
-
-

@@ -17,7 +17,7 @@ loginApi.login = function(user, password, callback) {
 
   vals['user'] = user;
   vals['password'] = md5pass;
-  vals['redirect'] = "/app/index.html";
+  vals['redirect'] = "/app/index_new.html";
 
   webix.ajax().get('/login/login', vals, callback);
 // Now need to make a $http style call like this:

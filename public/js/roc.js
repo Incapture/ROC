@@ -9,8 +9,14 @@ roc.sideMenu = {
     ],
     on: {
       onAfterSelect: function(id) {
-          var script = this.getItem(id).script;
-          rocWindow.show(script, {});
+          var item = this.getItem(id);
+          if (item.concept == "entity") {
+            var entity = item.entity;
+            rocWindow.showEntity(entity);
+          } else {
+            var script = this.getItem(id).script;
+            rocWindow.show(script, {});
+          }
       }
   }
 };
