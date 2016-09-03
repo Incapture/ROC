@@ -10,6 +10,9 @@ var roc = (function() {
 			"userManagement": {
 				"datatable": "/webscript/window/userList",
 				"form": "/webscript/window/userInfo"
+			},
+			"entity": {
+				"datatree" : "/webscript/entity/entityInfo"
 			}
 		};	// e.g. of getting specific value: roc.getUiBindingScript("default", "pageLayout") //TODO: change comment example since "default", "pageLayout" is not a valid combination
 
@@ -18,7 +21,7 @@ var roc = (function() {
 		    var promise;
 
 		    promise = webix.ajax().get(scriptEndPoint, scriptParameters);
-		    
+
 		    promise.then(function(response) {
 		        if (parameters.success) parameters.success(response);
 		    }, function(XmlHttpRequest) {

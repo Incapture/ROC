@@ -44,7 +44,7 @@ var directives = (function() {
                         icon: "bars",
                         width: 37,
                         align: "left",
-                        css: "app_button",                        
+                        css: "app_button",
                         click: function() {
                             return menuClick(params["menuId"]);
                         }
@@ -83,7 +83,7 @@ var directives = (function() {
                                     return menuItemOnAfterSelect(id, params["menuId"]);
                                 }
                             }
-                        }, 
+                        },
                         {}
                     ]
                 }]
@@ -99,7 +99,7 @@ var directives = (function() {
                 modal: true,
                 head: {
                     view: "toolbar",
-                    cols: [{ 
+                    cols: [{
                         view: "label",
                         label: "Login",
                         align: "center"}
@@ -107,7 +107,7 @@ var directives = (function() {
                 },
                 move: true,
                 body: {
-                    rows: [{ 
+                    rows: [{
                         view: "form",
                         id: params["formId"],
                         elements: [{
@@ -133,7 +133,7 @@ var directives = (function() {
                                     view: "button",
                                     value: "Cancel"
                                 }]
-                            }, { 
+                            }, {
                                 view: "label",
                                 id: params["feedbackId"],
                                 label: "",
@@ -141,6 +141,27 @@ var directives = (function() {
                             }]
                     }]
                 }
+            });
+        },
+
+        showEntityWindow: function(params) {
+            // Show a window that displays information about entities - a tree table
+            // params.entityUri is the entity to display
+            var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
+            // Compute initial view
+            roc.apiRequest('/webscript/entity/entityInfo', { id : '/', entityUri : params.entityUri }, {
+               success : function(res) {
+                   var response = JSON.parse(res.text);
+                   _thisWindow.id = params.id;
+                   _thisWindow.head.cols[0].label = params.title;
+                   _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
+                   // Now we need to inject into a standard template our columns,
+                   // our data, and also modify the data to allow for cell clicking if a column
+                   // is an entityKey
+                   // We also need to bind the expandData request thing to call a function that makes another
+                   // entityInfo call
+                   webix.ui(_thisWindow).show();
+               }
             });
         },
         showWindow: function(params) {

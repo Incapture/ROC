@@ -7,4 +7,8 @@ oper = oper + { 'id' : 'userManagement', 'concept': 'userManagement', 'type': 'd
 oper = oper + { 'id' : 'userManagement2', 'concept': 'userManagement', 'type': 'datatable', 'icon' : 'tty', 'value' : 'User Management 2' };
 menu = menu + { 'id' : 'oper', 'icon' : 'wrench', 'value' : 'Operations', 'data' : oper};
 
+entity = [];
+entity = entity + { 'id' : 'country', 'concept': 'entity', 'type': 'datatree', 'icon' : 'tty', 'value' : 'Country' };
+menu = menu + { 'id' : 'entity', 'icon' : 'wrench', 'value' : 'Entity', 'data' : entity};
+
 println(json(menu));

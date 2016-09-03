@@ -9,6 +9,20 @@
             menuItemOnAfterSelect: function(id, menuId) {
                 var item = $$(menuId).getItem(id);
 
+                if (item.concept == "entity") {
+                  directives.showEntityWindow({
+                    left: 255,
+                    top: 50,
+                    width: 800,
+                    height: 500,
+                    title: item.value,
+                    id: id,
+                    entityUri: "//standard/country",
+                    componentType: item.type,
+                    clickActions: clickHandlers.userManagement,
+                    someAction: clickHandlers.someAction
+                  });
+                } else {
                 directives.showWindow({
                     left: 255,
                     top: 50,
@@ -22,6 +36,7 @@
                     clickActions: clickHandlers.userManagement,
                     someAction: clickHandlers.someAction
                 });
+              }
             }
         },
         authentication: {
@@ -48,14 +63,14 @@
                             }
                         },
                         failure: function(error) {
-                            console.warn(error);                
+                            console.warn(error);
                         }
                     }
                 );
             },
             logout: function() {
                 roc.apiRequest("/login/logout", {
-                        redirect: "/index.html"
+                        redirect: "/index_new.html"
                     }, {
                         success: function(res) {
                             var response = JSON.parse(res.text());
@@ -100,7 +115,7 @@
 
     directives.setPageLayout({
         pageLayoutId: "mainView",
-        title: "RBS Transaction Warehouse",
+        title: "Rapture Operator Console",
         menuId: "menu",
         menuClick: clickHandlers.page.hamburgerMenuClick,
         menuItemOnAfterSelect: clickHandlers.page.menuItemOnAfterSelect,
