@@ -270,3 +270,40 @@ h2 {
 .error-text {
     color: red;
 }
+
+/* overriding webix, tabulator styles */
+.webix_view {
+    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    letter-spacing: 0.3px;
+}
+
+.webix_layout_toolbar.webix_toolbar{
+    background-color: #416095;
+}
+
+.webix_sidebar .webix_tree_item.webix_selected, .webix_sidebar .webix_tree_item.webix_selected span {
+    background-color: #8fa6ca;
+}
+
+.tabulator .tabulator-tableHolder .tabulator-table .tabulator-row .tabulator-cell {
+    border-right: 0px;
+}
+
+.tabulator .tabulator-tableHolder .tabulator-table .tabulator-row:nth-child(even) {
+    background-color: #fff;
+}
+
+.tabulator .tabulator-tableHolder .tabulator-table .tabulator-row.selectable:hover {
+    background-color: #fff0e8;
+}
+
+.tabulator .tabulator-header {
+    background-color: #8fa6ca;
+    color: #fff;
+    font-weight: 600;
+}
+
+.tabulator .tabulator-tableHolder .tabulator-table .tabulator-group .tabulator-group-header {
+    background-color: #f2f2f2;
+    font-weight: 600;
+}
