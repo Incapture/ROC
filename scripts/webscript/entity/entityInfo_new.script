@@ -1,0 +1,65 @@
+// We are called with an entity Uri and an initial flag
+// If so, we return back the top level structure and column information
+// The javascript converts that into a tree table, with the id column being a
+// branch
+
+// When we expand a branch we are called again with the entityUri and an id flag
+// We return back data prefixed with that id, which will be a partial uri (so we should)
+// append that back as needed.
+
+entityUri = web['entity']; // '//standard/country'; //web['entity'];
+id = '/'; // web['id'];
+
+e = #entity.getEntity(entityUri);
+s = #transform.getStructure(e.structureUri);
+
+ret = {};
+idField = {};
+columns = [];
+for f in s.fields do
+    field = #transform.getField(f.fieldUri);
+    column = {};
+    column.id = f.key;
+    column.title = f.key;
+    column.header = f.key;
+    column.field = f.key;
+    column.fieldUri = f.fieldUri;
+    column.type = field.fieldType;
+    column.adjust = "data";
+    if (f.key == "id") do
+      idField = column;
+    else do
+      columns = columns + column;
+    end
+end
+
+columns = [idField] + columns;
+
+ret.columns = columns;
+ret.structure = columns; // used by new directive
+data = [];
+
+valMap = #entity.listDocsByUriPrefix(entityUri, id, 0);
+
+for k in keys(valMap) do
+    dval = {};
+    vm = fromjson(json(valMap[k]));
+    //println(vm);
+    fullId = id + '/' + vm.name;
+    if true == vm.folder do
+        dval.webix_kids = true;
+        dval.id = fullId;
+        dval.value = vm.name;
+    else do
+        //println("Loading ${fullId}");
+        dval = fromjson(#entity.getEntityDocument(entityUri, fullId));
+        dval.webix_kids = false;
+        dval.id = vm.name;
+        dval.value = vm.name;
+    end
+    data = data + dval;
+end
+
+ret.data = data;
+
+println(json(ret));

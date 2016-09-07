@@ -12,9 +12,9 @@ var roc = (function() {
 				"form": "/webscript/window/userInfo"
 			},
 			"entity": {
-				"datatree" : "/webscript/entity/entityInfo"
+				"treetable" : "/webscript/entity/entityInfo_new"	// TODO: change script back to entityInfo once finalized
 			}
-		};	// e.g. of getting specific value: roc.getUiBindingScript("default", "pageLayout") //TODO: change comment example since "default", "pageLayout" is not a valid combination
+		};	// e.g. of getting specific value: roc.getUiBindingScript("userManagement", "datatable")
 
 	return {
 		apiRequest: function (scriptEndPoint, scriptParameters, parameters) {

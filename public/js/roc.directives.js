@@ -143,27 +143,6 @@ var directives = (function() {
                 }
             });
         },
-
-        showEntityWindow: function(params) {
-            // Show a window that displays information about entities - a tree table
-            // params.entityUri is the entity to display
-            var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
-            // Compute initial view
-            roc.apiRequest('/webscript/entity/entityInfo', { id : '/', entityUri : params.entityUri }, {
-               success : function(res) {
-                   var response = JSON.parse(res.text);
-                   _thisWindow.id = params.id;
-                   _thisWindow.head.cols[0].label = params.title;
-                   _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
-                   // Now we need to inject into a standard template our columns,
-                   // our data, and also modify the data to allow for cell clicking if a column
-                   // is an entityKey
-                   // We also need to bind the expandData request thing to call a function that makes another
-                   // entityInfo call
-                   webix.ui(_thisWindow).show();
-               }
-            });
-        },
         showWindow: function(params) {
             var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
 
@@ -177,7 +156,10 @@ var directives = (function() {
 
                     _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
 
-                    setupContent(params.componentType, response.structure, response.data);
+                    if (params.componentType != "treetable")
+                        setupContent(params.componentType, response.structure, response.data);
+                    else
+                        setupTabulatorContent(params.componentType, response.structure, response.data);
 
                     function setupContent(componentType, structure, data) {
                         var content = {};
@@ -210,6 +192,31 @@ var directives = (function() {
                         _thisWindow.body = content;
 
                         webix.ui(_thisWindow).show();
+                    }
+
+                    function setupTabulatorContent(componentType, structure, data) {
+                        // from showEntityWindow:
+                        // Now we need to inject into a standard template our columns,
+                       // our data, and also modify the data to allow for cell clicking if a column
+                       // is an entityKey
+                       // We also need to bind the expandData request thing to call a function that makes another
+                       // entityInfo call
+                        var tabulatorId;
+
+                        webix.ui(_thisWindow).show();
+
+                        tabulatorId = "tabulator-" + params.id;
+
+                        $("div[view_id='" + params.id + "'] div.webix_win_body").prepend("<div id='" + tabulatorId + "'></div>");
+
+                        $("#" + tabulatorId).tabulator({
+                            height:"700px",
+                            fitColumns:true,
+                            groupBy:"ccy",  // TODO: remove hard-coded value; get value from rfx script?
+                            columns: structure
+                        });
+
+                        $("#" + tabulatorId).tabulator("setData", data);
                     }
                 },
                 failure: function(error) {

@@ -7,36 +7,21 @@
                 $$(menuId).toggle();
             },
             menuItemOnAfterSelect: function(id, menuId) {
-                var item = $$(menuId).getItem(id);
+                var item = $$(menuId).getItem(id),
+                    scriptParameters = item.entity ? {entity: item.entity} : {};
 
-                if (item.concept == "entity") {
-                  directives.showEntityWindow({
-                    left: 255,
-                    top: 50,
-                    width: 800,
-                    height: 500,
-                    title: item.value,
-                    id: id,
-                    entityUri: "//standard/country",
-                    componentType: item.type,
-                    clickActions: clickHandlers.userManagement,
-                    someAction: clickHandlers.someAction
-                  });
-                } else {
                 directives.showWindow({
                     left: 255,
                     top: 50,
-                    width: 800,
+                    width: 1150,
                     height: 500,
                     title: item.value,
                     id: id,
                     script: roc.getUiBindingScript(item.concept, item.type),
-                    scriptParameters: {},
+                    scriptParameters: scriptParameters,
                     componentType: item.type,
-                    clickActions: clickHandlers.userManagement,
-                    someAction: clickHandlers.someAction
+                    clickActions: item.clickActions
                 });
-              }
             }
         },
         authentication: {
@@ -70,7 +55,7 @@
             },
             logout: function() {
                 roc.apiRequest("/login/logout", {
-                        redirect: "/index_new.html"
+                        redirect: "/index.html"
                     }, {
                         success: function(res) {
                             var response = JSON.parse(res.text());
