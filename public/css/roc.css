@@ -277,8 +277,12 @@ h2 {
     letter-spacing: 0.3px;
 }
 
-.webix_layout_toolbar.webix_toolbar{
+.webix_layout_toolbar.webix_toolbar {
     background-color: #416095;
+}
+
+.webix_tree_leaves .webix_tree_branch_2 .webix_tree_item {
+    padding-left: 20px;
 }
 
 .webix_sidebar .webix_tree_item.webix_selected, .webix_sidebar .webix_tree_item.webix_selected span {
