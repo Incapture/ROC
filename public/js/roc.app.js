@@ -11,10 +11,14 @@
                     scriptParameters = item.entity ? {entity: item.entity} : {};
 
                 directives.showWindow({
-                    left: 255,
-                    top: 50,
-                    width: 1150,
-                    height: 500,
+                    margin: {
+                        left: 255,
+                        top: 50
+                    },
+                    dimensions: {
+                        width: 1150,
+                        height: 500
+                    },
                     title: item.value,
                     id: id,
                     script: roc.getUiBindingScript(item.concept, item.type),
@@ -79,10 +83,14 @@
                 var elem = $$(this.config.id);
 
                 directives.showWindow({
-                    left: 500,
-                    top: 200,
-                    width: 400,
-                    height: 200,
+                    margin: {
+                        left: 500,
+                        top: 200
+                    },
+                    dimensions: {
+                        width: 400,
+                        height: 200
+                    },
                     position: "center",
                     title: "Editing " + elem.getItem(id.row).user,
                     id: "user_" + elem.getItem(id.row).user,

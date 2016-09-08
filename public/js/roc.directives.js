@@ -3,14 +3,18 @@ var directives = (function() {
 
     var componentIds = {};
 
+    /*$(window).resize(function() {
+        console.log($(document).find(".webix_view.webix_window"));
+    });*/
+
     return {
         getWindowTemplate: function(params) {
             return {
                 view: "window",
-                left: params.left,
-                top: params.top,
-                width: params.width,
-                height: params.height,
+                left: params.margin.left,
+                top: params.margin.top,
+                width: params.dimensions.width,
+                height: params.dimensions.height,
                 head: {
                     view: "toolbar",
                     cols: [
@@ -207,16 +211,23 @@ var directives = (function() {
 
                         tabulatorId = "tabulator-" + params.id;
 
-                        $("div[view_id='" + params.id + "'] div.webix_win_body").prepend("<div id='" + tabulatorId + "'></div>");
+                        $("div[view_id='" + params.id + "'] div.webix_win_body").prepend("<div id='" + tabulatorId + "' style='margin-right:2%'></div>");
 
                         $("#" + tabulatorId).tabulator({
-                            height:"700px",
+                            height:"466px",
                             fitColumns:true,
                             groupBy:"ccy",  // TODO: remove hard-coded value; get value from rfx script?
                             columns: structure
                         });
 
                         $("#" + tabulatorId).tabulator("setData", data);
+
+                        // Webix creates a "spacer" element when window content is not set.
+                        // Since we are setting content (creating a new tabulator element),
+                        // but not in the traditional webix way (e.g. _thisWindow.body = content),
+                        // the "spacer" element should be deleted explicitly.
+
+                        $("div[view_id='" + params.id + "'] div.webix_win_body div.webix_spacer").remove();
                     }
                 },
                 failure: function(error) {
