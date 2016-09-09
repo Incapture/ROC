@@ -12,11 +12,11 @@
 
                 directives.showWindow({
                     margin: {
-                        left: 255,
-                        top: 50
+                        left: 205,
+                        top: 45
                     },
                     dimensions: {
-                        width: 1150,
+                        width: 1200,
                         height: 500
                     },
                     title: item.value,

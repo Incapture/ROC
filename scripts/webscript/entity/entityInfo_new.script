@@ -7,7 +7,59 @@
 // We return back data prefixed with that id, which will be a partial uri (so we should)
 // append that back as needed.
 
-entityUri = web['entity']; // '//standard/country'; //web['entity'];
+// "entities" and "hints" for PoC purposes ONLY; should be deleted
+entities = {
+    "//standard/country": {
+        "groupBy": "ccy",
+        "fitColumns": true,
+        "displayColumns": {
+            "id": true,
+            "englishName": false,
+            "name": true,
+            "frenchName": true,
+            "code2": false,
+            "numId": true,
+            "itu": true,
+            "marc": false,
+            "wmo": false,
+            "ds": false,
+            "dial": true,
+            "fifa": true,
+            "fips": false,
+            "gaul": true,
+            "ioc": false,
+            "capital": true,
+            "edgar": false,
+            "ccy": true
+        },
+        "formatter": {
+            "name": {
+                "formatterType": "webLink",
+                "hrefValue": "http://lmgtfy.com/?q="
+            }
+        }
+    },
+    "//standard/currency": {
+        "groupBy": null,
+        "fitColumns": true,
+        "displayColumns": {
+            "id": true,
+            "name": true,
+            "minor": true,
+            "code": true
+        },
+        "formatter": {
+            "minor": {
+                "condition": "value > 0",
+                "formatterType": "textColorConditional",
+                "trueValue": "green",
+                "falseValue": "red"
+            }
+        }
+    }
+};
+
+entityUri = web['entity']; // '//standard/country';
 id = '/'; // web['id'];
 
 e = #entity.getEntity(entityUri);
@@ -61,5 +113,14 @@ for k in keys(valMap) do
 end
 
 ret.data = data;
+
+hints = {
+    "groupBy": entities[web["entity"]]["groupBy"],
+    "fitColumns": entities[web["entity"]]["fitColumns"],
+    "displayColumns": entities[web["entity"]]["displayColumns"],
+    "formatter": entities[web["entity"]]["formatter"]
+};
+
+ret.hints = hints;
 
 println(json(ret));

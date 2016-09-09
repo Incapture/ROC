@@ -163,7 +163,7 @@ var directives = (function() {
                     if (params.componentType != "treetable")
                         setupContent(params.componentType, response.structure, response.data);
                     else
-                        setupTabulatorContent(params.componentType, response.structure, response.data);
+                        setupTabulatorContent(params.componentType, response.structure, response.data, response.hints);
 
                     function setupContent(componentType, structure, data) {
                         var content = {};
@@ -172,7 +172,7 @@ var directives = (function() {
 
                         content.view = componentType;
 
-                        switch(componentType) {
+                        switch (componentType) {
                             case "datatable":
                                 content.columns = structure;
 
@@ -198,27 +198,57 @@ var directives = (function() {
                         webix.ui(_thisWindow).show();
                     }
 
-                    function setupTabulatorContent(componentType, structure, data) {
+                    function setupTabulatorContent(componentType, structure, data, hints) {
                         // from showEntityWindow:
                         // Now we need to inject into a standard template our columns,
                        // our data, and also modify the data to allow for cell clicking if a column
                        // is an entityKey
                        // We also need to bind the expandData request thing to call a function that makes another
                        // entityInfo call
-                        var tabulatorId;
+                        var tabulatorId,
+                            tabulatorConfig;
 
                         webix.ui(_thisWindow).show();
 
                         tabulatorId = "tabulator-" + params.id;
 
-                        $("div[view_id='" + params.id + "'] div.webix_win_body").prepend("<div id='" + tabulatorId + "' style='margin-right:2%'></div>");
+                        $("div[view_id='" + params.id + "'] div.webix_win_body").prepend("<div id='" + tabulatorId + "' style='margin:0 1%'></div>");
 
-                        $("#" + tabulatorId).tabulator({
-                            height:"466px",
-                            fitColumns:true,
-                            groupBy:"ccy",  // TODO: remove hard-coded value; get value from rfx script?
+                        /* manipulate tabulator config using hints */
+                        for (var idx = 0; idx < structure.length; idx++) {
+                            if (!(hints["displayColumns"][structure[idx]["id"]]))
+                                structure[idx]["visible"] = false;
+
+                            if (hints["formatter"][structure[idx]["id"]]) {
+                                var hint = hints["formatter"][structure[idx]["id"]];
+
+                                structure[idx]["formatter"] = function(value, data, cell, row, options) {
+                                    switch (hint.formatterType) {
+                                        case "textColorConditional":
+                                            if (eval(hint.condition))
+                                                return "<span style='color:" + hint.trueValue + ";'>" + value + "</span>";
+                                            else
+                                                return "<span style='color:" + hint.falseValue + ";'>" + value + "</span>";
+                                            break;
+                                        case "webLink":
+                                            return "<span><a href='" + hint.hrefValue + value + "' target='_blank'>" + value + "</a></span>";
+                                        case "default":
+                                            console.warn("Not a valid formatter type");
+
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+
+                        tabulatorConfig = {
+                            height: "466px",
+                            fitColumns: hints.fitColumns,
+                            groupBy: hints.groupBy === "NULL" ? null : hints.groupBy,
                             columns: structure
-                        });
+                        }
+
+                        $("#" + tabulatorId).tabulator(tabulatorConfig);
 
                         $("#" + tabulatorId).tabulator("setData", data);
 

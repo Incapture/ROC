@@ -1309,7 +1309,6 @@
 			//get current left scroll position
 
 			hozScrollPos = self.tableHolder.scrollLeft();
-			console.log("hozScrollPos", hozScrollPos);
 
 			//clear data from table before loading new
 			self.table.empty();
