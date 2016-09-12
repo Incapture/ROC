@@ -24,7 +24,7 @@
                     script: roc.getUiBindingScript(item.concept, item.type),
                     scriptParameters: scriptParameters,
                     componentType: item.type,
-                    clickActions: item.clickActions
+                    clickActions: eval(item.clickActions)
                 });
             }
         },
