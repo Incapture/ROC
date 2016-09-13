@@ -3,12 +3,13 @@
 menu = [];
 
 oper = [];
-oper = oper + { 'id' : 'userManagement', 'concept': 'userManagement', 'type': 'datatable', 'icon' : 'tty', 'value' : 'User Management' };
-oper = oper + { 'id' : 'userManagement2', 'concept': 'userManagement', 'type': 'datatable', 'icon' : 'tty', 'value' : 'User Management 2' };
+oper = oper + { 'id' : 'userManagement', 'concept': 'userManagement', 'type': 'datatable', 'icon' : 'tty', 'value' : 'User Management', 'clickActions': 'clickHandlers.userManagement' };
+oper = oper + { 'id' : 'userManagement2', 'concept': 'userManagement', 'type': 'datatable', 'icon' : 'tty', 'value' : 'User Management 2', 'clickActions': 'clickHandlers.userManagement' };
 menu = menu + { 'id' : 'oper', 'icon' : 'wrench', 'value' : 'Operations', 'data' : oper};
 
 entity = [];
-entity = entity + { 'id' : 'country', 'concept': 'entity', 'type': 'datatree', 'icon' : 'tty', 'value' : 'Country' };
+entity = entity + { 'id' : 'country', 'concept': 'entity', 'type': 'treetable', 'entity' : '//standard/country', 'icon' : 'tty', 'value' : 'Country' };
+entity = entity + { 'id' : 'currency', 'concept': 'entity', 'type': 'treetable', 'entity' : '//standard/currency', 'icon' : 'tty', 'value' : 'Currency' };
 menu = menu + { 'id' : 'entity', 'icon' : 'wrench', 'value' : 'Entity', 'data' : entity};
 
 println(json(menu));

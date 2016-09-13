@@ -9,7 +9,7 @@ webix.protoUI({
 		collapsed: false,
 		collapsedWidth: 41,
 		position: "left",
-		width: 250,
+		width: 200,
 		mouseEventDelay: 10
 	},
 	$init: function(config){

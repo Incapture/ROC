@@ -7,36 +7,25 @@
                 $$(menuId).toggle();
             },
             menuItemOnAfterSelect: function(id, menuId) {
-                var item = $$(menuId).getItem(id);
+                var item = $$(menuId).getItem(id),
+                    scriptParameters = item.entity ? {entity: item.entity} : {};
 
-                if (item.concept == "entity") {
-                  directives.showEntityWindow({
-                    left: 255,
-                    top: 50,
-                    width: 800,
-                    height: 500,
-                    title: item.value,
-                    id: id,
-                    entityUri: "//standard/country",
-                    componentType: item.type,
-                    clickActions: clickHandlers.userManagement,
-                    someAction: clickHandlers.someAction
-                  });
-                } else {
                 directives.showWindow({
-                    left: 255,
-                    top: 50,
-                    width: 800,
-                    height: 500,
+                    margin: {
+                        left: 205,
+                        top: 45
+                    },
+                    dimensions: {
+                        width: 1200,
+                        height: 500
+                    },
                     title: item.value,
                     id: id,
                     script: roc.getUiBindingScript(item.concept, item.type),
-                    scriptParameters: {},
+                    scriptParameters: scriptParameters,
                     componentType: item.type,
-                    clickActions: clickHandlers.userManagement,
-                    someAction: clickHandlers.someAction
+                    clickActions: eval(item.clickActions)
                 });
-              }
             }
         },
         authentication: {
@@ -70,7 +59,7 @@
             },
             logout: function() {
                 roc.apiRequest("/login/logout", {
-                        redirect: "/index_new.html"
+                        redirect: "/index.html"
                     }, {
                         success: function(res) {
                             var response = JSON.parse(res.text());
@@ -94,10 +83,14 @@
                 var elem = $$(this.config.id);
 
                 directives.showWindow({
-                    left: 500,
-                    top: 200,
-                    width: 400,
-                    height: 200,
+                    margin: {
+                        left: 500,
+                        top: 200
+                    },
+                    dimensions: {
+                        width: 400,
+                        height: 200
+                    },
                     position: "center",
                     title: "Editing " + elem.getItem(id.row).user,
                     id: "user_" + elem.getItem(id.row).user,

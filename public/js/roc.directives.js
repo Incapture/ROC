@@ -3,14 +3,18 @@ var directives = (function() {
 
     var componentIds = {};
 
+    /*$(window).resize(function() {
+        console.log($(document).find(".webix_view.webix_window"));
+    });*/
+
     return {
         getWindowTemplate: function(params) {
             return {
                 view: "window",
-                left: params.left,
-                top: params.top,
-                width: params.width,
-                height: params.height,
+                left: params.margin.left,
+                top: params.margin.top,
+                width: params.dimensions.width,
+                height: params.dimensions.height,
                 head: {
                     view: "toolbar",
                     cols: [
@@ -143,27 +147,6 @@ var directives = (function() {
                 }
             });
         },
-
-        showEntityWindow: function(params) {
-            // Show a window that displays information about entities - a tree table
-            // params.entityUri is the entity to display
-            var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
-            // Compute initial view
-            roc.apiRequest('/webscript/entity/entityInfo', { id : '/', entityUri : params.entityUri }, {
-               success : function(res) {
-                   var response = JSON.parse(res.text);
-                   _thisWindow.id = params.id;
-                   _thisWindow.head.cols[0].label = params.title;
-                   _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
-                   // Now we need to inject into a standard template our columns,
-                   // our data, and also modify the data to allow for cell clicking if a column
-                   // is an entityKey
-                   // We also need to bind the expandData request thing to call a function that makes another
-                   // entityInfo call
-                   webix.ui(_thisWindow).show();
-               }
-            });
-        },
         showWindow: function(params) {
             var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
 
@@ -177,7 +160,10 @@ var directives = (function() {
 
                     _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
 
-                    setupContent(params.componentType, response.structure, response.data);
+                    if (params.componentType != "treetable")
+                        setupContent(params.componentType, response.structure, response.data);
+                    else
+                        setupTabulatorContent(params.componentType, response.structure, response.data, response.hints);
 
                     function setupContent(componentType, structure, data) {
                         var content = {};
@@ -186,7 +172,7 @@ var directives = (function() {
 
                         content.view = componentType;
 
-                        switch(componentType) {
+                        switch (componentType) {
                             case "datatable":
                                 content.columns = structure;
 
@@ -210,6 +196,68 @@ var directives = (function() {
                         _thisWindow.body = content;
 
                         webix.ui(_thisWindow).show();
+                    }
+
+                    function setupTabulatorContent(componentType, structure, data, hints) {
+                        // from showEntityWindow:
+                        // Now we need to inject into a standard template our columns,
+                       // our data, and also modify the data to allow for cell clicking if a column
+                       // is an entityKey
+                       // We also need to bind the expandData request thing to call a function that makes another
+                       // entityInfo call
+                        var tabulatorId,
+                            tabulatorConfig;
+
+                        webix.ui(_thisWindow).show();
+
+                        tabulatorId = "tabulator-" + params.id;
+
+                        $("div[view_id='" + params.id + "'] div.webix_win_body").prepend("<div id='" + tabulatorId + "' style='margin:0 1%'></div>");
+
+                        /* manipulate tabulator config using hints */
+                        for (var idx = 0; idx < structure.length; idx++) {
+                            if (!(hints["displayColumns"][structure[idx]["id"]]))
+                                structure[idx]["visible"] = false;
+
+                            if (hints["formatter"][structure[idx]["id"]]) {
+                                var hint = hints["formatter"][structure[idx]["id"]];
+
+                                structure[idx]["formatter"] = function(value, data, cell, row, options) {
+                                    switch (hint.formatterType) {
+                                        case "textColorConditional":
+                                            if (eval(hint.condition))
+                                                return "<span style='color:" + hint.trueValue + ";'>" + value + "</span>";
+                                            else
+                                                return "<span style='color:" + hint.falseValue + ";'>" + value + "</span>";
+                                            break;
+                                        case "webLink":
+                                            return "<span><a href='" + hint.hrefValue + value + "' target='_blank'>" + value + "</a></span>";
+                                        case "default":
+                                            console.warn("Not a valid formatter type");
+
+                                            break;
+                                    }
+                                }
+                            }
+                        }
+
+                        tabulatorConfig = {
+                            height: "466px",
+                            fitColumns: hints.fitColumns,
+                            groupBy: hints.groupBy === "NULL" ? null : hints.groupBy,
+                            columns: structure
+                        }
+
+                        $("#" + tabulatorId).tabulator(tabulatorConfig);
+
+                        $("#" + tabulatorId).tabulator("setData", data);
+
+                        // Webix creates a "spacer" element when window content is not set.
+                        // Since we are setting content (creating a new tabulator element),
+                        // but not in the traditional webix way (e.g. _thisWindow.body = content),
+                        // the "spacer" element should be deleted explicitly.
+
+                        $("div[view_id='" + params.id + "'] div.webix_win_body div.webix_spacer").remove();
                     }
                 },
                 failure: function(error) {
