@@ -68,22 +68,20 @@ var directives = (function() {
                 height: tabulatorInfo.height,
                 fitColumns: tabulatorInfo.fitColumns,
                 groupBy: tabulatorInfo.groupBy,
-                columns: tabulatorInfo.columns
+                columns: tabulatorInfo.columns,
+                sortDir: tabulatorInfo.sortDir
             };
 
             tabulator.data = tabulatorInfo.data;
 
             return tabulator;
         },
-        draw: function(params) {
-            var tabulatorInfo,
-                tabulatorConfig;
-
+        render: function(params) {
             var tabulators = [];
 
             if (params.widget) {
                 if (!params.protoViews)
-                    webix.ui(params.widget);
+                    webix.ui(params.widget).show();
                 else {
                     for (var key in params.protoViews) {
                         if (params.protoViews.hasOwnProperty(key))                        
@@ -94,7 +92,7 @@ var directives = (function() {
                                 tabulators.push(directives.getTabulator(params.protoViews[key]));
                     }
 
-                    webix.ui(params.widget);
+                    webix.ui(params.widget).show();
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {
@@ -106,9 +104,6 @@ var directives = (function() {
                     }
                 }                
             }
-        },
-        show: function(params) {
-            $$(params.id).show();
         },
         // setting data for components that have already-defined structures
         // (and have a corresponding element present in the DOM) 

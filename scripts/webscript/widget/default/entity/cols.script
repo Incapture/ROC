@@ -69,13 +69,14 @@ response.window = window;
 protoViews = {
 	"country-datatable": {
 		"name": "tabulator",
-		"id": "country-tabulator",	// is this needed?
-		"innerHtml": "<div id='country-tabulator' style='margin:0 1%; width:100%'></div>",
+		"id": "country-tabulator",
+		"innerHtml": "<div id='country-tabulator' style='width:100%'></div>",
 		"groupBy": "ccy",
 		"columns": columns,
 		"data": fromjson(data),
 		"height": "466px",
-		"fitColumns": false
+		"fitColumns": true,
+		"sortDir": "asc"
 	}
 };
 

@@ -26,9 +26,7 @@ var app = (function() {
                         if (response.structure.protoViews)
                             protoViews = response.structure.protoViews;
 
-                        directives.draw({widget: directives.getLayout(response.structure.window, clickActions), protoViews: protoViews});
-
-                        directives.show({id: response.structure.window.properties.id});
+                        directives.render({widget: directives.getLayout(response.structure.window, clickActions), protoViews: protoViews});
                     },
                     failure: function() {
                         console.warn(error);
@@ -103,7 +101,7 @@ var app = (function() {
     // "00" -> element that should be placed in row0, col0,
     // "10" -> element that should be placed in row1, col0, and so on.
     // important to define the "count" object with row count and corresponding columns-in-row counts
-    directives.draw({
+    directives.render({
         widget: directives.getLayout({
                         properties: {
                             id: "layout-main",
@@ -181,7 +179,7 @@ var app = (function() {
             console.warn(error);
 
             // login form layout
-            directives.draw({
+            directives.render({
                 widget: directives.getLayout({
                                 properties: {
                                     id: "window_login",
@@ -246,8 +244,6 @@ var app = (function() {
                                 }
                             })
             });
-
-            directives.show({id: "window_login"});
         }
     });
 }());
