@@ -1,0 +1,19 @@
+widgetParams = web["widgetParams"];
+
+response = {};
+
+entity = (fromjson(widgetParams))["entity"];
+
+w = #widget.getWidget(web["widget"]);
+
+response.componentType = w.paneType;
+
+data = fromjson(#script.runScript("/webscript/" + w.actions.data, {"entity": entity}));
+
+structure = fromjson(#script.runScript("/webscript/" + w.actions.cols, {"retVal": "true", "title": w.title, "entity": entity, "componentType": w.paneType, "data": json(data)}));
+
+response.data = data;
+
+response.structure = structure;
+
+println(json(response));

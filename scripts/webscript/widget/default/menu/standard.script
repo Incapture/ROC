@@ -1,0 +1,18 @@
+// A script to return the information needed for a menu pane (called through a widget reference)
+
+response = {};
+
+menu = [
+	{
+		"title": "Countries (demo)",
+		"id": "menuItem_country",
+		"widget": "//default/table/demo",
+		"params": {
+			"entity": "//standard/country"
+		}
+	}
+];
+
+response.menu = menu;
+
+return(json(response));

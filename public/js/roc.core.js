@@ -1,20 +1,7 @@
 var roc = (function() {
 	"use strict";
 
-	var loginStatus,
-		uiBindings = {
-			"default": {
-				"pageLayout": "",	// for now, not-logged-in type components (pageLayout, login form etc. will be set in JS, not reflex)
-				"menu": "/webscript/menu/rocmenu_new"
-			},
-			"userManagement": {
-				"datatable": "/webscript/window/userList",
-				"form": "/webscript/window/userInfo"
-			},
-			"entity": {
-				"datatree" : "/webscript/entity/entityInfo"
-			}
-		};	// e.g. of getting specific value: roc.getUiBindingScript("default", "pageLayout") //TODO: change comment example since "default", "pageLayout" is not a valid combination
+	var loginStatus;
 
 	return {
 		apiRequest: function (scriptEndPoint, scriptParameters, parameters) {
@@ -33,9 +20,6 @@ var roc = (function() {
 		},
 		isLoggedIn: function () {
 			return loginStatus;
-		},
-		getUiBindingScript: function(concept, uiComponent) {
-			return uiBindings[concept][uiComponent];
 		}
 	};
 }());
