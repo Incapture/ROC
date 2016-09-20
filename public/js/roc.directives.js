@@ -1,227 +1,123 @@
 var directives = (function() {
     "use strict";
 
-    var componentIds = {};
-
     return {
-        getWindowTemplate: function(params) {
-            return {
-                view: "window",
-                left: params.left,
-                top: params.top,
-                width: params.width,
-                height: params.height,
-                head: {
-                    view: "toolbar",
-                    cols: [
-                        { view: "label", label: "", align: "center" },
-                        { view:"button", type: "icon", icon: "times", width:30 }
-                    ]
+        getLayout: function(params, clickActions) {
+            var layout = {},
+                count = params.count,
+                components = params.components;
+
+            for (var property in params.properties) {
+                if (params.properties.hasOwnProperty(property)) {
+                    layout[property] = params.properties[property];
+                }
+            }
+
+            if (count.rows && count.rows > 0) {
+                var rows = [];
+
+                for (var i = 0; i < count.rows; i++) {
+                    var row = {},
+                        cols = [],
+                        idx,
+                        component;
+
+                    for (var j = 0; j < count["row"+i+"_cols"]; j++) {
+                        idx = i.toString() + j.toString();
+
+                        component = components[idx];
+
+                        if (clickActions && clickActions[component.id])
+                            component.onClick = clickActions[component.id];
+
+                        cols.push(components[idx]);
+                    }
+
+                    row.cols = cols;
+
+                    rows.push(row);
+                }
+
+                if (params.properties.view === "window") {
+                    layout["head"] = params.components["head"];
+
+                    layout["body"] = {
+                        rows: rows
+                    };
+                }
+                else
+                    layout["rows"] = rows;
+            }
+
+            return layout;
+        },
+        setProtoUI: function(protoView) {
+            webix.protoUI({
+                name: protoView.name,
+                $init: function(config){
+                    this.$view.innerHTML = protoView.innerHtml;                           
                 },
-                move: true,
-                resize: true,
-                body: {}
+            }, webix.ui.view);
+        },
+        getTabulator: function(tabulatorInfo) {
+            var tabulator = {};
+
+            tabulator.id = tabulatorInfo.id;
+
+            tabulator.config = {
+                height: tabulatorInfo.height,
+                fitColumns: tabulatorInfo.fitColumns,
+                groupBy: tabulatorInfo.groupBy,
+                columns: tabulatorInfo.columns
+            };
+
+            tabulator.data = tabulatorInfo.data;
+
+            return tabulator;
+        },
+        draw: function(params) {
+            var tabulatorInfo,
+                tabulatorConfig;
+
+            var tabulators = [];
+
+            if (params.widget) {
+                if (!params.protoViews)
+                    webix.ui(params.widget);
+                else {
+                    for (var key in params.protoViews) {
+                        if (params.protoViews.hasOwnProperty(key))                        
+                            directives.setProtoUI(params.protoViews[key]);
+
+                            // maintain a list of tabulator components within the window
+                            if (params.protoViews[key]["name"] == "tabulator")
+                                tabulators.push(directives.getTabulator(params.protoViews[key]));
+                    }
+
+                    webix.ui(params.widget);
+
+                    if (tabulators.length > 0) {
+                        for (var idx = 0; idx < tabulators.length; idx++) {
+
+                            $("#" + tabulators[idx]["id"]).tabulator(tabulators[idx]["config"]);
+
+                            $("#" + tabulators[idx]["id"]).tabulator("setData", tabulators[idx]["data"]);
+                        }
+                    }
+                }                
             }
         },
-        setPageLayout: function(params) {
-            var menuClick = params["menuClick"],
-                menuItemOnAfterSelect = params["menuItemOnAfterSelect"];
-
-            componentIds["menu"] = params["menuId"];
-
-            webix.ui({
-                id: params["pageLayoutId"],
-                type: {
-                    width: "auto"
-                },
-                rows: [{
-                    view: "toolbar",
-                    padding: 3,
-                    id: "toolbar",
-                    elements: [{
-                        view: "button",
-                        type: "icon",
-                        icon: "bars",
-                        width: 37,
-                        align: "left",
-                        css: "app_button",
-                        click: function() {
-                            return menuClick(params["menuId"]);
-                        }
-                    }, {
-                        view: "label",
-                        label: params["title"]
-                    }, {
-                        view: "button",
-                        type: "icon",
-                        width: 45,
-                        css: "app_button",
-                        icon: "envelope-o"
-                    }, {
-                        view: "button",
-                        type: "icon",
-                        width: 45,
-                        css: "app_button",
-                        icon: "bell-o"
-                    }, {
-                        view: "button",
-                        type: "icon",
-                        width: 25,
-                        css: "app_button",
-                        icon: "sign-out",
-                        click: params["logoutAction"]
-                    }]
-                }, {
-                    id: "body", // TODO: is this really needed?
-                    cols: [
-                        {
-                            view: "sidebar",
-                            id: params["menuId"],
-                            data: [],  // will be set after login
-                            on: {
-                                onAfterSelect: function(id) {
-                                    return menuItemOnAfterSelect(id, params["menuId"]);
-                                }
-                            }
-                        },
-                        {}
-                    ]
-                }]
-            });
+        show: function(params) {
+            $$(params.id).show();
         },
-        initializeLogin: function(params) {
-            var loginAction = params["loginAction"];
-
-            webix.ui({
-                id: params["windowId"],
-                view: "window",
-                position: "center",
-                modal: true,
-                head: {
-                    view: "toolbar",
-                    cols: [{
-                        view: "label",
-                        label: "Login",
-                        align: "center"}
-                    ]
-                },
-                move: true,
-                body: {
-                    rows: [{
-                        view: "form",
-                        id: params["formId"],
-                        elements: [{
-                                view: "text",
-                                name: "user",
-                                label: "User",
-                                placeholder: "Username"
-                            }, {
-                                view: "text",
-                                name: "password",
-                                label: "Password",
-                                type: "password",
-                                placeholder: "Password"
-                            }, {
-                                margin: 5,
-                                cols: [{
-                                    view: "button",
-                                    value: "Login",
-                                    click: function() {
-                                        return loginAction(params["windowId"], params["formId"], params["feedbackId"])
-                                    }
-                                }, {
-                                    view: "button",
-                                    value: "Cancel"
-                                }]
-                            }, {
-                                view: "label",
-                                id: params["feedbackId"],
-                                label: "",
-                                align: "center"
-                            }]
-                    }]
-                }
-            });
-        },
-
-        showEntityWindow: function(params) {
-            // Show a window that displays information about entities - a tree table
-            // params.entityUri is the entity to display
-            var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
-            // Compute initial view
-            roc.apiRequest('/webscript/entity/entityInfo', { id : '/', entityUri : params.entityUri }, {
-               success : function(res) {
-                   var response = JSON.parse(res.text);
-                   _thisWindow.id = params.id;
-                   _thisWindow.head.cols[0].label = params.title;
-                   _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
-                   // Now we need to inject into a standard template our columns,
-                   // our data, and also modify the data to allow for cell clicking if a column
-                   // is an entityKey
-                   // We also need to bind the expandData request thing to call a function that makes another
-                   // entityInfo call
-                   webix.ui(_thisWindow).show();
-               }
-            });
-        },
-        showWindow: function(params) {
-            var _thisWindow = JSON.parse(JSON.stringify(directives.getWindowTemplate(params)));
-
+        // setting data for components that have already-defined structures
+        // (and have a corresponding element present in the DOM) 
+        setData: function(params) {
             roc.apiRequest(params.script, params.scriptParameters, {
                 success: function(res) {
                     var response = JSON.parse(res.text());
 
-                    _thisWindow.id = params.id;
-
-                    _thisWindow.head.cols[0].label = params.title;
-
-                    _thisWindow.head.cols[1].click = "$$('" + params.id + "').close();";
-
-                    setupContent(params.componentType, response.structure, response.data);
-
-                    function setupContent(componentType, structure, data) {
-                        var content = {};
-
-                        content.id = response.componentId;
-
-                        content.view = componentType;
-
-                        switch(componentType) {
-                            case "datatable":
-                                content.columns = structure;
-
-                                break;
-                            case "form":
-                                content.elements = structure;
-
-                                break;
-                            default:
-                                console.warn("not a valid component type");
-
-                                break;
-                        }
-
-                        if (data) content.data = data;
-
-                        content.onClick = params.clickActions;
-
-                        if (params.position) _thisWindow.position = params.position;
-
-                        _thisWindow.body = content;
-
-                        webix.ui(_thisWindow).show();
-                    }
-                },
-                failure: function(error) {
-                    console.warn(error);
-                }
-            });
-        },
-        // for non-window components
-        setComponentData: function(params) {
-            roc.apiRequest(roc.getUiBindingScript(params.concept, params.componentType), null, {
-                success: function(res) {
-                    $$(componentIds[params.componentType]).define("data", JSON.parse(res.text()));
+                    $$(params.element).define("data", response.componentData);
                 },
                 failure: function(error) {
                     console.warn(error);

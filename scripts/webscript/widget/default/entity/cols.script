@@ -1,0 +1,84 @@
+// A script to return structure
+// using tabulator to display table data
+
+windowId = "window_countries";
+
+response = {};
+
+e = #entity.getEntity(entity);
+s = #transform.getStructure(e.structureUri);
+
+idField = {};
+columns = [];
+for f in s.fields do
+    field = #transform.getField(f.fieldUri);
+    column = {};
+    column.id = f.key;
+    column.title = f.key;
+    column.header = f.key;
+    column.field = f.key;
+    column.fieldUri = f.fieldUri;
+    column.type = field.fieldType;
+    column.adjust = "data";
+    if (f.key == "id") do
+      idField = column;
+    else do
+      columns = columns + column;
+    end
+end
+
+columns = [idField] + columns;
+
+response.columns = columns;
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"left": 205,
+		"top": 45,
+		"width": 1200,
+		"height": 500,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 1,
+		"row0_cols": 1
+	},
+	"components": {
+		"head": {
+			"view": "toolbar",
+			"cols": [
+				{ "view": "label", "label": title, "align": "center" },
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close();" }
+			]
+		},
+		"00": {
+			"id": "country-datatable",
+			"view": "tabulator",
+			"columns": columns
+		}
+	}
+};
+
+response.window = window;
+
+// since tabulator is not a built-in webix component
+protoViews = {
+	"country-datatable": {
+		"name": "tabulator",
+		"id": "country-tabulator",	// is this needed?
+		"innerHtml": "<div id='country-tabulator' style='margin:0 1%; width:100%'></div>",
+		"groupBy": "ccy",
+		"columns": columns,
+		"data": fromjson(data),
+		"height": "466px",
+		"fitColumns": false
+	}
+};
+
+response.protoViews = protoViews;
+
+return(json(response));

@@ -1,0 +1,26 @@
+// A script to return data
+
+id = "/";
+
+data = [];
+
+valMap = #entity.listDocsByUriPrefix(entity, id, 0);
+
+for k in keys(valMap) do
+    dval = {};
+    vm = fromjson(json(valMap[k]));
+    fullId = id + '/' + vm.name;
+    if true == vm.folder do
+        dval.webix_kids = true;
+        dval.id = fullId;
+        dval.value = vm.name;
+    else do
+        dval = fromjson(#entity.getEntityDocument(entity, fullId));
+        dval.webix_kids = false;
+        dval.id = vm.name;
+        dval.value = vm.name;
+    end
+    data = data + dval;
+end
+
+return(json(data));

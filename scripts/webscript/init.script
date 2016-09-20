@@ -1,0 +1,27 @@
+response = {};
+
+w = #widget.getWidget(web["widget"]);
+
+response.componentType = w.paneType;
+
+data = fromjson(#script.runScript("/webscript/" + w.actions.data, {}));
+
+menu = data.menu;
+
+componentData = [];
+
+for idx = 0 to size(menu) - 1 do
+	item = {
+		"id": menu[idx]["id"],
+		"icon": "cubes",
+		"value": menu[idx]["title"],
+		"widget": menu[idx]["widget"],
+		"params": menu[idx]["params"]
+	};
+
+	componentData += item;
+end
+
+response.componentData = componentData;
+
+println(json(response));
