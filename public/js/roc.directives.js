@@ -64,26 +64,37 @@ var directives = (function() {
 
             tabulator.id = tabulatorInfo.id;
 
+            // hide columns specified in tabulatorInfo.excludeColumns array
+            for (var i = 0; i < tabulatorInfo.columns.length; i++) {
+                for (var j = 0; j < tabulatorInfo.excludeColumns.length; j++) {
+                    if (tabulatorInfo.columns[i]["id"] == tabulatorInfo.excludeColumns[j]) {
+                        tabulatorInfo.columns[i]["visible"] = false;
+
+                        break;
+                    }
+                }
+            }
+
             tabulator.config = {
                 height: tabulatorInfo.height,
                 fitColumns: tabulatorInfo.fitColumns,
                 groupBy: tabulatorInfo.groupBy,
-                columns: tabulatorInfo.columns
+                columns: tabulatorInfo.columns,
+                sortDir: tabulatorInfo.sortDir
             };
 
             tabulator.data = tabulatorInfo.data;
 
+            tabulator.filter = tabulatorInfo.filter;
+
             return tabulator;
         },
-        draw: function(params) {
-            var tabulatorInfo,
-                tabulatorConfig;
-
+        render: function(params) {
             var tabulators = [];
 
             if (params.widget) {
                 if (!params.protoViews)
-                    webix.ui(params.widget);
+                    webix.ui(params.widget).show();
                 else {
                     for (var key in params.protoViews) {
                         if (params.protoViews.hasOwnProperty(key))                        
@@ -94,7 +105,7 @@ var directives = (function() {
                                 tabulators.push(directives.getTabulator(params.protoViews[key]));
                     }
 
-                    webix.ui(params.widget);
+                    webix.ui(params.widget).show();
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {
@@ -102,13 +113,14 @@ var directives = (function() {
                             $("#" + tabulators[idx]["id"]).tabulator(tabulators[idx]["config"]);
 
                             $("#" + tabulators[idx]["id"]).tabulator("setData", tabulators[idx]["data"]);
+
+                            if (tabulators[idx]["filter"]) {
+                                $("#" + tabulators[idx]["id"]).tabulator("setFilter", tabulators[idx]["filter"][0], tabulators[idx]["filter"][1], tabulators[idx]["filter"][2]);
+                            }
                         }
                     }
                 }                
             }
-        },
-        show: function(params) {
-            $$(params.id).show();
         },
         // setting data for components that have already-defined structures
         // (and have a corresponding element present in the DOM) 
