@@ -64,6 +64,17 @@ var directives = (function() {
 
             tabulator.id = tabulatorInfo.id;
 
+            // hide columns specified in tabulatorInfo.excludeColumns array
+            for (var i = 0; i < tabulatorInfo.columns.length; i++) {
+                for (var j = 0; j < tabulatorInfo.excludeColumns.length; j++) {
+                    if (tabulatorInfo.columns[i]["id"] == tabulatorInfo.excludeColumns[j]) {
+                        tabulatorInfo.columns[i]["visible"] = false;
+
+                        break;
+                    }
+                }
+            }
+
             tabulator.config = {
                 height: tabulatorInfo.height,
                 fitColumns: tabulatorInfo.fitColumns,

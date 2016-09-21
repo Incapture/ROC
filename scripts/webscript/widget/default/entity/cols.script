@@ -76,7 +76,8 @@ protoViews = {
 		"data": fromjson(data),
 		"height": "466px",
 		"fitColumns": true,
-		"sortDir": "asc"
+		"sortDir": "asc",
+		"excludeColumns": ["frenchName", "code2", "marc", "wmo", "ds", "fifa", "fips", "edgar"]	// these columns will be hidden
 	}
 };
 
