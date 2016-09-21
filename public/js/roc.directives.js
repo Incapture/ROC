@@ -85,6 +85,8 @@ var directives = (function() {
 
             tabulator.data = tabulatorInfo.data;
 
+            tabulator.filter = tabulatorInfo.filter;
+
             return tabulator;
         },
         render: function(params) {
@@ -111,6 +113,10 @@ var directives = (function() {
                             $("#" + tabulators[idx]["id"]).tabulator(tabulators[idx]["config"]);
 
                             $("#" + tabulators[idx]["id"]).tabulator("setData", tabulators[idx]["data"]);
+
+                            if (tabulators[idx]["filter"]) {
+                                $("#" + tabulators[idx]["id"]).tabulator("setFilter", tabulators[idx]["filter"][0], tabulators[idx]["filter"][1], tabulators[idx]["filter"][2]);
+                            }
                         }
                     }
                 }                
