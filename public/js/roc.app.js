@@ -7,8 +7,7 @@ var app = (function() {
                 $$(menuId).toggle();
             },
             menuItemOnAfterSelect: function(id, menuId) {
-                var item = $$(menuId).getItem(id),
-                    scriptParameters = {widget: item.widget, widgetParams: item.params};
+                var item = $$(menuId).getItem(id);
 
                 roc.apiRequest("/webscript/main", {widget: item.widget, widgetParams: item.params}, {
                     success: function(res) {
