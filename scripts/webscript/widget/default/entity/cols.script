@@ -78,7 +78,13 @@ protoViews = {
 		"fitColumns": true,
 		"sortDir": "asc",
 		"excludeColumns": ["frenchName", "code2", "marc", "wmo", "ds", "fifa", "fips", "edgar"],
-		"filter": ["numId", ">", 300]
+		"filter": ["numId", ">", 100],
+		// formatting:
+		// for every column that needs a formatter, pass a function name;
+		// the function is defined in roc.tasks.js, evaluated in roc.directives.js
+		"formatter": {
+			"numId": "tasks.country_datatable_numId_greaterThan500"
+		}
 	}
 };
 
