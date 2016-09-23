@@ -69,6 +69,10 @@ var directives = (function() {
                 if (tabulatorInfo.formatter[tabulatorInfo.columns[i]["id"]])
                     tabulatorInfo.columns[i]["formatter"] = eval(tabulatorInfo.formatter[tabulatorInfo.columns[i]["id"]]);
 
+                // onClick
+                if (tabulatorInfo.onClick[tabulatorInfo.columns[i]["id"]])
+                    tabulatorInfo.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.columns[i]["id"]]);
+
                 // hide columns specified in tabulatorInfo.excludeColumns array
                 for (var j = 0; j < tabulatorInfo.excludeColumns.length; j++) {
                     if (tabulatorInfo.columns[i]["id"] == tabulatorInfo.excludeColumns[j]) {

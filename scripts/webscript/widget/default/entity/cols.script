@@ -84,6 +84,9 @@ protoViews = {
 		// the function is defined in roc.tasks.js, evaluated in roc.directives.js
 		"formatter": {
 			"numId": "tasks.country_datatable_numId_greaterThan500"
+		},
+		"onClick": {
+			"id": "tasks.country_datatable_id_showInfo"
 		}
 	}
 };
