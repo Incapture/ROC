@@ -9,27 +9,9 @@ var app = (function() {
             menuItemOnAfterSelect: function(id, menuId) {
                 var item = $$(menuId).getItem(id);
 
-                roc.apiRequest("/webscript/main", {widget: item.widget, widgetParams: item.params}, {
-                    success: function(res) {
-                        var response = JSON.parse(res.text()),
-                            clickActions = {},
-                            protoViews = {};
-
-                        if (response.structure.clickableComponents) {
-                            for (var idx = 0; idx < response.structure.clickableComponents.length; idx++) {
-                                if (clickHandlers[response.structure.clickableComponents[idx]])
-                                    clickActions[response.structure.clickableComponents[idx]] = clickHandlers[response.structure.clickableComponents[idx]];
-                            }
-                        }
-
-                        if (response.structure.protoViews)
-                            protoViews = response.structure.protoViews;
-
-                        directives.render({widget: directives.getLayout(response.structure.window, clickActions), protoViews: protoViews});
-                    },
-                    failure: function() {
-                        console.warn(error);
-                    }
+                directives.createWidget({
+                    script: "/webscript/main",
+                    scriptParameters: {widget: item.widget, widgetParams: item.params}
                 });
             }
         },

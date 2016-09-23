@@ -2,7 +2,23 @@ var directives = (function() {
     "use strict";
 
     return {
-        getLayout: function(params, clickActions) {
+        createWidget: function(params) {
+            roc.apiRequest(params.script, params.scriptParameters, {
+                success: function(res) {
+                    var response = JSON.parse(res.text()),
+                        protoViews = {};
+
+                    if (response.structure.protoViews)
+                        protoViews = response.structure.protoViews;
+
+                    directives.render({widget: directives.getLayout(response.structure.window), protoViews: protoViews});
+                },
+                failure: function() {
+                    console.warn(error);
+                }
+            });
+        },
+        getLayout: function(params) {
             var layout = {},
                 count = params.count,
                 components = params.components;
@@ -26,9 +42,6 @@ var directives = (function() {
                         idx = i.toString() + j.toString();
 
                         component = components[idx];
-
-                        if (clickActions && clickActions[component.id])
-                            component.onClick = clickActions[component.id];
 
                         cols.push(components[idx]);
                     }
