@@ -6,12 +6,17 @@ var directives = (function() {
             roc.apiRequest(params.script, params.scriptParameters, {
                 success: function(res) {
                     var response = JSON.parse(res.text()),
-                        protoViews = {};
+                        protoViews = {},
+                        widget;
 
                     if (response.structure.protoViews)
                         protoViews = response.structure.protoViews;
 
-                    directives.render({widget: directives.getLayout(response.structure.window), protoViews: protoViews});
+                    widget = directives.getLayout(response.structure.window);
+
+                    roc.addWindow({windowId: widget.id, parentId: params.parent});
+
+                    directives.render({widget: widget, protoViews: protoViews});
                 },
                 failure: function() {
                     console.warn(error);

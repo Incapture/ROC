@@ -14,7 +14,8 @@ var tasks = (function() {
 		country_datatable_id_showInfo: function(e, cell, value, data) {
 			directives.createWidget({
 				script: "/webscript/main2",
-				scriptParameters: {widget: "default/form/country" , widgetParams: {entity: "/country/"+value, info: data}} //mocked-up values; only "info" is actually used
+				scriptParameters: {widget: "default/form/country" , widgetParams: {entity: "/country/"+value, info: data}}, //mocked-up values; only "info" is actually used
+				parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id")
 			});
 		}
 	}
