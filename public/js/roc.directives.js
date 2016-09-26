@@ -2,7 +2,28 @@ var directives = (function() {
     "use strict";
 
     return {
-        getLayout: function(params, clickActions) {
+        createWidget: function(params) {
+            roc.apiRequest(params.script, params.scriptParameters, {
+                success: function(res) {
+                    var response = JSON.parse(res.text()),
+                        protoViews = {},
+                        widget;
+
+                    if (response.structure.protoViews)
+                        protoViews = response.structure.protoViews;
+
+                    widget = directives.getLayout(response.structure.window);
+
+                    roc.addWindow({windowId: widget.id, parentId: params.parent});
+
+                    directives.render({widget: widget, protoViews: protoViews});
+                },
+                failure: function() {
+                    console.warn(error);
+                }
+            });
+        },
+        getLayout: function(params) {
             var layout = {},
                 count = params.count,
                 components = params.components;
@@ -26,9 +47,6 @@ var directives = (function() {
                         idx = i.toString() + j.toString();
 
                         component = components[idx];
-
-                        if (clickActions && clickActions[component.id])
-                            component.onClick = clickActions[component.id];
 
                         cols.push(components[idx]);
                     }
@@ -64,8 +82,16 @@ var directives = (function() {
 
             tabulator.id = tabulatorInfo.id;
 
-            // hide columns specified in tabulatorInfo.excludeColumns array
             for (var i = 0; i < tabulatorInfo.columns.length; i++) {
+                // formatting
+                if (tabulatorInfo.formatter[tabulatorInfo.columns[i]["id"]])
+                    tabulatorInfo.columns[i]["formatter"] = eval(tabulatorInfo.formatter[tabulatorInfo.columns[i]["id"]]);
+
+                // onClick
+                if (tabulatorInfo.onClick[tabulatorInfo.columns[i]["id"]])
+                    tabulatorInfo.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.columns[i]["id"]]);
+
+                // hide columns specified in tabulatorInfo.excludeColumns array
                 for (var j = 0; j < tabulatorInfo.excludeColumns.length; j++) {
                     if (tabulatorInfo.columns[i]["id"] == tabulatorInfo.excludeColumns[j]) {
                         tabulatorInfo.columns[i]["visible"] = false;

@@ -52,7 +52,7 @@ window = {
 			"view": "toolbar",
 			"cols": [
 				{ "view": "label", "label": title, "align": "center" },
-				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close();" }
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
 			]
 		},
 		"00": {
@@ -78,7 +78,17 @@ protoViews = {
 		"fitColumns": true,
 		"sortDir": "asc",
 		"excludeColumns": ["frenchName", "code2", "marc", "wmo", "ds", "fifa", "fips", "edgar"],
-		"filter": ["numId", ">", 300]
+		"filter": ["numId", ">", 100],
+		// formatting:
+		// for every column that needs a formatter, pass a function name;
+		// the function is defined in roc.tasks.js, evaluated in roc.directives.js
+		"formatter": {
+			"id": "tasks.country_datatable_id_styleAsLink",
+			"numId": "tasks.country_datatable_numId_greaterThan500"
+		},
+		"onClick": {
+			"id": "tasks.country_datatable_id_showInfo"
+		}
 	}
 };
 
