@@ -70,13 +70,20 @@ protoViews = {
 	"country-datatable": {
 		"name": "tabulator",
 		"id": "country-tabulator",
-		"innerHtml": "<div id='country-tabulator' style='width:100%'></div>",
-		"groupBy": "ccy",
-		"columns": columns,
 		"data": fromjson(data),
-		"height": "466px",
-		"fitColumns": true,
-		"sortDir": "asc",
+		"config": {
+			"columns": columns,
+			"fitColumns": true,
+			"height": "466px",
+			"pagination": true,
+			// when setting pagination as true,
+			// groupBy and sortBy should be set to the same column
+			// to avoid fragmented grouping
+			"groupBy": "ccy",
+			"sortBy": "ccy",
+			"sortDir": "asc"
+		},
+		"innerHtml": "<div id='country-tabulator' style='width:100%'></div>",
 		"excludeColumns": ["frenchName", "code2", "marc", "wmo", "ds", "fifa", "fips", "edgar"],
 		"filter": ["numId", ">", 100],
 		// formatting:
