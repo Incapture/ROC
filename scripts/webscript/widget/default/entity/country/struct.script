@@ -10,7 +10,9 @@ window = {
 	"properties": {
 		"id": windowId,
 		"view": "window",
-		"position": "center",
+		"top": 45,
+		"left": 1100,
+		"height": 123,
 		"move": true,
 		"resize": true,
 		"body": {}

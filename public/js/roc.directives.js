@@ -26,12 +26,29 @@ var directives = (function() {
         getLayout: function(params) {
             var layout = {},
                 count = params.count,
-                components = params.components;
+                components = params.components,
+                top,
+                left,
+                adjustedTop;
 
             for (var property in params.properties) {
                 if (params.properties.hasOwnProperty(property)) {
+                    if (property === "left") left = params.properties["left"];
+
+                    if (property === "top") top = params.properties["top"];
+
                     layout[property] = params.properties[property];
                 }
+            }
+
+            // adjust top margin of window if there's already a window at the current position
+            if (left && top) {
+                adjustedTop = top;
+
+                while ($(document.elementFromPoint(left, adjustedTop)).hasClass("webix_window"))
+                    adjustedTop += 10;
+
+                layout["top"] = adjustedTop;
             }
 
             if (count.rows && count.rows > 0) {

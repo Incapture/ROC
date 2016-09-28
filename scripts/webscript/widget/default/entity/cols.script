@@ -37,7 +37,7 @@ window = {
 		"view": "window",
 		"left": 205,
 		"top": 45,
-		"width": 1200,
+		"width": 880,
 		"height": 500,
 		"move": true,
 		"resize": true,

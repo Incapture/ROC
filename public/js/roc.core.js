@@ -2,7 +2,8 @@ var roc = (function() {
 	"use strict";
 
 	var loginStatus,
-		windows = {};
+		windows = {},
+		dom = $(document);
 
 	return {
 		apiRequest: function (scriptEndPoint, scriptParameters, parameters) {
@@ -48,6 +49,9 @@ var roc = (function() {
 		},
 		getWindows: function() {
 			return windows;
+		},
+		dom: function() {
+			return dom;
 		}
 	};
 }());
