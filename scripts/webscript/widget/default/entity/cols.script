@@ -38,14 +38,15 @@ window = {
 		"left": 205,
 		"top": 45,
 		"width": 880,
-		"height": 500,
+		"height": 550,
 		"move": true,
 		"resize": true,
 		"body": {}
 	},
 	"count": {
-		"rows": 1,
-		"row0_cols": 1
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
 	},
 	"components": {
 		"head": {
@@ -59,6 +60,12 @@ window = {
 			"id": "country-datatable",
 			"view": "tabulator",
 			"columns": columns
+		},
+		"10": {
+			"id": "country-datatable-more",
+			"view": "button",
+			"label": "More ..",
+			"css": "table-action-button-container"
 		}
 	}
 };
@@ -79,8 +86,8 @@ protoViews = {
 			// when setting pagination as true,
 			// groupBy and sortBy should be set to the same column
 			// to avoid fragmented grouping
-			"groupBy": "ccy",
-			"sortBy": "ccy",
+			//"groupBy": "ccy",
+			"sortBy": "name",
 			"sortDir": "asc"
 		},
 		"innerHtml": "<div id='country-tabulator' style='width:100%'></div>",
