@@ -62,10 +62,21 @@ window = {
 			"columns": columns
 		},
 		"10": {
-			"id": "country-datatable-more",
-			"view": "button",
-			"label": "More ..",
-			"css": "table-action-button-container"
+			"view": "layout",
+			"cols": [
+				{},
+				{},
+				{
+					"id": "country-datatable-more-data",
+					"view": "button",
+					"label": "More ..",
+					"css": "table-action-button-container",
+					"click": "tasks.country_datatable_getMoreData",
+					"width": 150
+				},
+				{},
+				{}
+			]
 		}
 	}
 };
