@@ -108,14 +108,9 @@ var directives = (function() {
                 if (tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]])
                     tabulatorInfo.config.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]]);
 
-                // hide columns specified in tabulatorInfo.excludeColumns array
-                for (var j = 0; j < tabulatorInfo.excludeColumns.length; j++) {
-                    if (tabulatorInfo.config.columns[i]["id"] == tabulatorInfo.excludeColumns[j]) {
-                        tabulatorInfo.config.columns[i]["visible"] = false;
-
-                        break;
-                    }
-                }
+                // hide columns not included in tabulatorInfo.viewableColumns
+                if(!tabulatorInfo.viewableColumns[tabulatorInfo.config.columns[i]["id"]])
+                    tabulatorInfo.config.columns[i]["visible"] = false;
             }
 
             tabulator.config = tabulatorInfo.config;

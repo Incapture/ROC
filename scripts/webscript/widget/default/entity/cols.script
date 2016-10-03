@@ -31,6 +31,15 @@ columns = [idField] + columns;
 
 response.columns = columns;
 
+// get view configuration (columns to be displayed)
+viewableColumns = {};
+vc = #entity.getViewConfiguration(e.structureUri);
+for idx = 0 to size(vc) - 1 do
+	viewableColumns[vc[idx]["name"]] = {
+		"visible": true
+	};
+end
+
 window = {
 	"properties": {
 		"id": windowId,
@@ -102,7 +111,7 @@ protoViews = {
 			"sortDir": "asc"
 		},
 		"innerHtml": "<div id='country-tabulator' style='width:100%'></div>",
-		"excludeColumns": ["frenchName", "code2", "marc", "wmo", "ds", "fifa", "fips", "edgar"],
+		"viewableColumns": viewableColumns,
 		"filter": ["numId", ">", 100],
 		// formatting:
 		// for every column that needs a formatter, pass a function name;
