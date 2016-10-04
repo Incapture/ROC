@@ -23,44 +23,82 @@ var tasks = (function() {
 		},
 		datatable_getMoreData: function(buttonViewId, parentViewId, tabulatorElement) {
 			var tabulatorId = $(tabulatorElement)[0].id,
-				currentData = $("#" + tabulatorId).tabulator("getData"),
 				limit = roc.getLimitValue(),
 				skip = roc.getSkipValue(),
 				item = $$(parentViewId).getSelectedItem();
 
 			roc.apiRequest("/webscript/main", {
-						widget: item.widget,
-						widgetParams: {
-							entity: item.params.entity,
-							skip: roc.getSkipValue(),
-							limit: limit
-                        },
-                        onlyData: true
-                    }, {
-                        success: function(res) {
-							var response = JSON.parse(res.text());
+					widget: item.widget,
+					widgetParams: {
+						entity: item.params.entity,
+						skip: roc.getSkipValue(),
+						limit: item.params.limit
+					},
+					onlyData: true
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text());
 
-							if (response.data.data.length) {
-								if (response.data.limit) {
-									roc.setLimitValue(response.data.limit);
+						if (response.data.data.length) {
+							if (response.data.limit) {
+								roc.setLimitValue(response.data.limit);
 
-									roc.setSkipValue(response.data.limit);
-								}
-
-								for (var i = 0; i < response.data.data.length; i++)
-									$("#" + tabulatorId).tabulator("addRow", response.data.data[i]);
-
-								$("#" + tabulatorId).tabulator("setPageSize", response.data.limit);
-
-								if (!response.data.moreData)
-									$$(buttonViewId).disable();
+								roc.setSkipValue(response.data.limit);
 							}
-                        },
-                        failure: function(error) {
-                            console.warn(error);
-                        }
-                    }
-                );
+
+							for (var i = 0; i < response.data.data.length; i++)
+								$("#" + tabulatorId).tabulator("addRow", response.data.data[i]);
+
+							$("#" + tabulatorId).tabulator("setPageSize", response.data.limit);
+
+							if (!response.data.moreData)
+								$$(buttonViewId).disable();
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
+		},
+		datatable_filterData: function(buttonViewId, parentViewId, tabulatorElement, formViewId, moreButtonViewId) {
+			console.log($$(formViewId).getValues()["where_clause"]);
+			var tabulatorId = $(tabulatorElement)[0].id,
+				limit = roc.getLimitValue(),
+				skip = 0,
+				item = $$(parentViewId).getSelectedItem();
+
+			roc.apiRequest("/webscript/main", {
+					widget: item.widget,
+					widgetParams: {
+						entity: item.params.entity,
+						skip: skip,
+						limit: item.params.limit,
+						whereClause: $$(formViewId).getValues()["where_clause"]
+					},
+					onlyData: true
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text());
+
+						if (response.data.data.length) {
+							if (response.data.limit) {
+								roc.setLimitValue(response.data.limit);
+
+								roc.setSkipValue(response.data.limit);
+							}
+
+							$("#" + tabulatorId).tabulator("setData", response.data.data);
+
+							if (!response.data.moreData)
+								$$(buttonViewId).disable();
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
 		}
 	}
 })();

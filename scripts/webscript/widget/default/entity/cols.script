@@ -29,15 +29,16 @@ window = {
 		"left": 205,
 		"top": 45,
 		"width": 880,
-		"height": 550,
+		"height": 600,
 		"move": true,
 		"resize": true,
 		"body": {}
 	},
 	"count": {
-		"rows": 2,
+		"rows": 3,
 		"row0_cols": 1,
-		"row1_cols": 1
+		"row1_cols": 1,
+		"row2_cols": 1
 	},
 	"components": {
 		"head": {
@@ -48,11 +49,32 @@ window = {
 			]
 		},
 		"00": {
+			"view": "form",
+			"id": "datatable_country_filter_form",
+			"cols": [
+				{},
+				{
+					"name": "where_clause",
+					"view": "text",
+					"placeholder": "query"
+				},
+				{
+					"id": "datatable_country_filter",
+					"view": "button",
+					"label": "Get Filtered Data",
+					"css": "table-action-button-container",
+					"click": "tasks.datatable_filterData('datatable_country_filter', 'menu-main', tabulator_country, 'datatable_country_filter_form', 'datatable_country_more_data')",
+					"width": 150
+				},
+				{}
+			]
+		},
+		"10": {
 			"id": "datatable_country",
 			"view": "tabulator",
 			"columns": columns
 		},
-		"10": {
+		"20": {
 			"view": "layout",
 			"cols": [
 				{},

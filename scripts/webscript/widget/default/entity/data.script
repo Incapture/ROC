@@ -6,6 +6,7 @@ w = (fromjson(widgetParams));
 entity = w.entity;
 limit = w.limit == null ? 50 : w.limit;
 skip = w.skip == null ? 0 : w.skip;
+whereClause = w.whereClause == null ? "" : w.whereClause;
 
 props = [];
 vc = #entity.getViewConfiguration(entity);
@@ -15,7 +16,7 @@ end
 
 data = [];
 count = 0;
-vd = #entity.getViewData(entity, "name LIKE '^'", skip, limit);
+vd = #entity.getViewData(entity, whereClause, skip, limit);
 for i = 0 to size(vd) - 1 do
     item = {};
     for j = 0 to size(props) - 1 do
