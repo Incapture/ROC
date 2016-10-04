@@ -275,7 +275,8 @@ h2 {
     text-align: center;
 }
 
-.table-action-button-container button {
+.table-action-button-container button,
+.table-action-button-container button:focus {
     background-color: #fff;
     color: #416095;
     border-color: #416095;

@@ -8,7 +8,8 @@ menu = [
 		"id": "menuItem_country",
 		"widget": "//default/table/demo",
 		"params": {
-			"entity": "//standard/country"
+			"entity": "//standard/country",
+			"limit": 50
 		}
 	}
 ];

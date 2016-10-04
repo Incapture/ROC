@@ -2,16 +2,17 @@ var tasks = (function() {
 	"use strict";
 
 	return {
-		country_datatable_numId_greaterThan500: function(value, data, cell, row, options) {
+		datatable_country_numId_greaterThan500: function(value, data, cell, row, options) {
 			if (value > 500)
 				return "<span style='color: green; font-weight: bold;'>" + value + "</span>";
 			else
 				return value;
 		},
-		country_datatable_id_styleAsLink: function(value, data, cell, row, options) {
+		datatable_country_id_styleAsLink: function(value, data, cell, row, options) {
 			return "<span style='color: blue; text-decoration: underline;'>" + value + "</span>";
 		},
-		country_datatable_id_showInfo: function(e, cell, value, data) {
+		datatable_country_id_showInfo: function(e, cell, value, data) {
+			console.log(e.currentTarget);
 			if (!roc.dom().find("div[view_id^='window_country_" + value + "']")[0]) {
 				directives.createWidget({
 					script: "/webscript/main2",
@@ -19,6 +20,47 @@ var tasks = (function() {
 					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id")
 				});
 			}
+		},
+		datatable_getMoreData: function(buttonViewId, parentViewId, tabulatorElement) {
+			var tabulatorId = $(tabulatorElement)[0].id,
+				currentData = $("#" + tabulatorId).tabulator("getData"),
+				limit = roc.getLimitValue(),
+				skip = roc.getSkipValue(),
+				item = $$(parentViewId).getSelectedItem();
+
+			roc.apiRequest("/webscript/main", {
+						widget: item.widget,
+						widgetParams: {
+							entity: item.params.entity,
+							skip: roc.getSkipValue(),
+							limit: limit
+                        },
+                        onlyData: true
+                    }, {
+                        success: function(res) {
+							var response = JSON.parse(res.text());
+
+							if (response.data.data.length) {
+								if (response.data.limit) {
+									roc.setLimitValue(response.data.limit);
+
+									roc.setSkipValue(response.data.limit);
+								}
+
+								for (var i = 0; i < response.data.data.length; i++)
+									$("#" + tabulatorId).tabulator("addRow", response.data.data[i]);
+
+								$("#" + tabulatorId).tabulator("setPageSize", response.data.limit);
+
+								if (!response.data.moreData)
+									$$(buttonViewId).disable();
+							}
+                        },
+                        failure: function(error) {
+                            console.warn(error);
+                        }
+                    }
+                );
 		}
 	}
 })();

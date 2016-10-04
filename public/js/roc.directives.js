@@ -12,6 +12,12 @@ var directives = (function() {
                     if (response.structure.protoViews)
                         protoViews = response.structure.protoViews;
 
+                    if (response.componentType == "datatable" && response.data.limit) {
+                        roc.setLimitValue(response.data.limit);
+
+                        roc.setSkipValue(response.data.limit);
+                    }
+
                     widget = directives.getLayout(response.structure.window);
 
                     roc.addWindow({windowId: widget.id, parentId: params.parent});
@@ -107,10 +113,6 @@ var directives = (function() {
                 // onClick
                 if (tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]])
                     tabulatorInfo.config.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]]);
-
-                // hide columns not included in tabulatorInfo.viewableColumns
-                if(!tabulatorInfo.viewableColumns[tabulatorInfo.config.columns[i]["id"]])
-                    tabulatorInfo.config.columns[i]["visible"] = false;
             }
 
             tabulator.config = tabulatorInfo.config;
@@ -141,7 +143,6 @@ var directives = (function() {
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {
-
                             $("#" + tabulators[idx]["id"]).tabulator(tabulators[idx]["config"]);
 
                             $("#" + tabulators[idx]["id"]).tabulator("setData", tabulators[idx]["data"]);

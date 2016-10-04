@@ -3,7 +3,9 @@ var roc = (function() {
 
 	var loginStatus,
 		windows = {},
-		dom = $(document);
+		dom = $(document),
+		skip = 0,
+		limit;
 
 	return {
 		apiRequest: function (scriptEndPoint, scriptParameters, parameters) {
@@ -52,6 +54,18 @@ var roc = (function() {
 		},
 		dom: function() {
 			return dom;
+		},
+		getSkipValue: function() {
+			return skip;
+		},
+		setSkipValue: function(val) {
+			skip += val;
+		},
+		getLimitValue: function() {
+			return limit;
+		},
+		setLimitValue: function(val) {
+			limit = val;
 		}
 	};
 }());

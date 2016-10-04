@@ -1,43 +1,25 @@
 // A script to return structure
 // using tabulator to display table data
 
-windowId = "window_countries";
-
 response = {};
 
-e = #entity.getEntity(entity);
-s = #transform.getStructure(e.structureUri);
+w = (fromjson(widgetParams));
+windowId = "window_countries";
 
-idField = {};
 columns = [];
-for f in s.fields do
-    field = #transform.getField(f.fieldUri);
-    column = {};
-    column.id = f.key;
-    column.title = f.key;
-    column.header = f.key;
-    column.field = f.key;
-    column.fieldUri = f.fieldUri;
-    column.type = field.fieldType;
-    column.adjust = "data";
-    if (f.key == "id") do
-      idField = column;
-    else do
-      columns = columns + column;
-    end
-end
-
-columns = [idField] + columns;
-
-response.columns = columns;
-
-// get view configuration (columns to be displayed)
-viewableColumns = {};
-vc = #entity.getViewConfiguration(e.structureUri);
+vc = #entity.getViewConfiguration(w.entity);
 for idx = 0 to size(vc) - 1 do
-	viewableColumns[vc[idx]["name"]] = {
-		"visible": true
-	};
+	column = {};
+	column.id = vc[idx]["name"];
+	column.title = vc[idx]["name"];
+	column.header = vc[idx]["name"];
+	column.field = vc[idx]["name"];
+	column.fieldUri = vc[idx]["field"]["name"];
+	column.fieldType = vc[idx]["field"]["fieldType"];
+	column.description = vc[idx]["field"]["description"];
+	column.validationScript = vc[idx]["field"]["validationScript"];
+
+	columns += column;
 end
 
 window = {
@@ -66,7 +48,7 @@ window = {
 			]
 		},
 		"00": {
-			"id": "country-datatable",
+			"id": "datatable_country",
 			"view": "tabulator",
 			"columns": columns
 		},
@@ -76,11 +58,11 @@ window = {
 				{},
 				{},
 				{
-					"id": "country-datatable-more-data",
+					"id": "datatable_country_more_data",
 					"view": "button",
 					"label": "More ..",
 					"css": "table-action-button-container",
-					"click": "tasks.country_datatable_getMoreData",
+					"click": "tasks.datatable_getMoreData('datatable_country_more_data', 'menu-main', tabulator_country)",
 					"width": 150
 				},
 				{},
@@ -94,15 +76,16 @@ response.window = window;
 
 // since tabulator is not a built-in webix component
 protoViews = {
-	"country-datatable": {
+	"datatable_country": {
 		"name": "tabulator",
-		"id": "country-tabulator",
+		"id": "tabulator_country",
 		"data": fromjson(data),
 		"config": {
 			"columns": columns,
 			"fitColumns": true,
 			"height": "466px",
 			"pagination": true,
+			"paginationSize": w.limit,
 			// when setting pagination as true,
 			// groupBy and sortBy should be set to the same column
 			// to avoid fragmented grouping
@@ -110,18 +93,16 @@ protoViews = {
 			"sortBy": "name",
 			"sortDir": "asc"
 		},
-		"innerHtml": "<div id='country-tabulator' style='width:100%'></div>",
-		"viewableColumns": viewableColumns,
-		"filter": ["numId", ">", 100],
+		"innerHtml": "<div id='tabulator_country' style='width:100%'></div>",
+		//"filter": ["numId", ">", 100],
 		// formatting:
 		// for every column that needs a formatter, pass a function name;
 		// the function is defined in roc.tasks.js, evaluated in roc.directives.js
 		"formatter": {
-			"id": "tasks.country_datatable_id_styleAsLink",
-			"numId": "tasks.country_datatable_numId_greaterThan500"
+			"id": "tasks.datatable_country_id_styleAsLink"
 		},
 		"onClick": {
-			"id": "tasks.country_datatable_id_showInfo"
+			"id": "tasks.datatable_country_id_showInfo"
 		}
 	}
 };
