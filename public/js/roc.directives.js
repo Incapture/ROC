@@ -12,6 +12,12 @@ var directives = (function() {
                     if (response.structure.protoViews)
                         protoViews = response.structure.protoViews;
 
+                    if (response.componentType == "datatable" && response.data.limit) {
+                        roc.setLimitValue(response.data.limit);
+
+                        roc.setSkipValue(response.data.limit);
+                    }
+
                     widget = directives.getLayout(response.structure.window);
 
                     roc.addWindow({windowId: widget.id, parentId: params.parent});
@@ -26,12 +32,29 @@ var directives = (function() {
         getLayout: function(params) {
             var layout = {},
                 count = params.count,
-                components = params.components;
+                components = params.components,
+                top,
+                left,
+                adjustedTop;
 
             for (var property in params.properties) {
                 if (params.properties.hasOwnProperty(property)) {
+                    if (property === "left") left = params.properties["left"];
+
+                    if (property === "top") top = params.properties["top"];
+
                     layout[property] = params.properties[property];
                 }
+            }
+
+            // adjust top margin of window if there's already a window at the current position
+            if (left && top) {
+                adjustedTop = top;
+
+                while ($(document.elementFromPoint(left, adjustedTop)).hasClass("webix_window"))
+                    adjustedTop += 10;
+
+                layout["top"] = adjustedTop;
             }
 
             if (count.rows && count.rows > 0) {
@@ -82,32 +105,17 @@ var directives = (function() {
 
             tabulator.id = tabulatorInfo.id;
 
-            for (var i = 0; i < tabulatorInfo.columns.length; i++) {
+            for (var i = 0; i < tabulatorInfo.config.columns.length; i++) {
                 // formatting
-                if (tabulatorInfo.formatter[tabulatorInfo.columns[i]["id"]])
-                    tabulatorInfo.columns[i]["formatter"] = eval(tabulatorInfo.formatter[tabulatorInfo.columns[i]["id"]]);
+                if (tabulatorInfo.formatter[tabulatorInfo.config.columns[i]["id"]])
+                    tabulatorInfo.config.columns[i]["formatter"] = eval(tabulatorInfo.formatter[tabulatorInfo.config.columns[i]["id"]]);
 
                 // onClick
-                if (tabulatorInfo.onClick[tabulatorInfo.columns[i]["id"]])
-                    tabulatorInfo.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.columns[i]["id"]]);
-
-                // hide columns specified in tabulatorInfo.excludeColumns array
-                for (var j = 0; j < tabulatorInfo.excludeColumns.length; j++) {
-                    if (tabulatorInfo.columns[i]["id"] == tabulatorInfo.excludeColumns[j]) {
-                        tabulatorInfo.columns[i]["visible"] = false;
-
-                        break;
-                    }
-                }
+                if (tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]])
+                    tabulatorInfo.config.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]]);
             }
 
-            tabulator.config = {
-                height: tabulatorInfo.height,
-                fitColumns: tabulatorInfo.fitColumns,
-                groupBy: tabulatorInfo.groupBy,
-                columns: tabulatorInfo.columns,
-                sortDir: tabulatorInfo.sortDir
-            };
+            tabulator.config = tabulatorInfo.config;
 
             tabulator.data = tabulatorInfo.data;
 
@@ -135,7 +143,6 @@ var directives = (function() {
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {
-
                             $("#" + tabulators[idx]["id"]).tabulator(tabulators[idx]["config"]);
 
                             $("#" + tabulators[idx]["id"]).tabulator("setData", tabulators[idx]["data"]);

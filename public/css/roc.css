@@ -271,6 +271,23 @@ h2 {
     color: red;
 }
 
+.table-action-button-container {
+    text-align: center;
+}
+
+.table-action-button-container button,
+.table-action-button-container button:focus {
+    background-color: #fff;
+    color: #416095;
+    border-color: #416095;
+    margin: 0 auto;
+}
+
+.table-action-button-container button:hover {
+    background-color: #416095;
+    color: #fff;
+}
+
 /* overriding webix, tabulator styles */
 .webix_view {
     font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;

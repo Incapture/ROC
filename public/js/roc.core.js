@@ -2,7 +2,10 @@ var roc = (function() {
 	"use strict";
 
 	var loginStatus,
-		windows = {};
+		windows = {},
+		dom = $(document),
+		skip = 0,
+		limit;
 
 	return {
 		apiRequest: function (scriptEndPoint, scriptParameters, parameters) {
@@ -48,6 +51,21 @@ var roc = (function() {
 		},
 		getWindows: function() {
 			return windows;
+		},
+		dom: function() {
+			return dom;
+		},
+		getSkipValue: function() {
+			return skip;
+		},
+		setSkipValue: function(val) {
+			skip += val;
+		},
+		getLimitValue: function() {
+			return limit;
+		},
+		setLimitValue: function(val) {
+			limit = val;
 		}
 	};
 }());

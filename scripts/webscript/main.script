@@ -2,18 +2,18 @@ widgetParams = web["widgetParams"];
 
 response = {};
 
-entity = (fromjson(widgetParams))["entity"];
-
 w = #widget.getWidget(web["widget"]);
 
-response.componentType = w.paneType;
+data = (fromjson(#script.runScript("/webscript/" + w.actions.data, {"widgetParams": widgetParams})));
 
-data = fromjson(#script.runScript("/webscript/" + w.actions.data, {"entity": entity}));
+if (web["onlyData"] == null) do
+	response.componentType = w.paneType;
 
-structure = fromjson(#script.runScript("/webscript/" + w.actions.cols, {"title": w.title, "entity": entity, "componentType": w.paneType, "data": json(data)}));
+	structure = fromjson(#script.runScript("/webscript/" + w.actions.cols, {"title": w.title, "widgetParams": widgetParams, "componentType": w.paneType, "data": json(data.data), "widgetParams": widgetParams}));
+
+	response.structure = structure;
+end
 
 response.data = data;
-
-response.structure = structure;
 
 println(json(response));

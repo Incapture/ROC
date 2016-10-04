@@ -1,35 +1,26 @@
 // A script to return structure
 // using tabulator to display table data
 
-windowId = "window_countries";
-
 response = {};
 
-e = #entity.getEntity(entity);
-s = #transform.getStructure(e.structureUri);
+w = (fromjson(widgetParams));
+windowId = "window_countries";
 
-idField = {};
 columns = [];
-for f in s.fields do
-    field = #transform.getField(f.fieldUri);
-    column = {};
-    column.id = f.key;
-    column.title = f.key;
-    column.header = f.key;
-    column.field = f.key;
-    column.fieldUri = f.fieldUri;
-    column.type = field.fieldType;
-    column.adjust = "data";
-    if (f.key == "id") do
-      idField = column;
-    else do
-      columns = columns + column;
-    end
+vc = #entity.getViewConfiguration(w.entity);
+for idx = 0 to size(vc) - 1 do
+	column = {};
+	column.id = vc[idx]["name"];
+	column.title = vc[idx]["name"];
+	column.header = vc[idx]["name"];
+	column.field = vc[idx]["name"];
+	column.fieldUri = vc[idx]["field"]["name"];
+	column.fieldType = vc[idx]["field"]["fieldType"];
+	column.description = vc[idx]["field"]["description"];
+	column.validationScript = vc[idx]["field"]["validationScript"];
+
+	columns += column;
 end
-
-columns = [idField] + columns;
-
-response.columns = columns;
 
 window = {
 	"properties": {
@@ -37,15 +28,17 @@ window = {
 		"view": "window",
 		"left": 205,
 		"top": 45,
-		"width": 1200,
-		"height": 500,
+		"width": 880,
+		"height": 600,
 		"move": true,
 		"resize": true,
 		"body": {}
 	},
 	"count": {
-		"rows": 1,
-		"row0_cols": 1
+		"rows": 3,
+		"row0_cols": 1,
+		"row1_cols": 1,
+		"row2_cols": 1
 	},
 	"components": {
 		"head": {
@@ -56,9 +49,47 @@ window = {
 			]
 		},
 		"00": {
-			"id": "country-datatable",
+			"view": "form",
+			"id": "datatable_country_filter_form",
+			"cols": [
+				{},
+				{
+					"name": "where_clause",
+					"view": "text",
+					"placeholder": "query"
+				},
+				{
+					"id": "datatable_country_filter",
+					"view": "button",
+					"label": "Get Filtered Data",
+					"css": "table-action-button-container",
+					"click": "tasks.datatable_filterData('datatable_country_filter', 'menu-main', tabulator_country, 'datatable_country_filter_form', 'datatable_country_more_data')",
+					"width": 150
+				},
+				{}
+			]
+		},
+		"10": {
+			"id": "datatable_country",
 			"view": "tabulator",
 			"columns": columns
+		},
+		"20": {
+			"view": "layout",
+			"cols": [
+				{},
+				{},
+				{
+					"id": "datatable_country_more_data",
+					"view": "button",
+					"label": "More ..",
+					"css": "table-action-button-container",
+					"click": "tasks.datatable_getMoreData('datatable_country_more_data', 'menu-main', tabulator_country)",
+					"width": 150
+				},
+				{},
+				{}
+			]
 		}
 	}
 };
@@ -67,27 +98,33 @@ response.window = window;
 
 // since tabulator is not a built-in webix component
 protoViews = {
-	"country-datatable": {
+	"datatable_country": {
 		"name": "tabulator",
-		"id": "country-tabulator",
-		"innerHtml": "<div id='country-tabulator' style='width:100%'></div>",
-		"groupBy": "ccy",
-		"columns": columns,
+		"id": "tabulator_country",
 		"data": fromjson(data),
-		"height": "466px",
-		"fitColumns": true,
-		"sortDir": "asc",
-		"excludeColumns": ["frenchName", "code2", "marc", "wmo", "ds", "fifa", "fips", "edgar"],
-		"filter": ["numId", ">", 100],
+		"config": {
+			"columns": columns,
+			"fitColumns": true,
+			"height": "466px",
+			"pagination": true,
+			"paginationSize": w.limit,
+			// when setting pagination as true,
+			// groupBy and sortBy should be set to the same column
+			// to avoid fragmented grouping
+			//"groupBy": "ccy",
+			"sortBy": "name",
+			"sortDir": "asc"
+		},
+		"innerHtml": "<div id='tabulator_country' style='width:100%'></div>",
+		//"filter": ["numId", ">", 100],
 		// formatting:
 		// for every column that needs a formatter, pass a function name;
 		// the function is defined in roc.tasks.js, evaluated in roc.directives.js
 		"formatter": {
-			"id": "tasks.country_datatable_id_styleAsLink",
-			"numId": "tasks.country_datatable_numId_greaterThan500"
+			"id": "tasks.datatable_country_id_styleAsLink"
 		},
 		"onClick": {
-			"id": "tasks.country_datatable_id_showInfo"
+			"id": "tasks.datatable_country_id_showInfo"
 		}
 	}
 };
