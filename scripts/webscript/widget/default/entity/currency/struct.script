@@ -1,0 +1,66 @@
+// A script to return structure
+
+data = fromjson(data);
+KEY = "";
+
+response = {};
+
+elements = [];
+for idx = 0 to size(data) - 1 do
+    prop = keys(data[idx])[0];
+    element = {
+        "margin": -100,
+        "cols": [
+            {
+                "view": "label",
+                "label": prop
+            },
+            {
+                "view": "label",
+                "label": data[idx][prop]
+            }
+        ]
+    };
+    elements += element;
+
+    if (prop == "id") do
+    	KEY = data[idx][prop];
+    end
+end
+
+windowId = "window_currency_" + KEY;
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"top": 45,
+		"left": 1100,
+		"height": 180,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 1,
+		"row0_cols": 1
+	},
+	"components": {
+		"head": {
+			"view": "toolbar",
+			"cols": [
+				{ "view": "label", "label": title, "align": "center" },
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
+			]
+		},
+		"00": {
+			"id": "form_currency_" + KEY,
+			"view": "form",
+			"elements": elements
+		}
+	}
+};
+
+response.window = window;
+
+return(json(response));

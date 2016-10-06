@@ -8,15 +8,14 @@ var tasks = (function() {
 			else
 				return value;
 		},
-		datatable_country_id_styleAsLink: function(value, data, cell, row, options) {
+		datatable_country_ccy_styleAsLink: function(value, data, cell, row, options) {
 			return "<span style='color: blue; text-decoration: underline;'>" + value + "</span>";
 		},
-		datatable_country_id_showInfo: function(e, cell, value, data) {
-			console.log(e.currentTarget);
-			if (!roc.dom().find("div[view_id^='window_country_" + value + "']")[0]) {
+		datatable_country_ccy_showInfo: function(e, cell, value, data) {
+			if (!roc.dom().find("div[view_id^='window_currency_" + value + "']")[0]) {
 				directives.createWidget({
-					script: "/webscript/main2",
-					scriptParameters: {widget: "default/form/country" , widgetParams: {entity: "/country/"+value, info: data}}, //mocked-up values; only "info" is actually used
+					script: "/webscript/main",
+					scriptParameters: {widget: "//default/form/currency" , widgetParams: {entity: "//standard/currency", key: value}},
 					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id")
 				});
 			}
@@ -62,7 +61,6 @@ var tasks = (function() {
 			);
 		},
 		datatable_filterData: function(buttonViewId, parentViewId, tabulatorElement, formViewId, moreButtonViewId) {
-			console.log($$(formViewId).getValues()["where_clause"]);
 			var tabulatorId = $(tabulatorElement)[0].id,
 				limit = roc.getLimitValue(),
 				skip = 0,
@@ -91,7 +89,7 @@ var tasks = (function() {
 							$("#" + tabulatorId).tabulator("setData", response.data.data);
 
 							if (!response.data.moreData)
-								$$(buttonViewId).disable();
+								$$(moreButtonViewId).disable();
 						}
 					},
 					failure: function(error) {

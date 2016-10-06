@@ -121,10 +121,10 @@ protoViews = {
 		// for every column that needs a formatter, pass a function name;
 		// the function is defined in roc.tasks.js, evaluated in roc.directives.js
 		"formatter": {
-			"id": "tasks.datatable_country_id_styleAsLink"
+			"ccy": "tasks.datatable_country_ccy_styleAsLink"
 		},
 		"onClick": {
-			"id": "tasks.datatable_country_id_showInfo"
+			"ccy": "tasks.datatable_country_ccy_showInfo"
 		}
 	}
 };
