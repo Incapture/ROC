@@ -88,8 +88,7 @@ var tasks = (function() {
 
 							$("#" + tabulatorId).tabulator("setData", response.data.data);
 
-							if (!response.data.moreData)
-								$$(moreButtonViewId).disable();
+							!response.data.moreData ? $$(moreButtonViewId).disable() : $$(moreButtonViewId).enable();
 						}
 					},
 					failure: function(error) {
