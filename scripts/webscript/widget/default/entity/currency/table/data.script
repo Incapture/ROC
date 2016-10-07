@@ -1,0 +1,34 @@
+// A script to return data
+
+response = {};
+
+w = (fromjson(widgetParams));
+entity = w.entity;
+limit = w.limit == null ? 50 : w.limit;
+skip = w.skip == null ? 0 : w.skip;
+whereClause = w.whereClause == null ? "" : w.whereClause;
+
+props = [];
+vc = #entity.getViewConfiguration(entity);
+for idx = 0 to size(vc) - 1 do
+    props += vc[idx]["name"];
+end
+
+data = [];
+count = 0;
+vd = #entity.getViewData(entity, whereClause, skip, limit);
+for i = 0 to size(vd) - 1 do
+    item = {};
+    for j = 0 to size(props) - 1 do
+        item[props[j]] = vd[i]["data"][props[j]];
+    end
+    data += item;
+    count += 1;
+end
+
+response.limit = limit;
+response.skip = skip;
+response.moreData = !(count < limit);
+response.data = data;
+
+return(json(response));

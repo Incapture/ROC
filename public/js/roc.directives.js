@@ -18,7 +18,7 @@ var directives = (function() {
                         roc.setSkipValue(response.data.limit);
                     }
 
-                    widget = directives.getLayout(response.structure.window);
+                    widget = directives.getLayout(response.structure.window, params.steerClear);
 
                     roc.addWindow({windowId: widget.id, parentId: params.parent});
 
@@ -29,7 +29,7 @@ var directives = (function() {
                 }
             });
         },
-        getLayout: function(params) {
+        getLayout: function(params, steerClear) {
             var layout = {},
                 count = params.count,
                 components = params.components,
@@ -48,7 +48,7 @@ var directives = (function() {
             }
 
             // adjust top margin of window if there's already a window at the current position
-            if (left && top) {
+            if (steerClear && left && top) {
                 adjustedTop = top;
 
                 while ($(document.elementFromPoint(left, adjustedTop)).hasClass("webix_window"))
@@ -107,11 +107,11 @@ var directives = (function() {
 
             for (var i = 0; i < tabulatorInfo.config.columns.length; i++) {
                 // formatting
-                if (tabulatorInfo.formatter[tabulatorInfo.config.columns[i]["id"]])
+                if (tabulatorInfo.formatter && tabulatorInfo.formatter[tabulatorInfo.config.columns[i]["id"]])
                     tabulatorInfo.config.columns[i]["formatter"] = eval(tabulatorInfo.formatter[tabulatorInfo.config.columns[i]["id"]]);
 
                 // onClick
-                if (tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]])
+                if (tabulatorInfo.onClick && tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]])
                     tabulatorInfo.config.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]]);
             }
 
@@ -124,7 +124,8 @@ var directives = (function() {
             return tabulator;
         },
         render: function(params) {
-            var tabulators = [];
+            var tabulators = [],
+                _thisElem;
 
             if (params.widget) {
                 if (!params.protoViews)
@@ -139,7 +140,13 @@ var directives = (function() {
                                 tabulators.push(directives.getTabulator(params.protoViews[key]));
                     }
 
-                    webix.ui(params.widget).show();
+                    _thisElem = webix.ui(params.widget);
+
+                    _thisElem.show();
+
+                    // remove the window element's z-index property;
+                    // for easy switching between windows when they haven't been re-positioned manually
+                    $(_thisElem.$view).css("z-index", "");
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {

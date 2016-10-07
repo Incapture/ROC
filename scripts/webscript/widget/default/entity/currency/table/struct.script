@@ -4,7 +4,7 @@
 response = {};
 
 w = (fromjson(widgetParams));
-windowId = "window_countries";
+windowId = "window_currencies";
 
 columns = [];
 vc = #entity.getViewConfiguration(w.entity);
@@ -29,16 +29,15 @@ window = {
 		"left": 205,
 		"top": 45,
 		"width": 880,
-		"height": 600,
+		"height": 530,
 		"move": true,
 		"resize": true,
 		"body": {}
 	},
 	"count": {
-		"rows": 3,
+		"rows": 2,
 		"row0_cols": 1,
-		"row1_cols": 1,
-		"row2_cols": 1
+		"row1_cols": 1
 	},
 	"components": {
 		"head": {
@@ -49,42 +48,21 @@ window = {
 			]
 		},
 		"00": {
-			"view": "form",
-			"id": "datatable_country_filter_form",
-			"cols": [
-				{},
-				{
-					"name": "where_clause",
-					"view": "text",
-					"placeholder": "query"
-				},
-				{
-					"id": "datatable_country_filter",
-					"view": "button",
-					"label": "Get Filtered Data",
-					"css": "table-action-button-container",
-					"click": "tasks.datatable_filterData('datatable_country_filter', 'menu-main', tabulator_country, 'datatable_country_filter_form', 'datatable_country_more_data')",
-					"width": 150
-				},
-				{}
-			]
-		},
-		"10": {
-			"id": "datatable_country",
+			"id": "datatable_currency",
 			"view": "tabulator",
 			"columns": columns
 		},
-		"20": {
+		"10": {
 			"view": "layout",
 			"cols": [
 				{},
 				{},
 				{
-					"id": "datatable_country_more_data",
+					"id": "datatable_currency_more_data",
 					"view": "button",
 					"label": "More ..",
 					"css": "table-action-button-container",
-					"click": "tasks.datatable_getMoreData('datatable_country_more_data', 'menu-main', tabulator_country)",
+					"click": "tasks.datatable_getMoreData('datatable_currency_more_data', 'menu-main', tabulator_currency)",
 					"width": 150
 				},
 				{},
@@ -98,9 +76,9 @@ response.window = window;
 
 // since tabulator is not a built-in webix component
 protoViews = {
-	"datatable_country": {
+	"datatable_currency": {
 		"name": "tabulator",
-		"id": "tabulator_country",
+		"id": "tabulator_currency",
 		"data": fromjson(data),
 		"config": {
 			"columns": columns,
@@ -108,24 +86,10 @@ protoViews = {
 			"height": "466px",
 			"pagination": true,
 			"paginationSize": w.limit,
-			// when setting pagination as true,
-			// groupBy and sortBy should be set to the same column
-			// to avoid fragmented grouping
-			//"groupBy": "ccy",
 			"sortBy": "name",
 			"sortDir": "asc"
 		},
-		"innerHtml": "<div id='tabulator_country' style='width:100%'></div>",
-		//"filter": ["numId", ">", 100],
-		// formatting:
-		// for every column that needs a formatter, pass a function name;
-		// the function is defined in roc.tasks.js, evaluated in roc.directives.js
-		"formatter": {
-			"ccy": "tasks.datatable_country_ccy_styleAsLink"
-		},
-		"onClick": {
-			"ccy": "tasks.datatable_country_ccy_showInfo"
-		}
+		"innerHtml": "<div id='tabulator_currency' style='width:100%'></div>"
 	}
 };
 
