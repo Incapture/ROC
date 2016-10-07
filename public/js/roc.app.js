@@ -9,10 +9,17 @@ var app = (function() {
             menuItemOnAfterSelect: function(id, menuId) {
                 var item = $$(menuId).getItem(id);
 
-                directives.createWidget({
-                    script: "/webscript/main",
-                    scriptParameters: {widget: item.widget, widgetParams: item.params}
-                });
+                var elem = roc.dom().find("div[view_id^='window_" + id.split("_")[1] + "']")[0];
+
+                if (!elem) {
+                    directives.createWidget({
+                        script: "/webscript/main",
+                        scriptParameters: {widget: item.widget, widgetParams: item.params},
+                        steerClear: false
+                    });
+                }
+                else
+                    $(elem).parent().append($(elem));
             }
         },
         authentication: {

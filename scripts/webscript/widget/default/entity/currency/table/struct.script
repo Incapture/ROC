@@ -1,0 +1,98 @@
+// A script to return structure
+// using tabulator to display table data
+
+response = {};
+
+w = (fromjson(widgetParams));
+windowId = "window_currencies";
+
+columns = [];
+vc = #entity.getViewConfiguration(w.entity);
+for idx = 0 to size(vc) - 1 do
+	column = {};
+	column.id = vc[idx]["name"];
+	column.title = vc[idx]["name"];
+	column.header = vc[idx]["name"];
+	column.field = vc[idx]["name"];
+	column.fieldUri = vc[idx]["field"]["name"];
+	column.fieldType = vc[idx]["field"]["fieldType"];
+	column.description = vc[idx]["field"]["description"];
+	column.validationScript = vc[idx]["field"]["validationScript"];
+
+	columns += column;
+end
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"left": 205,
+		"top": 45,
+		"width": 880,
+		"height": 530,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
+	},
+	"components": {
+		"head": {
+			"view": "toolbar",
+			"cols": [
+				{ "view": "label", "label": title, "align": "center" },
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
+			]
+		},
+		"00": {
+			"id": "datatable_currency",
+			"view": "tabulator",
+			"columns": columns
+		},
+		"10": {
+			"view": "layout",
+			"cols": [
+				{},
+				{},
+				{
+					"id": "datatable_currency_more_data",
+					"view": "button",
+					"label": "More ..",
+					"css": "table-action-button-container",
+					"click": "tasks.datatable_getMoreData('datatable_currency_more_data', 'menu-main', tabulator_currency)",
+					"width": 150
+				},
+				{},
+				{}
+			]
+		}
+	}
+};
+
+response.window = window;
+
+// since tabulator is not a built-in webix component
+protoViews = {
+	"datatable_currency": {
+		"name": "tabulator",
+		"id": "tabulator_currency",
+		"data": fromjson(data),
+		"config": {
+			"columns": columns,
+			"fitColumns": true,
+			"height": "466px",
+			"pagination": true,
+			"paginationSize": w.limit,
+			"sortBy": "name",
+			"sortDir": "asc"
+		},
+		"innerHtml": "<div id='tabulator_currency' style='width:100%'></div>"
+	}
+};
+
+response.protoViews = protoViews;
+
+return(json(response));

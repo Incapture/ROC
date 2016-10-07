@@ -16,7 +16,8 @@ var tasks = (function() {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/form/currency" , widgetParams: {entity: "//standard/currency", key: value}},
-					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id")
+					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id"),
+					steerClear: true
 				});
 			}
 		},

@@ -4,11 +4,20 @@ response = {};
 
 menu = [
 	{
-		"title": "Countries (demo)",
-		"id": "menuItem_country",
+		"title": "Countries",
+		"id": "menuItem_countries",
 		"widget": "//default/table/demo",
 		"params": {
 			"entity": "//standard/country",
+			"limit": 50
+		}
+	},
+	{
+		"title": "Currencies",
+		"id": "menuItem_currencies",
+		"widget": "//default/table/currency",
+		"params": {
+			"entity": "//standard/currency",
 			"limit": 50
 		}
 	}
