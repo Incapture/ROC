@@ -97,6 +97,79 @@ var tasks = (function() {
 					}
 				}
 			);
+		},
+		row_edit: function(id, data, row) {
+			var entityUri = $(row[0]).closest("div[view_id^='window_']").attr("data-entity"),
+				tabulatorId = $(row[0]).closest(".tabulator").attr("id"),
+				tabulatorElem = $(($("#" + tabulatorId))[0]),
+				columnHeaders,
+				columnHeader,
+				regex,
+				makeRequest = true;
+
+			columnHeaders = tabulatorElem.find("div.tabulator-col");
+
+			// data validation
+			for (var idx = 0; idx < columnHeaders.length; idx++) {
+				columnHeader = $(columnHeaders[idx]);
+
+				regex = "";
+
+				switch(columnHeader.attr("data-field-type")) {
+					case "number":
+						regex = /^[0-9]+$/; // for floats: /^(?=.)([0-9]*)(\.([0-9]+))?$/;
+
+						if (regex.test(data[columnHeader.attr("data-field")]))
+							data[columnHeader.attr("data-field")] = parseInt(data[columnHeader.attr("data-field")]);
+						else {
+							directives.createWebixAlert(
+								"error",
+								"Invalid input for <strong>" + columnHeader.attr("data-field") + "</strong>.<br>Expecting a <strong>" + columnHeader.attr("data-field-type") + "</strong>.",
+								2000);
+
+							makeRequest = false;
+						}
+
+						break;
+					case "string":
+						// TODO: get validation regex requirements
+
+						break;
+					default:
+						console.warn("Unrecognized type.");
+				}
+			}
+
+			if (makeRequest) {
+				roc.apiRequest("/webscript/updateEntityDoc", {
+						entityUri: entityUri,
+						content: data
+					}, {
+						success: function(res) {
+							var response = JSON.parse(res.text()),
+								cells,
+								dataField;
+
+							if (!response.success) {
+								// i.e. putEntityDocument wasn't successful
+								// update row (cells) with previous data
+								cells = $(row[0]).find(".tabulator-cell");
+
+								for (var idx = 0; idx < cells.length; idx++) {
+									dataField = $(cells[idx]).attr("data-field");
+
+									$(cells[idx]).text(response.prevData[dataField]);
+								}
+
+								directives.createWebixAlert("error", "Update failed.", 2000);
+							}
+						},
+						failure: function(error) {
+							console.warn(error);
+						}
+					}
+				);
+			}
 		}
 	}
 })();

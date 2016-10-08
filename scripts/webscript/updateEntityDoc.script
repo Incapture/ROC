@@ -1,0 +1,21 @@
+// update specified entity document
+
+content = fromjson(web["content"]);
+id = content.id;
+
+prevData = #entity.getEntityDocument(web["entityUri"], id);
+
+response = {};
+response.id = id;
+response.prevData = fromjson(prevData);
+response.success = false;
+
+vc = #entity.getViewConfiguration(web["entityUri"]);
+
+putDoc = #entity.putEntityDocument(web["entityUri"], json(content));
+
+if (putDoc == "/" + id) do
+    response.success = true;
+end
+
+println(json(response));

@@ -22,7 +22,7 @@ var directives = (function() {
 
                     roc.addWindow({windowId: widget.id, parentId: params.parent});
 
-                    directives.render({widget: widget, protoViews: protoViews});
+                    directives.render({widget: widget, protoViews: protoViews, entityUri: params.scriptParameters.widgetParams.entity});
                 },
                 failure: function() {
                     console.warn(error);
@@ -113,6 +113,19 @@ var directives = (function() {
                 // onClick
                 if (tabulatorInfo.onClick && tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]])
                     tabulatorInfo.config.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]]);
+
+                // make specified columns editable
+                if (tabulatorInfo.editableColumns && tabulatorInfo.config.rowEdit) {
+                    for (var j = 0; j < tabulatorInfo.editableColumns.length; j++) {
+                        if (tabulatorInfo.config.columns[i]["id"] == tabulatorInfo.editableColumns[j]) {
+                            tabulatorInfo.config.columns[i]["editable"] = true;
+
+                            break;
+                        }
+                    }
+
+                    tabulatorInfo.config.rowEdit = eval(tabulatorInfo.config.rowEdit);
+                }
             }
 
             tabulator.config = tabulatorInfo.config;
@@ -125,7 +138,8 @@ var directives = (function() {
         },
         render: function(params) {
             var tabulators = [],
-                _thisElem;
+                _thisElem,
+                tabulatorColumnHeaders;
 
             if (params.widget) {
                 if (!params.protoViews)
@@ -145,8 +159,9 @@ var directives = (function() {
                     _thisElem.show();
 
                     // remove the window element's z-index property;
-                    // for easy switching between windows when they haven't been re-positioned manually
-                    $(_thisElem.$view).css("z-index", "");
+                    // for easy switching between windows when they haven't been re-positioned manually.
+                    // also, add entity uri as an attribute
+                    $(_thisElem.$view).css("z-index", "").attr("data-entity", params.entityUri);
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {
@@ -157,9 +172,19 @@ var directives = (function() {
                             if (tabulators[idx]["filter"]) {
                                 $("#" + tabulators[idx]["id"]).tabulator("setFilter", tabulators[idx]["filter"][0], tabulators[idx]["filter"][1], tabulators[idx]["filter"][2]);
                             }
+
+                            // extra attributes for column headers:
+                            tabulatorColumnHeaders = tabulators[idx]["config"]["columns"];
+
+                            for (var j = 0; j < tabulatorColumnHeaders.length; j++) {
+                                var value = tabulatorColumnHeaders[j]["field"],
+                                    columnHeader = $($("#" + tabulators[idx]["id"]).find("div.tabulator-col[data-field^='" + value + "']"))[0];
+
+                                $(columnHeader).attr("data-field-type", (tabulatorColumnHeaders[j]["fieldType"]).toLowerCase()).attr("data-validation-script", tabulatorColumnHeaders[j]["validationScript"]);
+                            }
                         }
                     }
-                }                
+                }
             }
         },
         // setting data for components that have already-defined structures
@@ -174,6 +199,13 @@ var directives = (function() {
                 failure: function(error) {
                     console.warn(error);
                 }
+            });
+        },
+        createWebixAlert: function(type, msg, duration) {
+            webix.message({
+                type: type,
+                text: msg,
+                expire: duration
             });
         }
     }
