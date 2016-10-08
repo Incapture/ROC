@@ -177,15 +177,14 @@ var directives = (function() {
                             tabulatorColumnHeaders = tabulators[idx]["config"]["columns"];
 
                             for (var j = 0; j < tabulatorColumnHeaders.length; j++) {
-                                    var value = tabulatorColumnHeaders[j]["field"];
-                                    var columnHeader = $($("#" + tabulators[idx]["id"]).find("div.tabulator-col[data-field^='" + value + "']"))[0];
+                                var value = tabulatorColumnHeaders[j]["field"],
+                                    columnHeader = $($("#" + tabulators[idx]["id"]).find("div.tabulator-col[data-field^='" + value + "']"))[0];
 
-                                    $(columnHeader).attr("data-field-type", (tabulatorColumnHeaders[j]["fieldType"]).toLowerCase()).attr("data-validation-script", tabulatorColumnHeaders[j]["validationScript"]);
-                                }
+                                $(columnHeader).attr("data-field-type", (tabulatorColumnHeaders[j]["fieldType"]).toLowerCase()).attr("data-validation-script", tabulatorColumnHeaders[j]["validationScript"]);
                             }
                         }
                     }
-                }                
+                }
             }
         },
         // setting data for components that have already-defined structures

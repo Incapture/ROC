@@ -98,7 +98,7 @@ var tasks = (function() {
 				}
 			);
 		},
-		row_edit_test: function(id, data, row) {
+		row_edit: function(id, data, row) {
 			var entityUri = $(row[0]).closest("div[view_id^='window_']").attr("data-entity"),
 				tabulatorId = $(row[0]).closest(".tabulator").attr("id"),
 				tabulatorElem = $(($("#" + tabulatorId))[0]),

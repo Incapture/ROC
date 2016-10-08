@@ -88,7 +88,7 @@ protoViews = {
 			"paginationSize": w.limit,
 			"sortBy": "name",
 			"sortDir": "asc",
-			"rowEdit": "tasks.row_edit_test"
+			"rowEdit": "tasks.row_edit"
 		},
 		"innerHtml": "<div id='tabulator_currency' style='width:100%'></div>",
 		"editableColumns": ["code"]
