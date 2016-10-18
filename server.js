@@ -1,6 +1,6 @@
 "use strict";
 
-var raptureAuth = require("./incapture-rapjs-test"), // OR place the folder in node_modules and import as a node module using "require("incapture-rapturejs-test")
+var raptureAuth = require("./node_modules_incapture/core-auth"),
     httpProxy = require("http-proxy"),
     express = require("express"),
     forwardingUrl,
