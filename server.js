@@ -1,141 +1,65 @@
-var express = require('express');
-var httpProxy = require('http-proxy');
-var config = require('config');
-var rapture = require('./rapture.js');
-var fs = require('fs');
+"use strict";
 
-var forwardingUrl = config.get('rapture');
-var webPort = config.get('port');
+var raptureAuth = require("./node_modules_incapture/core-auth"),
+    httpProxy = require("http-proxy"),
+    express = require("express"),
+    forwardingUrl,
+    routes,
+    apiProxy,
+    app;
 
-var walk = function(dir, done) {
-  var results = [];
-  fs.readdir(dir, function(err, list) {
-    if (err) return done(err);
-    var i = 0;
-    (function next() {
-      var file = list[i++];
-      if (!file) return done(null, results);
-      file = dir + '/' + file;
-      fs.stat(file, function(err, stat) {
-        if (stat && stat.isDirectory()) {
-          walk(file, function(err, res) {
-            results = results.concat(res);
-            next();
-          });
-        } else {
-          results.push(file);
-          next();
+forwardingUrl = raptureAuth.getConfig()["forwardingUrl"];
+
+routes = [
+        {
+            path: "/login/*",
+            target: forwardingUrl
+        },
+        {
+            path: "/webscript/*",
+            target: forwardingUrl
+        },
+        {
+            path: "/blob/*",
+            target: forwardingUrl
+        },
+        {
+            path: "/blobupload",
+            target: forwardingUrl
         }
-      });
-    })();
-  });
-};
+    ];
 
-console.log("Using forwardingUrl from config - " + forwardingUrl);
+// set connection
+raptureAuth.setConnection();
 
-console.log("Installing reflex scripts to Rapture environment");
+// rapture api login (this will also install scripts from the specified base directory)
+raptureAuth.apiLogin({projectDir: __dirname, scriptsBaseDir: "/scripts"});
 
-var raptureAPIUser = config.get("api_user");
-var raptureAPIPassword = config.get("api_password");
+apiProxy = httpProxy.createProxyServer();
 
-rapture.setConnection(config.get("api_server"), config.get("api_port"));
+app = express();
 
-function endsWith(str, suffix) {
-  return str.indexOf(suffix, str.length - suffix.length) !== -1;
-}
-
-// rapture.setConnection(..);
-rapture.login(raptureAPIUser, raptureAPIPassword, function(err, data) {
-  if (err) {
-    console.log("Error - " + err);
-  } else {
-    // Now write scripts output
-    console.log("Logged in, now uploading scripts");
-    // We now upload every .script file (with hierarchy) in the folder "scripts"
-    var prefix = __dirname + "/scripts";
-    walk(prefix, function(err, results) {
-      if (err) {
-        throw err;
-      }
-      // Now for each of these, upload script, with name (as the file, - the prefix, - .script)
-      // and the contents, the contents of that file...
-      for (var i = 0; i < results.length; i++) {
-        var name = results[i];
-        if (endsWith(name, ".script")) {
-          var prefixLength = prefix.length;
-          var str = fs.readFileSync(name, "utf8");
-
-          var scriptName = name.substring(prefixLength,
-            name.length - 7); // .script
-          console.log(scriptName);
-          rapture.Script.doesScriptExist(scriptName, processReturn(
-            scriptName, str));
-        };
-      }
-    });
-  }
-});
-
-var processReturn = function(name, str) {
-  return function(err, data) {
-    if (data) {
-      rapture.Script.getScript(name, function(err, data) {
-        if (data.script != str) {
-          console.log("Changes detected, uploading new " + name);
-          data.script = str;
-          rapture.Script.putScript(name, data,
-            function(err, d) {});
-        } else {
-          console.log("No changes for " + name);
-        }
-      });
-    } else {
-      console.log("Script not found, creating - " + name);
-      rapture.Script.createScript(name, "REFLEX",
-        "PROGRAM", str,
-        function(err, d) {
-          if (err) {} else {}
-        });
-    }
-  }
-}
-
-var app = express();
 app.use(express.static(__dirname + "/public"));
 
-var apiProxy = httpProxy.createProxyServer();
-
-apiProxy.on('error', function(e) {
-  console.log("Error when handling proxy connection " + e);
+apiProxy.on("error", function(e) {
+    console.log("ERROR: Handling proxy connection failed - " + e);
 });
 
-app.all("/login/*", function(req, res) {
-  apiProxy.web(req, res, {
-    target: forwardingUrl
-  });
-});
+// define Express routes
+for (var idx = 0; idx < routes.length; idx++)
+    defineExpressRoute(routes[idx]["path"], routes[idx]["target"]);
 
-app.all("/webscript/*", function(req, res) {
-  apiProxy.web(req, res, {
-    target: forwardingUrl
-  });
-});
-
-app.all("/blob/*", function(req, res) {
-  apiProxy.web(req, res, {
-    target: forwardingUrl
-  });
-});
-
-app.all("/blobupload", function(req, res) {
-  apiProxy.web(req, res, {
-    target: forwardingUrl
-  });
-});
+function defineExpressRoute(path, target) {
+    app.all(path, function(req, res) {
+        apiProxy.web(req, res, {
+            target: target
+        });
+    });
+}
 
 app.use(function(req, res, next) {
-  res.status(404).sendFile(__dirname + '/public/404.html');
+    res.status(404).sendFile(__dirname + "/public/404.html");
 });
 
-app.listen(webPort);
-console.log("App listening on port " + webPort);
+app.listen(raptureAuth.getConfig()["webPort"]);
+console.log("INFO: App listening on port - " + raptureAuth.getConfig()["webPort"]);
