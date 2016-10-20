@@ -26,12 +26,12 @@ gulp.task("build-private-npm", function() {
 	return stream;
 });
 
-// copy latest RaptureJS from specified location
+// copy latest RaptureJS modules from specified location (NOTE: this task is for non-Docker local environments ONLY)
 gulp.task("rapturejs-latest", function() {
 	if (!argv.loc)
 		console.log("ERROR: Please specify the location for RaptureJS.\n(E.g. --loc ~/RaptureJS)");
 	else {
-		location = argv.loc;
+		location = argv.loc[argv.loc.length - 1] === "/" ? argv.loc : argv.loc + "/";
 
 		if (!argv.modules)
 			console.log("ERROR: Please specify the private modules that you wish to install from RaptureJS.\n(E.g. --modules '[\"core-auth\"]'");
@@ -58,7 +58,7 @@ gulp.task("rapturejs-latest", function() {
 							"clean-private-npm",
 							"build-private-npm"
 						);
-					}						
+					}			
 				}
 			}
 		}
@@ -66,11 +66,11 @@ gulp.task("rapturejs-latest", function() {
 });
 
 function folderExists(path) {
-	try{
+	try {
 		fs.accessSync(path)
 		return true;
 	}
-	catch(e){
+	catch(e) {
 	    return false;
 	}
 }
