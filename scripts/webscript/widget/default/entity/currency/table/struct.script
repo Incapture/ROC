@@ -1,10 +1,16 @@
-// A script to return structure
-// using tabulator to display table data
+// A script to return structure (for currencies datatable)
+// components: webix (window, more button), tabulator (table)
+
+/* NOTES:
+1. Declare a non-webix component (e.g. tabulator) in window map, define in protoViews map ("datatable-currency" in this script)
+2. Tabulator: When setting pagination as true, groupBy and sortBy should be set to the same column to avoid fragmented grouping
+3. Tabulator: For every column that needs a formatter ("formatter") OR click action ("onClick"), pass a function name; the function is defined in roc.tasks.js, evaluated in roc.directives.js
+*/
 
 response = {};
 
 w = (fromjson(widgetParams));
-windowId = "window_currencies";
+windowId = "window_datatable_currency";
 
 columns = [];
 vc = #entity.getViewConfiguration(w.entity);
@@ -58,11 +64,11 @@ window = {
 				{},
 				{},
 				{
-					"id": "datatable_currency_more_data",
+					"id": "button_currency_moreData",
 					"view": "button",
 					"label": "More ..",
 					"css": "table-action-button-container",
-					"click": "tasks.datatable_getMoreData('datatable_currency_more_data', 'menu-main', tabulator_currency)",
+					"click": "tasks.datatable_getMoreData('button_currency_moreData', 'menu_main', tabulator_currency)",
 					"width": 150
 				},
 				{},

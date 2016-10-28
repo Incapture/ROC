@@ -1,7 +1,9 @@
-// A script to return structure
+// A script to return structure (for displaying information about a specific currency)
+// components: webix (window, read-only form)
 
 data = fromjson(data);
-KEY = "";
+w = fromjson(widgetParams);
+KEY = w.key;
 
 response = {};
 
@@ -22,20 +24,14 @@ for idx = 0 to size(data) - 1 do
         ]
     };
     elements += element;
-
-    if (prop == "id") do
-    	KEY = data[idx][prop];
-    end
 end
 
-windowId = "window_currency_" + KEY;
+windowId = "window_form_currency_" + KEY;
 
 window = {
 	"properties": {
 		"id": windowId,
 		"view": "window",
-		"top": 45,
-		"left": 1100,
 		"height": 180,
 		"move": true,
 		"resize": true,

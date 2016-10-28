@@ -12,12 +12,25 @@ var tasks = (function() {
 			return "<span style='color: blue; text-decoration: underline;'>" + value + "</span>";
 		},
 		datatable_country_ccy_showInfo: function(e, cell, value, data) {
-			if (!roc.dom().find("div[view_id^='window_currency_" + value + "']")[0]) {
+			if (!roc.dom().find("div[view_id^='window_form_currency_" + value + "']")[0]) {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/form/currency" , widgetParams: {entity: "//standard/currency", key: value}},
 					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id"),
-					steerClear: true
+					randomPositioning: {left: {min: 1100, max: 1110}, top: {min: 45, max: 450}}
+				});
+			}
+		},
+		datatable_country_action_displayIcon: function(value, data, cell, row, options) {
+			return "<i class='fa fa-pencil'></i>";
+		},
+		datatable_country_action_editCountryJSON: function(e, cell, value, data) {
+			if (!roc.dom().find("div[view_id^='window_editor_country_" + data.id + "']")[0]) {
+				directives.createWidget({
+					script: "/webscript/main",
+					scriptParameters: {widget: "//default/editor/country" , widgetParams: {entity: "//standard/country", key: data.id}},
+					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id"),
+					randomPositioning: {left: {min: 100, max: 800}, top: {min: 65, max: 200}}
 				});
 			}
 		},
