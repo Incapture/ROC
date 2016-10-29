@@ -6,7 +6,7 @@ w = (fromjson(widgetParams));
 entity = w.entity;
 currency = w.key;
 
-info = fromjson(#entity.getEntityDocByKey("//standard/currency", currency));
+info = fromjson(#entity.getEntityDocByKey(entity, currency));
 
 data = [];
 vc = #entity.getViewConfiguration(entity);

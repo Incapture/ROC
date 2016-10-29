@@ -12,12 +12,25 @@ var tasks = (function() {
 			return "<span style='color: blue; text-decoration: underline;'>" + value + "</span>";
 		},
 		datatable_country_ccy_showInfo: function(e, cell, value, data) {
-			if (!roc.dom().find("div[view_id^='window_currency_" + value + "']")[0]) {
+			if (!roc.dom().find("div[view_id^='window_form_currency_" + value + "']")[0]) {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/form/currency" , widgetParams: {entity: "//standard/currency", key: value}},
 					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id"),
-					steerClear: true
+					randomPositioning: {left: {min: 1100, max: 1110}, top: {min: 45, max: 450}}
+				});
+			}
+		},
+		datatable_country_action_displayIcon: function(value, data, cell, row, options) {
+			return "<i class='fa fa-pencil'></i>";
+		},
+		datatable_country_action_editCountryJSON: function(e, cell, value, data) {
+			if (!roc.dom().find("div[view_id^='window_editor_country_" + data.id + "']")[0]) {
+				directives.createWidget({
+					script: "/webscript/main",
+					scriptParameters: {widget: "//default/editor/country" , widgetParams: {entity: "//standard/country", key: data.id}},
+					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id"),
+					randomPositioning: {left: {min: 100, max: 800}, top: {min: 65, max: 200}}
 				});
 			}
 		},
@@ -169,6 +182,52 @@ var tasks = (function() {
 						}
 					}
 				);
+			}
+		},
+		save_doc: function(aceEditorId, tabulatorId) {
+			var editor = ace.edit(aceEditorId),
+				annotations = editor.getSession().getAnnotations(),
+				tokens = aceEditorId.split("_"),
+				data;
+
+			if (annotations.length)
+				directives.createWebixAlert(annotations[0]["type"], annotations[0]["text"], 2000);
+			else {
+				data = JSON.parse(editor.getValue());
+
+				if (tokens[tokens.length - 1] !== data.id)
+					directives.createWebixAlert("error", "ID cannot be changed.", 2000);
+				else {
+					roc.apiRequest("/webscript/updateEntityDoc", {
+							entityUri: $("#" + aceEditorId).closest("div[view_id^='window_']").attr("data-entity"),
+							content: data
+						}, {
+							success: function(res) {
+								var response = JSON.parse(res.text());
+
+								if (response.success) {
+									directives.createWebixAlert("success", "Document saved.", 2000);
+
+									if (!updateRow(data))
+										console.warn("Could not update " + tabulatorId + ": " + response.id);
+								}
+								else {
+									directives.createWebixAlert("error", "Failed to save. Try again.", 2000);
+
+									if (!updateRow(response.prevData))
+										console.warn("Could not update " + tabulatorId + ": " + response.id);
+								}
+
+								function updateRow(rowData) {
+									return $("#"+tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
+								}
+							},
+							failure: function(error) {
+								console.warn(error);
+							}
+						}
+					);
+				}
 			}
 		}
 	}

@@ -306,6 +306,11 @@ h2 {
     background-color: #8fa6ca;
 }
 
+.webix_success div{
+    background-color: #009900;
+    color: #fff;
+}
+
 .tabulator-table {
     width: 100%;
 }

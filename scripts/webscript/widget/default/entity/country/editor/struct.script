@@ -1,0 +1,78 @@
+// A script to return structure (displaying JSON of a specific country in an ACE editor)
+// components: webix (window), ace (editor)
+
+/* NOTES:
+1. Declare a non-webix component (e.g. ACE editor) in window map, define in protoViews map ("datatable-country" in this script)
+2. Tabulator: When setting pagination as true, groupBy and sortBy should be set to the same column to avoid fragmented grouping
+3. Tabulator: For every column that needs a formatter ("formatter") OR click action ("onClick"), pass a function name; the function is defined in roc.tasks.js, evaluated in roc.directives.js
+*/
+
+data = fromjson(data);
+w = fromjson(widgetParams);
+KEY = w.key;
+
+response = {};
+
+windowId = "window_editor_country_" + KEY;
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"height": 400,
+		"width": 500,
+		"move": true,
+		"resize": true,
+		"zIndex": "auto",
+		"body": {}
+	},
+	"count": {
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
+	},
+	"components": {
+		"head": {
+			"view": "toolbar",
+			"cols": [
+				{ "view": "label", "label": title + " - " + data.name, "align": "center" },
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
+			]
+		},
+		"00": {
+			"id": "editor_country_" + KEY,
+			"view": "aceEditor"
+		},
+		"10": {
+			"view": "form",
+			"id": "form_country_save",
+			"cols": [
+				{},
+				{
+					"id": "button_countrySaveConfirm",
+					"view": "button",
+					"label": "Save",
+					"css": "table-action-button-container",
+					"click": "tasks.save_doc('aceEditor_country_" + KEY + "', 'tabulator_country')",
+					"width": 150
+				},
+				{}
+			]
+		}
+	}
+};
+
+response.window = window;
+
+protoViews = {
+	"editor_country_" + KEY: {
+		"name": "aceEditor",
+		"id": "aceEditor_country_" + KEY,
+		"data": data,
+		"innerHtml": "<div id='aceEditor_country_" + KEY + "' style='height:100%;width:100%'>" + json(data) + "</div>"
+	}
+};
+
+response.protoViews = protoViews;
+
+return(json(response));

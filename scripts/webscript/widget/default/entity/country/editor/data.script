@@ -1,0 +1,11 @@
+// A script to return JSON for a specified country
+
+response = {};
+
+w = fromjson(widgetParams);
+entity = w.entity;
+country = w.key;
+
+response.data = fromjson(#entity.getEntityDocByKey(entity, country));
+
+return(json(response));

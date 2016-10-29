@@ -15,7 +15,7 @@ var app = (function() {
                     directives.createWidget({
                         script: "/webscript/main",
                         scriptParameters: {widget: item.widget, widgetParams: item.params},
-                        steerClear: false
+                        randomPositioning: false
                     });
                 }
                 else
@@ -37,7 +37,7 @@ var app = (function() {
                                 directives.setData({
                                     script: "/webscript/init",
                                     scriptParameters: {"widget": "//default/menu/standard"},
-                                    element: "menu-main"
+                                    element: "menu_main"
                                 });
 
                                 roc.setLoginStatus(true);
@@ -114,7 +114,7 @@ var app = (function() {
                                         align: "left",
                                         css: "app_button",
                                         click: function() {
-                                            return clickHandlers.page.hamburgerMenuClick("menu-main");
+                                            return clickHandlers.page.hamburgerMenuClick("menu_main");
                                         }
                                     },
                                     {
@@ -134,11 +134,11 @@ var app = (function() {
                             },
                             "10": {
                                 view: "sidebar",
-                                id: "menu-main",
+                                id: "menu_main",
                                 data: [],  // will be set after login
                                 on: {
                                     onAfterSelect: function(id) {
-                                        return clickHandlers.page.menuItemOnAfterSelect(id, "menu-main");
+                                        return clickHandlers.page.menuItemOnAfterSelect(id, "menu_main");
                                     }
                                 }
                             },
@@ -156,7 +156,7 @@ var app = (function() {
             directives.setData({
                 script: "/webscript/init",
                 scriptParameters: {"widget": "//default/menu/standard"},
-                element: "menu-main"
+                element: "menu_main"
             });
 
             roc.setLoginStatus(true);

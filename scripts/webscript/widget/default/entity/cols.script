@@ -1,10 +1,16 @@
-// A script to return structure
-// using tabulator to display table data
+// A script to return structure (for countries datatable)
+// components: webix (window, search filter, more button), tabulator (table)
+
+/* NOTES:
+1. Declare a non-webix component (e.g. tabulator) in window map, define in protoViews map ("datatable-country" in this script)
+2. Tabulator: When setting pagination as true, groupBy and sortBy should be set to the same column to avoid fragmented grouping
+3. Tabulator: For every column that needs a formatter ("formatter") OR click action ("onClick"), pass a function name; the function is defined in roc.tasks.js, evaluated in roc.directives.js
+*/
 
 response = {};
 
 w = (fromjson(widgetParams));
-windowId = "window_countries";
+windowId = "window_datatable_country";
 
 columns = [];
 vc = #entity.getViewConfiguration(w.entity);
@@ -21,6 +27,14 @@ for idx = 0 to size(vc) - 1 do
 
 	columns += column;
 end
+
+columns += {
+	"id": "action",
+	"title": "Edit JSON",
+	"header": "Edit JSON",
+	"description": "Show document JSON in an editor",
+	"fieldType": "icon"
+};
 
 window = {
 	"properties": {
@@ -50,7 +64,7 @@ window = {
 		},
 		"00": {
 			"view": "form",
-			"id": "datatable_country_filter_form",
+			"id": "form_country_filter",
 			"cols": [
 				{},
 				{
@@ -59,11 +73,11 @@ window = {
 					"placeholder": "query"
 				},
 				{
-					"id": "datatable_country_filter",
+					"id": "button_countryFilter",
 					"view": "button",
 					"label": "Get Filtered Data",
 					"css": "table-action-button-container",
-					"click": "tasks.datatable_filterData('datatable_country_filter', 'menu-main', tabulator_country, 'datatable_country_filter_form', 'datatable_country_more_data')",
+					"click": "tasks.datatable_filterData('button_country_filter', 'menu_main', tabulator_country, 'form_country_filter', 'button_country_moreData')",
 					"width": 150
 				},
 				{}
@@ -80,11 +94,11 @@ window = {
 				{},
 				{},
 				{
-					"id": "datatable_country_more_data",
+					"id": "button_country_moreData",
 					"view": "button",
 					"label": "More ..",
 					"css": "table-action-button-container",
-					"click": "tasks.datatable_getMoreData('datatable_country_more_data', 'menu-main', tabulator_country)",
+					"click": "tasks.datatable_getMoreData('button_country_moreData', 'menu_main', tabulator_country)",
 					"width": 150
 				},
 				{},
@@ -96,7 +110,6 @@ window = {
 
 response.window = window;
 
-// since tabulator is not a built-in webix component
 protoViews = {
 	"datatable_country": {
 		"name": "tabulator",
@@ -108,23 +121,19 @@ protoViews = {
 			"height": "466px",
 			"pagination": true,
 			"paginationSize": w.limit,
-			// when setting pagination as true,
-			// groupBy and sortBy should be set to the same column
-			// to avoid fragmented grouping
 			//"groupBy": "ccy",
 			"sortBy": "name",
 			"sortDir": "asc"
 		},
 		"innerHtml": "<div id='tabulator_country' style='width:100%'></div>",
 		//"filter": ["numId", ">", 100],
-		// formatting:
-		// for every column that needs a formatter, pass a function name;
-		// the function is defined in roc.tasks.js, evaluated in roc.directives.js
 		"formatter": {
-			"ccy": "tasks.datatable_country_ccy_styleAsLink"
+			"ccy": "tasks.datatable_country_ccy_styleAsLink",
+			"action": "tasks.datatable_country_action_displayIcon"
 		},
 		"onClick": {
-			"ccy": "tasks.datatable_country_ccy_showInfo"
+			"ccy": "tasks.datatable_country_ccy_showInfo",
+			"action": "tasks.datatable_country_action_editCountryJSON"
 		}
 	}
 };

@@ -18,7 +18,7 @@ var directives = (function() {
                         roc.setSkipValue(response.data.limit);
                     }
 
-                    widget = directives.getLayout(response.structure.window, params.steerClear);
+                    widget = directives.getLayout(response.structure.window, params.randomPositioning);
 
                     roc.addWindow({windowId: widget.id, parentId: params.parent});
 
@@ -29,7 +29,7 @@ var directives = (function() {
                 }
             });
         },
-        getLayout: function(params, steerClear) {
+        getLayout: function(params, randomPositioning) {
             var layout = {},
                 count = params.count,
                 components = params.components,
@@ -47,14 +47,11 @@ var directives = (function() {
                 }
             }
 
-            // adjust top margin of window if there's already a window at the current position
-            if (steerClear && left && top) {
-                adjustedTop = top;
-
-                while ($(document.elementFromPoint(left, adjustedTop)).hasClass("webix_window"))
-                    adjustedTop += 10;
-
-                layout["top"] = adjustedTop;
+            if (randomPositioning) {
+                if (randomPositioning.left)
+                    layout["left"] = directives.getRandomInt(randomPositioning.left.min, randomPositioning.left.max)
+                if (randomPositioning.top)
+                    layout["top"] = directives.getRandomInt(randomPositioning.top.min, randomPositioning.top.max)
             }
 
             if (count.rows && count.rows > 0) {
@@ -136,10 +133,20 @@ var directives = (function() {
 
             return tabulator;
         },
+        getAceEditor: function(aceEditorInfo) {
+            var aceEditor = {};
+
+            aceEditor.id = aceEditorInfo.id;
+
+            aceEditor.data = aceEditorInfo.data;
+
+            return aceEditor;
+        },
         render: function(params) {
             var tabulators = [],
                 _thisElem,
-                tabulatorColumnHeaders;
+                tabulatorColumnHeaders,
+                aceEditors = [];
 
             if (params.widget) {
                 if (!params.protoViews)
@@ -152,16 +159,19 @@ var directives = (function() {
                             // maintain a list of tabulator components within the window
                             if (params.protoViews[key]["name"] == "tabulator")
                                 tabulators.push(directives.getTabulator(params.protoViews[key]));
+
+                            // maintain a list of aceEditor components within the window
+                            if (params.protoViews[key]["name"] == "aceEditor")
+                                aceEditors.push(directives.getAceEditor(params.protoViews[key]));
                     }
 
                     _thisElem = webix.ui(params.widget);
 
                     _thisElem.show();
 
-                    // remove the window element's z-index property;
-                    // for easy switching between windows when they haven't been re-positioned manually.
+                    // set z-index such that this window is top-most
                     // also, add entity uri as an attribute
-                    $(_thisElem.$view).css("z-index", "").attr("data-entity", params.entityUri);
+                    $(_thisElem.$view).css("z-index", webix.ui.zIndex()).attr("data-entity", params.entityUri);
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {
@@ -182,6 +192,14 @@ var directives = (function() {
 
                                 $(columnHeader).attr("data-field-type", (tabulatorColumnHeaders[j]["fieldType"]).toLowerCase()).attr("data-validation-script", tabulatorColumnHeaders[j]["validationScript"]);
                             }
+                        }
+                    }
+
+                    if (aceEditors.length > 0) {
+                        for (var idx = 0; idx < aceEditors.length; idx++) {
+                            var editor = ace.edit(aceEditors[idx]["id"]);
+                            editor.setTheme("ace/theme/twilight");
+                            editor.getSession().setMode("ace/mode/json");
                         }
                     }
                 }
@@ -207,6 +225,9 @@ var directives = (function() {
                 text: msg,
                 expire: duration
             });
+        },
+        getRandomInt: function(min, max) {
+            return Math.floor(Math.random() * (max - min + 1)) + min;
         }
     }
 }());

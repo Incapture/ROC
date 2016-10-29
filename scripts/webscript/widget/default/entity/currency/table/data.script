@@ -1,4 +1,4 @@
-// A script to return data
+// A script to return data (for currencies datatable)
 
 response = {};
 
