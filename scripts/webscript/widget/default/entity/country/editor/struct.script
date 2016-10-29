@@ -19,7 +19,7 @@ window = {
 	"properties": {
 		"id": windowId,
 		"view": "window",
-		"height": 600,
+		"height": 400,
 		"width": 500,
 		"move": true,
 		"resize": true,
@@ -27,20 +27,37 @@ window = {
 		"body": {}
 	},
 	"count": {
-		"rows": 1,
-		"row0_cols": 1
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
 	},
 	"components": {
 		"head": {
 			"view": "toolbar",
 			"cols": [
-				{ "view": "label", "label": title, "align": "center" },
+				{ "view": "label", "label": title + " - " + data.name, "align": "center" },
 				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
 			]
 		},
 		"00": {
 			"id": "editor_country_" + KEY,
 			"view": "aceEditor"
+		},
+		"10": {
+			"view": "form",
+			"id": "form_country_save",
+			"cols": [
+				{},
+				{
+					"id": "button_countrySaveConfirm",
+					"view": "button",
+					"label": "Save",
+					"css": "table-action-button-container",
+					"click": "tasks.save_doc('aceEditor_country_" + KEY + "', 'tabulator_country')",
+					"width": 150
+				},
+				{}
+			]
 		}
 	}
 };
@@ -59,13 +76,3 @@ protoViews = {
 response.protoViews = protoViews;
 
 return(json(response));
-
-
-
-
-
-
-
-
-
-

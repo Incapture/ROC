@@ -183,6 +183,52 @@ var tasks = (function() {
 					}
 				);
 			}
+		},
+		save_doc: function(aceEditorId, tabulatorId) {
+			var editor = ace.edit(aceEditorId),
+				annotations = editor.getSession().getAnnotations(),
+				tokens = aceEditorId.split("_"),
+				data;
+
+			if (annotations.length)
+				directives.createWebixAlert(annotations[0]["type"], annotations[0]["text"], 2000);
+			else {
+				data = JSON.parse(editor.getValue());
+
+				if (tokens[tokens.length - 1] !== data.id)
+					directives.createWebixAlert("error", "ID cannot be changed.", 2000);
+				else {
+					roc.apiRequest("/webscript/updateEntityDoc", {
+							entityUri: $("#" + aceEditorId).closest("div[view_id^='window_']").attr("data-entity"),
+							content: data
+						}, {
+							success: function(res) {
+								var response = JSON.parse(res.text());
+
+								if (response.success) {
+									directives.createWebixAlert("success", "Document saved.", 2000);
+
+									if (!updateRow(data))
+										console.warn("Could not update " + tabulatorId + ": " + response.id);
+								}
+								else {
+									directives.createWebixAlert("error", "Failed to save. Try again.", 2000);
+
+									if (!updateRow(response.prevData))
+										console.warn("Could not update " + tabulatorId + ": " + response.id);
+								}
+
+								function updateRow(rowData) {
+									return $("#"+tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
+								}
+							},
+							failure: function(error) {
+								console.warn(error);
+							}
+						}
+					);
+				}
+			}
 		}
 	}
 })();

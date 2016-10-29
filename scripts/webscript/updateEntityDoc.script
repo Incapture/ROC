@@ -10,8 +10,6 @@ response.id = id;
 response.prevData = fromjson(prevData);
 response.success = false;
 
-vc = #entity.getViewConfiguration(web["entityUri"]);
-
 putDoc = #entity.putEntityDocument(web["entityUri"], json(content));
 
 if (putDoc == "/" + id) do
