@@ -219,7 +219,7 @@ var tasks = (function() {
 								}
 
 								function updateRow(rowData) {
-									return $("#"+tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
+									return $("#" + tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
 								}
 							},
 							failure: function(error) {
@@ -229,6 +229,24 @@ var tasks = (function() {
 					);
 				}
 			}
+		},
+		showScriptContent: function(id) {
+			var tokens = id.split("//");
+
+			if (!roc.dom().find("div[view_id^='window_editor_script_" + tokens[tokens.length - 1] + "']")[0]) {
+				directives.createWidget({
+					script: "/webscript/main",
+					scriptParameters: {widget: "//default/editor/script" , widgetParams: {key: tokens[tokens.length - 1]}},
+					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
+					randomPositioning: {left: {min: 100, max: 800}, top: {min: 65, max: 200}}
+				});
+			}
+		},
+		scriptTreeItemClick: function() {
+			var item = this.getSelectedItem();
+
+			if (item.type === "file")
+				tasks.showScriptContent(item.id);
 		}
 	}
 })();

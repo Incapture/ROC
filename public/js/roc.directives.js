@@ -18,11 +18,13 @@ var directives = (function() {
                         roc.setSkipValue(response.data.limit);
                     }
 
+                    try{
                     widget = directives.getLayout(response.structure.window, params.randomPositioning);
 
                     roc.addWindow({windowId: widget.id, parentId: params.parent});
 
                     directives.render({widget: widget, protoViews: protoViews, entityUri: params.scriptParameters.widgetParams.entity});
+                    } catch(e){console.warn(e)}
                 },
                 failure: function() {
                     console.warn(error);
@@ -140,6 +142,8 @@ var directives = (function() {
 
             aceEditor.data = aceEditorInfo.data;
 
+            aceEditor.mode = aceEditorInfo.mode;
+
             return aceEditor;
         },
         render: function(params) {
@@ -199,9 +203,15 @@ var directives = (function() {
                         for (var idx = 0; idx < aceEditors.length; idx++) {
                             var editor = ace.edit(aceEditors[idx]["id"]);
                             editor.setTheme("ace/theme/twilight");
-                            editor.getSession().setMode("ace/mode/json");
+                            editor.getSession().setMode(aceEditors[idx]["mode"]);
+                            editor.$blockScrolling = Infinity;
+                            editor.setValue(aceEditors[idx]["data"], -1);
                         }
                     }
+
+                    // activeEditor.data.ace.getSession().setMode("ace/mode/python");
+
+                    // activeEditor.data.ace.setValue(activeEditor.data.content.script, -1);
                 }
             }
         },

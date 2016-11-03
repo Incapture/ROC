@@ -1,0 +1,8 @@
+// A script to return content of a specified script
+
+response = {};
+w = fromjson(widgetParams);
+uri = "script://" + w.key;
+response.data = #script.getScript(uri);
+
+return(json(response));

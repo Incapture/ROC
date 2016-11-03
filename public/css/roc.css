@@ -302,11 +302,14 @@ h2 {
     padding-left: 20px;
 }
 
-.webix_sidebar .webix_tree_item.webix_selected, .webix_sidebar .webix_tree_item.webix_selected span {
+.webix_sidebar .webix_tree_item.webix_selected,
+.webix_sidebar .webix_tree_item.webix_selected span,
+.webix_list_item.webix_selected,
+.webix_tree_item.webix_selected span {
     background-color: #8fa6ca;
 }
 
-.webix_success div{
+.webix_success div {
     background-color: #009900;
     color: #fff;
 }

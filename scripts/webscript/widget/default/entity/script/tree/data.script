@@ -1,0 +1,49 @@
+// A script to return list of all scripts (with nested items)"
+
+w = (fromjson(widgetParams));
+prefix = w.prefix;
+
+response = {};
+
+response.data = getFiles(prefix);
+
+def getFiles(prefix)
+    filesMap = {};
+
+    files = fromjson(json(#script.listScriptsByUriPrefix("//${prefix}", 1)));
+
+    for key in keys(files) do
+        node = files[key];
+
+        item = {
+            "id": "/" + prefix + "/" + node.name,
+            "value": node.name,
+            "uri": key,
+            "type": node.folder ? "folder" : "file"
+        };
+
+        if (item.type == "folder") do
+            item.open = false;
+            item.data = getFiles(prefix + "/" + node.name);
+        end
+
+        filesMap[node.name] = item;
+    end
+
+    return convertMapToList(sortMap(filesMap));
+end
+
+def sortMap(_map)
+    return sort(_map, true);
+end
+
+def convertMapToList(_map)
+    fileList = [];
+    items = keys(_map);
+    for i = 0 to (size(items) - 1) do
+        fileList += _map[items[i]];
+    end
+    return fileList;
+end
+
+return(json(response));
