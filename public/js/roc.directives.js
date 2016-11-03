@@ -238,6 +238,9 @@ var directives = (function() {
         },
         getRandomInt: function(min, max) {
             return Math.floor(Math.random() * (max - min + 1)) + min;
+        },
+        bringForward: function(elem) {
+            $(elem).css("z-index", webix.ui.zIndex());
         }
     }
 }());

@@ -12,7 +12,9 @@ var tasks = (function() {
 			return "<span style='color: blue; text-decoration: underline;'>" + value + "</span>";
 		},
 		datatable_country_ccy_showInfo: function(e, cell, value, data) {
-			if (!roc.dom().find("div[view_id^='window_form_currency_" + value + "']")[0]) {
+			var elem = roc.dom().find("div[view_id^='window_form_currency_" + value + "']")[0];
+
+			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/form/currency" , widgetParams: {entity: "//standard/currency", key: value}},
@@ -20,12 +22,16 @@ var tasks = (function() {
 					randomPositioning: {left: {min: 1100, max: 1110}, top: {min: 45, max: 450}}
 				});
 			}
+			else
+				directives.bringForward(elem);
 		},
 		datatable_country_action_displayIcon: function(value, data, cell, row, options) {
 			return "<i class='fa fa-pencil'></i>";
 		},
 		datatable_country_action_editCountryJSON: function(e, cell, value, data) {
-			if (!roc.dom().find("div[view_id^='window_editor_country_" + data.id + "']")[0]) {
+			var elem = roc.dom().find("div[view_id^='window_editor_country_" + data.id + "']")[0];
+
+			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/editor/country" , widgetParams: {entity: "//standard/country", key: data.id}},
@@ -33,6 +39,8 @@ var tasks = (function() {
 					randomPositioning: {left: {min: 100, max: 800}, top: {min: 65, max: 200}}
 				});
 			}
+			else
+				directives.bringForward(elem);
 		},
 		datatable_getMoreData: function(buttonViewId, parentViewId, tabulatorElement) {
 			var tabulatorId = $(tabulatorElement)[0].id,
@@ -231,9 +239,10 @@ var tasks = (function() {
 			}
 		},
 		showScriptContent: function(id) {
-			var tokens = id.split("//");
+			var tokens = id.split("//"),
+				elem = roc.dom().find("div[view_id^='window_editor_script_" + tokens[tokens.length - 1] + "']")[0];
 
-			if (!roc.dom().find("div[view_id^='window_editor_script_" + tokens[tokens.length - 1] + "']")[0]) {
+			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/editor/script" , widgetParams: {key: tokens[tokens.length - 1]}},
@@ -241,6 +250,8 @@ var tasks = (function() {
 					randomPositioning: {left: {min: 100, max: 800}, top: {min: 65, max: 200}}
 				});
 			}
+			else
+				directives.bringForward(elem);
 		},
 		scriptTreeItemClick: function() {
 			var item = this.getSelectedItem();

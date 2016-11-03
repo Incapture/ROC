@@ -7,9 +7,8 @@ var app = (function() {
                 $$(menuId).toggle();
             },
             menuItemOnAfterSelect: function(id, menuId) {
-                var item = $$(menuId).getItem(id);
-
-                var elem = roc.dom().find("div[view_id^='window_" + id.split("_")[1] + "']")[0];
+                var item = $$(menuId).getItem(id),
+                    elem = roc.dom().find("div[view_id^='window_" + id.split("_")[1] + "']")[0];
 
                 if (!elem) {
                     directives.createWidget({
@@ -19,7 +18,7 @@ var app = (function() {
                     });
                 }
                 else
-                    $(elem).parent().append($(elem));
+                    directives.bringForward(elem);
             }
         },
         authentication: {
