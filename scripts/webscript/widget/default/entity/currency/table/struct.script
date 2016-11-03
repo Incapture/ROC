@@ -10,7 +10,7 @@
 response = {};
 
 w = (fromjson(widgetParams));
-windowId = "window_datatable_currency";
+windowId = "window_currencies";
 
 columns = [];
 vc = #entity.getViewConfiguration(w.entity);

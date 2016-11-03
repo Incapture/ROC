@@ -15,7 +15,7 @@ for idx = 0 to size(data) - 1 do
     modifiedData += item;
 end
 
-windowId = "window_list_workflow";
+windowId = "window_workflows";
 
 window = {
 	"properties": {

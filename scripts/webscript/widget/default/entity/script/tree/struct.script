@@ -6,7 +6,7 @@ data = fromjson(data);
 response = {};
 response.structuralData = data;
 
-windowId = "window_tree_script";
+windowId = "window_scripts";
 
 window = {
 	"properties": {
