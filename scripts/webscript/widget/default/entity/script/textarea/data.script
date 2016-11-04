@@ -10,6 +10,7 @@ try do
 
 	if (interface.script != w.scriptContent) do
 		interface.script = w.scriptContent;
+		#script.putScript(uri, interface);
 	end
 
 	result = fromjson(json(#script.runScriptExtended(uri, {})));
