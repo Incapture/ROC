@@ -10,7 +10,7 @@
 response = {};
 
 w = (fromjson(widgetParams));
-windowId = "window_datatable_country";
+windowId = "window_countries";
 
 columns = [];
 vc = #entity.getViewConfiguration(w.entity);

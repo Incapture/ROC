@@ -1,4 +1,4 @@
-// A script to return structure (displaying JSON of a specific country in an ACE editor)
+// A script to return structure of an ACE editor (displaying contents of a specified script)
 // components: webix (window), ace (editor)
 
 /* NOTES:
@@ -11,7 +11,7 @@ KEY = w.key;
 
 response = {};
 
-windowId = "window_editor_country_" + KEY;
+windowId = "window_editor_script_" + KEY;
 
 window = {
 	"properties": {
@@ -33,25 +33,25 @@ window = {
 		"head": {
 			"view": "toolbar",
 			"cols": [
-				{ "view": "label", "label": title + " - " + data.name, "align": "center" },
+				{ "view": "label", "label": title + ": " + data.name + ".script", "align": "center" },
 				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
 			]
 		},
 		"00": {
-			"id": "editor_country_" + KEY,
+			"id": "editor_script_" + KEY,
 			"view": "aceEditor"
 		},
 		"10": {
 			"view": "form",
-			"id": "form_country_save_" + KEY,
+			"id": "form_script_run",
 			"cols": [
 				{},
 				{
-					"id": "button_countrySaveConfirm_" + KEY,
+					"id": "button_scriptRunConfirm_" + KEY,
 					"view": "button",
-					"label": "Save",
+					"label": "Run",
 					"css": "table-action-button-container",
-					"click": "tasks.saveDoc({'aceEditorId': 'aceEditor_country_" + KEY + "', 'aceEditorIdKey':'" + KEY + "', 'tabulatorId': 'tabulator_country'})",
+					"click": "tasks.runScript",
 					"width": 150
 				},
 				{}
@@ -63,12 +63,12 @@ window = {
 response.window = window;
 
 protoViews = {
-	"editor_country_" + KEY: {
+	"editor_script_" + KEY: {
 		"name": "aceEditor",
-		"id": "aceEditor_country_" + KEY,
-		"data": json(data),
-		"innerHtml": "<div id='aceEditor_country_" + KEY + "' style='height:100%;width:100%'></div>",
-		"mode": "ace/mode/json"
+		"id": "aceEditor_script_" + KEY,
+		"data": data.script,
+		"innerHtml": "<div id='aceEditor_script_" + KEY + "' style='height:100%;width:100%'></div>",
+		"mode": "ace/mode/python"
 	}
 };
 

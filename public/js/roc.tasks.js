@@ -12,7 +12,9 @@ var tasks = (function() {
 			return "<span style='color: blue; text-decoration: underline;'>" + value + "</span>";
 		},
 		datatable_country_ccy_showInfo: function(e, cell, value, data) {
-			if (!roc.dom().find("div[view_id^='window_form_currency_" + value + "']")[0]) {
+			var elem = roc.dom().find("div[view_id^='window_form_currency_" + value + "']")[0];
+
+			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/form/currency" , widgetParams: {entity: "//standard/currency", key: value}},
@@ -20,12 +22,16 @@ var tasks = (function() {
 					randomPositioning: {left: {min: 1100, max: 1110}, top: {min: 45, max: 450}}
 				});
 			}
+			else
+				directives.bringForward(elem);
 		},
 		datatable_country_action_displayIcon: function(value, data, cell, row, options) {
 			return "<i class='fa fa-pencil'></i>";
 		},
 		datatable_country_action_editCountryJSON: function(e, cell, value, data) {
-			if (!roc.dom().find("div[view_id^='window_editor_country_" + data.id + "']")[0]) {
+			var elem = roc.dom().find("div[view_id^='window_editor_country_" + data.id + "']")[0];
+
+			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/editor/country" , widgetParams: {entity: "//standard/country", key: data.id}},
@@ -33,6 +39,8 @@ var tasks = (function() {
 					randomPositioning: {left: {min: 100, max: 800}, top: {min: 65, max: 200}}
 				});
 			}
+			else
+				directives.bringForward(elem);
 		},
 		datatable_getMoreData: function(buttonViewId, parentViewId, tabulatorElement) {
 			var tabulatorId = $(tabulatorElement)[0].id,
@@ -112,7 +120,7 @@ var tasks = (function() {
 			);
 		},
 		row_edit: function(id, data, row) {
-			var entityUri = $(row[0]).closest("div[view_id^='window_']").attr("data-entity"),
+			var entityUri = $(row[0]).closest("div[view_id^='window_']").attr("data-entity-uri"),
 				tabulatorId = $(row[0]).closest(".tabulator").attr("id"),
 				tabulatorElem = $(($("#" + tabulatorId))[0]),
 				columnHeaders,
@@ -184,10 +192,9 @@ var tasks = (function() {
 				);
 			}
 		},
-		save_doc: function(aceEditorId, tabulatorId) {
-			var editor = ace.edit(aceEditorId),
+		saveDoc: function(params) {
+			var editor = ace.edit(params.aceEditorId),
 				annotations = editor.getSession().getAnnotations(),
-				tokens = aceEditorId.split("_"),
 				data;
 
 			if (annotations.length)
@@ -195,11 +202,11 @@ var tasks = (function() {
 			else {
 				data = JSON.parse(editor.getValue());
 
-				if (tokens[tokens.length - 1] !== data.id)
+				if (params.aceEditorIdKey !== data.id)
 					directives.createWebixAlert("error", "ID cannot be changed.", 2000);
 				else {
 					roc.apiRequest("/webscript/updateEntityDoc", {
-							entityUri: $("#" + aceEditorId).closest("div[view_id^='window_']").attr("data-entity"),
+							entityUri: $("#" + params.aceEditorId).closest("div[view_id^='window_']").attr("data-entity-uri"),
 							content: data
 						}, {
 							success: function(res) {
@@ -209,17 +216,17 @@ var tasks = (function() {
 									directives.createWebixAlert("success", "Document saved.", 2000);
 
 									if (!updateRow(data))
-										console.warn("Could not update " + tabulatorId + ": " + response.id);
+										console.warn("Could not update " + params.tabulatorId + ": " + response.id);
 								}
 								else {
 									directives.createWebixAlert("error", "Failed to save. Try again.", 2000);
 
 									if (!updateRow(response.prevData))
-										console.warn("Could not update " + tabulatorId + ": " + response.id);
+										console.warn("Could not update " + params.tabulatorId + ": " + response.id);
 								}
 
 								function updateRow(rowData) {
-									return $("#"+tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
+									return $("#" + params.tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
 								}
 							},
 							failure: function(error) {
@@ -228,6 +235,73 @@ var tasks = (function() {
 						}
 					);
 				}
+			}
+		},
+		showScriptContent: function(id) {
+			var tokens = id.split("//"),
+				elem = roc.dom().find("div[view_id^='window_editor_script_" + tokens[1] + "']")[0];
+
+			if (!elem) {
+				directives.createWidget({
+					script: "/webscript/main",
+					scriptParameters: {widget: "//default/editor/script" , widgetParams: {key: tokens[1], raptureUri: tokens[1]}},
+					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
+					randomPositioning: {left: {min: 100, max: 500}, top: {min: 65, max: 200}}
+				});
+			}
+			else
+				directives.bringForward(elem);
+		},
+		scriptTreeItemClick: function() {
+			var item = this.getSelectedItem();
+
+			if (item.type === "file")
+				tasks.showScriptContent(item.id);
+		},
+		runScript: function() {
+			var elem = roc.dom().find("div[view_id^='window_output_script']")[0],
+				scriptPath = (($(this.$view).closest("div[view_id^='window_']")).attr("data-rapture-uri")),
+				aceEditorId = "aceEditor_script_" + scriptPath,
+				editor = ace.edit(aceEditorId),
+				editorScriptContent = editor.getValue();
+
+			if (!elem) {
+				directives.createWidget({
+					script: "/webscript/main",
+					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: scriptPath, scriptContent: editorScriptContent}},
+					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),	//TODO: is this parent the base window?
+					randomPositioning: {left: {min: 900, max: 900}, top: {min: 65, max: 65}}
+				});
+			}
+			else {
+				directives.bringForward(elem);
+
+				// update script output window content
+				roc.apiRequest("/webscript/main", {
+						widget: "//default/textarea/script_output",
+						widgetParams: {
+							scriptPath: scriptPath,
+							scriptContent: editorScriptContent
+						},
+						onlyData: true
+					}, {
+						success: function(res) {
+							var response = JSON.parse(res.text());
+
+							//TODO: can this be passed dynamically?
+							$$("textarea_script_output").define("value", response.data.data.stringifiedOutput);
+
+							$$("textarea_script_output").refresh();
+
+							$$("textarea_script_retVal").define("value", response.data.data.returnValue);
+
+							$$("textarea_script_retVal").refresh();
+						},
+						failure: function(error) {
+							console.warn(error);
+						}
+					}
+				);
 			}
 		}
 	}

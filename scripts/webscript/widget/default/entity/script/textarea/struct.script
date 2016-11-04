@@ -1,0 +1,75 @@
+// A script to return structure of a read-only text area (containing the result of running a script)
+// components: webix (window, textarea)
+
+data = fromjson(data);
+
+response = {};
+response.structuralData = data;
+
+windowId = "window_output_script";
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"height": 500,
+		"width": 500,
+		"move": true,
+		"resize": true,
+		"zIndex": "auto",
+		"body": {}
+	},
+	"count": {
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
+	},
+	"components": {
+		"head": {
+			"view": "toolbar",
+			"cols": [
+				{ "view": "label", "label": title, "align": "center" },
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
+			]
+		},
+		"00": {
+			"view": "layout",
+			"height: 30,
+			"left": 10,
+			"cols": [
+				{
+					"view": "label",
+					"label": "RETURN VALUE",
+					"width": 100
+				},
+				{
+					"id": "textarea_script_retVal",
+					"view": "textarea",
+					"value": data.returnValue,
+					"readonly": true
+				}
+			]
+		},
+		"10": {
+			"view": "layout",
+			"cols": [
+				{
+					"view": "label",
+					"label": "OUTPUT",
+					"width": 100
+				},
+				{
+					"id": "textarea_script_output",
+					"view": "textarea",
+					"value": data.stringifiedOutput,
+					"readonly": true,
+					"height": 100
+				}
+			]
+		}
+	}
+};
+
+response.window = window;
+
+return(json(response));

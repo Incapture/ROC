@@ -20,6 +20,20 @@ menu = [
 			"entity": "//standard/currency",
 			"limit": 50
 		}
+	},
+	{
+		"title": "Workflows",
+		"id": "menuItem_workflows",
+		"widget": "//default/list/workflow",
+		"params": {}
+	},
+	{
+		"title": "Scripts",
+		"id": "menuItem_scripts",
+		"widget": "//default/tree/script",
+		"params": {
+			"prefix": "/"
+		}
 	}
 ];
 

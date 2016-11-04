@@ -1,0 +1,22 @@
+// A script to return a list of all workflows in the system
+
+response = {};
+result = [];
+
+workflows = #decision.getAllWorkflows();
+
+for w in workflows do
+    workflow = {};
+    workflow.uri = w.workflowURI;
+    workflow.name = extractName(w.workflowURI);
+    result += workflow;
+end
+
+def extractName(uri)
+    tokens = uri.split("/",-1);
+    return tokens[tokens.size() - 1];
+end
+
+response.data = result;
+
+return(json(response));

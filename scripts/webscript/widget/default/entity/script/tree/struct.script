@@ -1,0 +1,49 @@
+// A script to return structure of a file tree (for scripts)
+// components: webix (window), ace (editor)
+
+data = fromjson(data);
+
+response = {};
+
+windowId = "window_scripts";
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"left": 205,
+		"top": 45,
+		"height": 300,
+		"width": 400,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 1,
+		"row0_cols": 1
+	},
+	"components": {
+		"head": {
+			"view": "toolbar",
+			"cols": [
+				{ "view": "label", "label": title, "align": "center" },
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
+			]
+		},
+		"00": {
+			"id": "tree_scripts",
+			"view": "tree",
+			"template": "{common.icon()} {common.folder()} <span data-tree-item-type='#type#'>#value#</span>",
+			"select": true,
+			"data": data,
+			"on": {
+				"onAfterSelect": "tasks.scriptTreeItemClick"
+			}
+		}
+	}
+};
+
+response.window = window;
+
+return(json(response));
