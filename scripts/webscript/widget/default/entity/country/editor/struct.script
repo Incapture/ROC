@@ -43,7 +43,7 @@ window = {
 		},
 		"10": {
 			"view": "form",
-			"id": "form_country_save",
+			"id": "form_country_save_" + KEY,
 			"cols": [
 				{},
 				{

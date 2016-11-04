@@ -261,12 +261,15 @@ var tasks = (function() {
 		},
 		runScript: function() {
 			var elem = roc.dom().find("div[view_id^='window_output_script']")[0],
-				tokens = (($(this.$view).closest("div[view_id^='window_']")).attr("view_id")).split("_");
+				tokens = (($(this.$view).closest("div[view_id^='window_']")).attr("view_id")).split("_"),
+				aceEditorId = "aceEditor_script_" + tokens[tokens.length - 1],
+				editor = ace.edit(aceEditorId),
+				editorScriptContent = editor.getValue();
 
 			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
-					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: tokens[tokens.length - 1]}},
+					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: tokens[tokens.length - 1], scriptContent: editorScriptContent}},
 					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),	//TODO: is this parent the base window?
 					randomPositioning: {left: {min: 900, max: 900}, top: {min: 65, max: 65}}
 				});
@@ -278,7 +281,8 @@ var tasks = (function() {
 				roc.apiRequest("/webscript/main", {
 						widget: "//default/textarea/script_output",
 						widgetParams: {
-							scriptPath: tokens[tokens.length - 1]
+							scriptPath: tokens[tokens.length - 1],
+							scriptContent: editorScriptContent
 						},
 						onlyData: true
 					}, {
