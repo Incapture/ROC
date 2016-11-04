@@ -192,7 +192,7 @@ var tasks = (function() {
 				);
 			}
 		},
-		save_doc: function(params) {
+		saveDoc: function(params) {
 			var editor = ace.edit(params.aceEditorId),
 				annotations = editor.getSession().getAnnotations(),
 				data;

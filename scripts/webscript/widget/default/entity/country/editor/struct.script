@@ -47,11 +47,11 @@ window = {
 			"cols": [
 				{},
 				{
-					"id": "button_countrySaveConfirm",
+					"id": "button_countrySaveConfirm_" + KEY,
 					"view": "button",
 					"label": "Save",
 					"css": "table-action-button-container",
-					"click": "tasks.save_doc({'aceEditorId': 'aceEditor_country_" + KEY + "', 'aceEditorIdKey':'" + KEY + "', 'tabulatorId': 'tabulator_country'})",
+					"click": "tasks.saveDoc({'aceEditorId': 'aceEditor_country_" + KEY + "', 'aceEditorIdKey':'" + KEY + "', 'tabulatorId': 'tabulator_country'})",
 					"width": 150
 				},
 				{}
