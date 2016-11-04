@@ -4,7 +4,6 @@
 data = fromjson(data);
 
 response = {};
-response.structuralData = data;
 
 windowId = "window_scripts";
 

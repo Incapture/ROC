@@ -1,0 +1,33 @@
+// A script to return the result of running a script
+
+w = (fromjson(widgetParams));
+response = {};
+data = {};
+
+try do
+	result = fromjson(json(#script.runScriptExtended("script://" + w.scriptPath, {})));
+
+	output = "";
+	for idx = 0 to size(result.output) - 1 do
+		output += result.output[idx];
+	end
+
+	data = {
+		"stringifiedOutput": output,
+		"returnValue": result.returnValue,
+		"inError": result.inError
+	};
+end
+catch e do
+	error = fromjson(json(e));
+	data = {
+		"stringifiedOutput": error.message,
+		"returnValue": null,
+		"status": "ERROR",
+		"e": e
+	};
+end
+
+response.data = data;
+
+return(json(response));

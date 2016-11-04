@@ -247,7 +247,7 @@ var tasks = (function() {
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/editor/script" , widgetParams: {key: tokens[tokens.length - 1]}},
 					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
-					randomPositioning: {left: {min: 100, max: 800}, top: {min: 65, max: 200}}
+					randomPositioning: {left: {min: 100, max: 500}, top: {min: 65, max: 200}}
 				});
 			}
 			else
@@ -258,6 +258,48 @@ var tasks = (function() {
 
 			if (item.type === "file")
 				tasks.showScriptContent(item.id);
+		},
+		runScript: function() {
+			var elem = roc.dom().find("div[view_id^='window_output_script']")[0],
+				tokens = (($(this.$view).closest("div[view_id^='window_']")).attr("view_id")).split("_");
+
+			if (!elem) {
+				directives.createWidget({
+					script: "/webscript/main",
+					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: tokens[tokens.length - 1]}},
+					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),	//TODO: is this parent the base window?
+					randomPositioning: {left: {min: 900, max: 900}, top: {min: 65, max: 65}}
+				});
+			}
+			else {
+				directives.bringForward(elem);
+
+				// update script output window content
+				roc.apiRequest("/webscript/main", {
+						widget: "//default/textarea/script_output",
+						widgetParams: {
+							scriptPath: tokens[tokens.length - 1]
+						},
+						onlyData: true
+					}, {
+						success: function(res) {
+							var response = JSON.parse(res.text());
+
+							//TODO: can this be passed dynamically?
+							$$("textarea_script_output").define("value", response.data.data.stringifiedOutput);
+
+							$$("textarea_script_output").refresh();
+
+							$$("textarea_script_retVal").define("value", response.data.data.returnValue);
+
+							$$("textarea_script_retVal").refresh();
+						},
+						failure: function(error) {
+							console.warn(error);
+						}
+					}
+				);
+			}
 		}
 	}
 })();
