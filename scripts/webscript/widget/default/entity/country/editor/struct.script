@@ -51,7 +51,7 @@ window = {
 					"view": "button",
 					"label": "Save",
 					"css": "table-action-button-container",
-					"click": "tasks.save_doc('aceEditor_country_" + KEY + "', 'tabulator_country')",
+					"click": "tasks.save_doc({'aceEditorId': 'aceEditor_country_" + KEY + "', 'aceEditorIdKey':'" + KEY + "', 'tabulatorId': 'tabulator_country'})",
 					"width": 150
 				},
 				{}

@@ -19,11 +19,16 @@ var directives = (function() {
                     }
 
                     try{
-                    widget = directives.getLayout(response.structure.window, params.randomPositioning);
+                        widget = directives.getLayout(response.structure.window, params.randomPositioning);
 
-                    roc.addWindow({windowId: widget.id, parentId: params.parent});
+                        roc.addWindow({windowId: widget.id, parentId: params.parent});
 
-                    directives.render({widget: widget, protoViews: protoViews, entityUri: params.scriptParameters.widgetParams.entity});
+                        directives.render({
+                            widget: widget,
+                            protoViews: protoViews,
+                            entityUri: params.scriptParameters.widgetParams.entity,
+                            raptureUri: params.scriptParameters.widgetParams.raptureUri
+                        });
                     } catch(e){console.warn(e)}
                 },
                 failure: function() {
@@ -175,7 +180,7 @@ var directives = (function() {
 
                     // set z-index such that this window is top-most
                     // also, add entity uri as an attribute
-                    $(_thisElem.$view).css("z-index", webix.ui.zIndex()).attr("data-entity", params.entityUri);
+                    $(_thisElem.$view).css("z-index", webix.ui.zIndex()).attr("data-entity-uri", params.entityUri).attr("data-rapture-uri", params.raptureUri);
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {

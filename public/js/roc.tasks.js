@@ -120,7 +120,7 @@ var tasks = (function() {
 			);
 		},
 		row_edit: function(id, data, row) {
-			var entityUri = $(row[0]).closest("div[view_id^='window_']").attr("data-entity"),
+			var entityUri = $(row[0]).closest("div[view_id^='window_']").attr("data-entity-uri"),
 				tabulatorId = $(row[0]).closest(".tabulator").attr("id"),
 				tabulatorElem = $(($("#" + tabulatorId))[0]),
 				columnHeaders,
@@ -192,10 +192,9 @@ var tasks = (function() {
 				);
 			}
 		},
-		save_doc: function(aceEditorId, tabulatorId) {
-			var editor = ace.edit(aceEditorId),
+		save_doc: function(params) {
+			var editor = ace.edit(params.aceEditorId),
 				annotations = editor.getSession().getAnnotations(),
-				tokens = aceEditorId.split("_"),
 				data;
 
 			if (annotations.length)
@@ -203,11 +202,11 @@ var tasks = (function() {
 			else {
 				data = JSON.parse(editor.getValue());
 
-				if (tokens[tokens.length - 1] !== data.id)
+				if (params.aceEditorIdKey !== data.id)
 					directives.createWebixAlert("error", "ID cannot be changed.", 2000);
 				else {
 					roc.apiRequest("/webscript/updateEntityDoc", {
-							entityUri: $("#" + aceEditorId).closest("div[view_id^='window_']").attr("data-entity"),
+							entityUri: $("#" + params.aceEditorId).closest("div[view_id^='window_']").attr("data-entity-uri"),
 							content: data
 						}, {
 							success: function(res) {
@@ -217,17 +216,17 @@ var tasks = (function() {
 									directives.createWebixAlert("success", "Document saved.", 2000);
 
 									if (!updateRow(data))
-										console.warn("Could not update " + tabulatorId + ": " + response.id);
+										console.warn("Could not update " + params.tabulatorId + ": " + response.id);
 								}
 								else {
 									directives.createWebixAlert("error", "Failed to save. Try again.", 2000);
 
 									if (!updateRow(response.prevData))
-										console.warn("Could not update " + tabulatorId + ": " + response.id);
+										console.warn("Could not update " + params.tabulatorId + ": " + response.id);
 								}
 
 								function updateRow(rowData) {
-									return $("#" + tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
+									return $("#" + params.tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
 								}
 							},
 							failure: function(error) {
@@ -240,12 +239,12 @@ var tasks = (function() {
 		},
 		showScriptContent: function(id) {
 			var tokens = id.split("//"),
-				elem = roc.dom().find("div[view_id^='window_editor_script_" + tokens[tokens.length - 1] + "']")[0];
+				elem = roc.dom().find("div[view_id^='window_editor_script_" + tokens[1] + "']")[0];
 
 			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
-					scriptParameters: {widget: "//default/editor/script" , widgetParams: {key: tokens[tokens.length - 1]}},
+					scriptParameters: {widget: "//default/editor/script" , widgetParams: {key: tokens[1], raptureUri: tokens[1]}},
 					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
 					randomPositioning: {left: {min: 100, max: 500}, top: {min: 65, max: 200}}
 				});
@@ -261,15 +260,15 @@ var tasks = (function() {
 		},
 		runScript: function() {
 			var elem = roc.dom().find("div[view_id^='window_output_script']")[0],
-				tokens = (($(this.$view).closest("div[view_id^='window_']")).attr("view_id")).split("_"),
-				aceEditorId = "aceEditor_script_" + tokens[tokens.length - 1],
+				scriptPath = (($(this.$view).closest("div[view_id^='window_']")).attr("data-rapture-uri")),
+				aceEditorId = "aceEditor_script_" + scriptPath,
 				editor = ace.edit(aceEditorId),
 				editorScriptContent = editor.getValue();
 
 			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
-					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: tokens[tokens.length - 1], scriptContent: editorScriptContent}},
+					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: scriptPath, scriptContent: editorScriptContent}},
 					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),	//TODO: is this parent the base window?
 					randomPositioning: {left: {min: 900, max: 900}, top: {min: 65, max: 65}}
 				});
@@ -281,7 +280,7 @@ var tasks = (function() {
 				roc.apiRequest("/webscript/main", {
 						widget: "//default/textarea/script_output",
 						widgetParams: {
-							scriptPath: tokens[tokens.length - 1],
+							scriptPath: scriptPath,
 							scriptContent: editorScriptContent
 						},
 						onlyData: true
