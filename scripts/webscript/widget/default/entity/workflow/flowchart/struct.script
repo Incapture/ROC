@@ -1,0 +1,93 @@
+// A script to return structure of a flowchart
+// components: webix (window), mermaid (flowchart)
+
+/* NOTES:
+1. Declare a non-webix component (e.g. mermaid flowchart) in window map, define in protoViews map ("flowchart_workflow_<KEY>" in this script)
+*/
+
+data = fromjson(data);
+w = fromjson(widgetParams);
+KEY = w.key;
+
+response = {};
+
+windowId = "window_flowchart_workflow_" + KEY;
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"height": 500,
+		"width": 900,
+		"move": true,
+		"resize": true,
+		"zIndex": "auto",
+		"body": {}
+	},
+	"count": {
+		"rows": 1,
+		"row0_cols": 1
+	},
+	"components": {
+		"head": {
+			"view": "toolbar",
+			"cols": [
+				{ "view": "label", "label": title + ": " + data.workflowURI, "align": "center" },
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
+			]
+		},
+		"00": {
+			"id": "flowchart_workflow_" + KEY,
+			"view": "mermaidFlowchart"
+		}
+	}
+};
+
+response.window = window;
+
+protoViews = {
+	"flowchart_workflow_" + KEY: {
+		"name": "mermaidFlowchart",
+		"id": "mermaidFlowchart_workflow_" + KEY,
+		"data": data,
+		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"	
+	}
+};
+
+response.protoViews = protoViews;
+
+def getFlowchartData(data)
+    flowchart = "graph LR";
+
+    stepsMap = {};
+
+    for i = 0 to size(data.steps) - 1 do
+        _thisStep = data.steps[i];
+
+        initiatingStep = (stepsMap[_thisStep.name] == null) ? _thisStep.name + "(" + _thisStep.name + ")" : _thisStep.name;
+
+        stepsMap[_thisStep.name] = true;
+
+        for j = 0 to size(_thisStep.transitions) - 1 do
+            targetStep = (stepsMap[_thisStep.transitions[j]["targetStep"]] == null) ? _thisStep.transitions[j]["targetStep"] + "(" + _thisStep.transitions[j]["targetStep"] + ")" : _thisStep.transitions[j]["targetStep"];
+
+            stepsMap[_thisStep.transitions[j]["targetStep"]] = true;
+            
+            // transition step name beginning with lowercase 'o' makes mermaid's parser barf
+            // therefore, convert'o' to 'O'
+            if _thisStep.transitions[j]["name"][0] == "o" do
+                name = _thisStep.transitions[j]["name"];
+                maxBound = size(name);
+                transitionName = "O" + name[1 .. maxBound];
+            else do
+                transitionName = _thisStep.transitions[j]["name"];
+            end
+            
+            flowchart += "\n\t" + initiatingStep + "--" + transitionName + "-->" + targetStep;
+        end
+    end
+
+    return flowchart;
+end
+
+return(json(response));

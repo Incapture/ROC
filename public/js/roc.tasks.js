@@ -303,6 +303,28 @@ var tasks = (function() {
 					}
 				);
 			}
+		},
+		workflowTreeItemClick: function() {
+			var item = this.getSelectedItem(),
+				tokens,
+				elem;
+
+			if (item.type === "file") {
+				tokens = item.id.split("//");
+
+				elem = roc.dom().find("div[view_id^='window_flowchart_workflow_" + tokens[1] + "']")[0];
+
+				if (!elem) {
+					directives.createWidget({
+						script: "/webscript/main",
+						scriptParameters: {widget: "//default/flowchart/workflow" , widgetParams: {key: tokens[1], raptureUri: tokens[1]}},	// raptureUri needed?
+						parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
+						randomPositioning: {left: {min: 100, max: 300}, top: {min: 65, max: 100}}
+					});
+				}
+				else
+					directives.bringForward(elem);
+			}
 		}
 	}
 })();

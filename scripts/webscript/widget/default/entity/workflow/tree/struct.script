@@ -1,11 +1,11 @@
-// A script to return structure of a file tree (for scripts)
-// components: webix (window)
+// A script to return structure of a file tree (for workflows)
+// components: webix (window, tree)
 
 data = fromjson(data);
 
 response = {};
 
-windowId = "window_scripts";
+windowId = "window_workflows";
 
 window = {
 	"properties": {
@@ -32,13 +32,13 @@ window = {
 			]
 		},
 		"00": {
-			"id": "tree_scripts",
+			"id": "tree_workflows",
 			"view": "tree",
 			"template": "{common.icon()} {common.folder()} <span data-tree-item-type='#type#'>#value#</span>",
 			"select": true,
 			"data": data,
 			"on": {
-				"onAfterSelect": "tasks.scriptTreeItemClick"
+				"onAfterSelect": "tasks.workflowTreeItemClick"
 			}
 		}
 	}

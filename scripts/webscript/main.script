@@ -4,12 +4,12 @@ response = {};
 
 w = #widget.getWidget(web["widget"]);
 
-data = (fromjson(#script.runScript("/webscript/" + w.actions.data, {"widgetParams": widgetParams})));
+data = (fromjson(#script.runScript("/webscript" + w.actions.data, {"widgetParams": widgetParams})));
 
 if (web["onlyData"] == null) do
 	response.componentType = w.paneType;
 
-	structure = fromjson(#script.runScript("/webscript/" + w.actions.cols, {"title": w.title, "widgetParams": widgetParams, "componentType": w.paneType, "data": json(data.data)}));
+	structure = fromjson(#script.runScript("/webscript" + w.actions.cols, {"title": w.title, "widgetParams": widgetParams, "componentType": w.paneType, "data": json(data.data)}));
 
 	response.structure = structure;
 end
