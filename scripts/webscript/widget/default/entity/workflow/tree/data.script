@@ -1,0 +1,50 @@
+// A script to return list of all workflows (as nested items)"
+
+w = (fromjson(widgetParams));
+prefix = w.prefix;
+
+response = {};
+
+response.data = getFiles(prefix);
+
+def getFiles(prefix)
+    filesMap = {};
+
+    files = fromjson(json(#decision.getWorkflowChildren("//${prefix}")));
+
+    for idx = 0 to size(files) - 1 do
+        node = files[idx];
+        partialUri = prefix + "/" + node.name;
+
+        item = {
+            "id": "/" + partialUri,
+            "value": node.name,
+            "type": node.folder ? "folder" : "file",
+            "uri": "workflow:" + partialUri
+        };
+
+        if (item.type == "folder") do
+            item.open = false;
+            item.data = getFiles(partialUri);
+        end
+
+        filesMap[node.name] = item;
+    end
+
+    return convertMapToList(sortMap(filesMap));
+end
+
+def sortMap(_map)
+    return sort(_map, true);
+end
+
+def convertMapToList(_map)
+    fileList = [];
+    items = keys(_map);
+    for i = 0 to (size(items) - 1) do
+        fileList += _map[items[i]];
+    end
+    return fileList;
+end
+
+return(json(response));

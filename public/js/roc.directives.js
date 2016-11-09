@@ -18,7 +18,7 @@ var directives = (function() {
                         roc.setSkipValue(response.data.limit);
                     }
 
-                    try{
+                    try {
                         widget = directives.getLayout(response.structure.window, params.randomPositioning);
 
                         roc.addWindow({windowId: widget.id, parentId: params.parent});
@@ -151,11 +151,19 @@ var directives = (function() {
 
             return aceEditor;
         },
+        getFlowchart: function(flowchartInfo) {
+            var flowchart = {};
+
+            flowchart.id = flowchartInfo.id;
+
+            return flowchart;
+        },
         render: function(params) {
             var tabulators = [],
                 _thisElem,
                 tabulatorColumnHeaders,
-                aceEditors = [];
+                aceEditors = [],
+                flowcharts = [];
 
             if (params.widget) {
                 if (!params.protoViews)
@@ -165,13 +173,20 @@ var directives = (function() {
                         if (params.protoViews.hasOwnProperty(key))                        
                             directives.setProtoUI(params.protoViews[key]);
 
-                            // maintain a list of tabulator components within the window
-                            if (params.protoViews[key]["name"] == "tabulator")
+                        switch (params.protoViews[key]["name"]) {
+                            case "aceEditor":
+                                aceEditors.push(directives.getAceEditor(params.protoViews[key]));
+
+                                break;
+                            case "mermaidFlowchart":
+                                flowcharts.push(directives.getFlowchart(params.protoViews[key]));
+
+                                break;
+                            case "tabulator":
                                 tabulators.push(directives.getTabulator(params.protoViews[key]));
 
-                            // maintain a list of aceEditor components within the window
-                            if (params.protoViews[key]["name"] == "aceEditor")
-                                aceEditors.push(directives.getAceEditor(params.protoViews[key]));
+                                break;
+                        }
                     }
 
                     _thisElem = webix.ui(params.widget);
@@ -207,16 +222,21 @@ var directives = (function() {
                     if (aceEditors.length > 0) {
                         for (var idx = 0; idx < aceEditors.length; idx++) {
                             var editor = ace.edit(aceEditors[idx]["id"]);
+
                             editor.setTheme("ace/theme/twilight");
+
                             editor.getSession().setMode(aceEditors[idx]["mode"]);
+
                             editor.$blockScrolling = Infinity;
+
                             editor.setValue(aceEditors[idx]["data"], -1);
                         }
                     }
 
-                    // activeEditor.data.ace.getSession().setMode("ace/mode/python");
-
-                    // activeEditor.data.ace.setValue(activeEditor.data.content.script, -1);
+                    if (flowcharts.length > 0) {
+                        for (var idx = 0; idx < flowcharts.length; idx++)
+                            mermaid.init(undefined, $("div[id^='" + flowcharts[idx]["id"] + "']"));
+                    }
                 }
             }
         },

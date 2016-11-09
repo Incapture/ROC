@@ -24,8 +24,10 @@ menu = [
 	{
 		"title": "Workflows",
 		"id": "menuItem_workflows",
-		"widget": "//default/list/workflow",
-		"params": {}
+		"widget": "//default/tree/workflow",
+		"params": {
+			"prefix": "/"
+		}
 	},
 	{
 		"title": "Scripts",

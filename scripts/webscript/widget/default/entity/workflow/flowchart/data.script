@@ -1,0 +1,8 @@
+// A script to return a specified workflow's JSON
+
+response = {};
+w = fromjson(widgetParams);
+uri = "workflow://" + w.key;
+response.data = #decision.getWorkflow(uri);
+
+return(json(response));

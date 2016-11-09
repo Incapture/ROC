@@ -2,7 +2,7 @@
 // components: webix (window), ace (editor)
 
 /* NOTES:
-1. Declare a non-webix component (e.g. ACE editor) in window map, define in protoViews map ("datatable-country" in this script)
+1. Declare a non-webix component (e.g. ACE editor) in window map, define in protoViews map ("editor_script_<KEY>" in this script)
 */
 
 data = fromjson(data);
