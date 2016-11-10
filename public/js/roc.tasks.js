@@ -319,12 +319,33 @@ var tasks = (function() {
 						script: "/webscript/main",
 						scriptParameters: {widget: "//default/flowchart/workflow" , widgetParams: {key: tokens[1], raptureUri: tokens[1]}},	// raptureUri needed?
 						parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
-						randomPositioning: {left: {min: 100, max: 300}, top: {min: 65, max: 100}}
+						randomPositioning: {left: {min: 400, max: 500}, top: {min: 65, max: 100}}
 					});
 				}
 				else
 					directives.bringForward(elem);
 			}
+		},
+		workflowFlowchartStepClick: function(id) {
+			var windowElems = $("g[id="+id).closest("div[view_id^='window_']"),
+				highestZIndex = 0,
+				currentZIndex,
+				targetWindowElem,
+				tokens;
+
+			for (var idx = 0; idx < windowElems.length; idx++) {
+				currentZIndex = parseInt($(windowElems[idx]).css("z-index"), 10);
+
+				if (currentZIndex > highestZIndex) {
+					highestZIndex = currentZIndex;
+
+					targetWindowElem = windowElems[idx];
+				}
+			}
+
+			tokens = $(targetWindowElem).find("svg g[id=" + id + "] div").html().split("<br>");
+
+			tasks.showScriptContent(tokens[1].replace("script:", "/"));
 		}
 	}
 })();

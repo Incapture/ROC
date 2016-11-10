@@ -17,8 +17,8 @@ window = {
 	"properties": {
 		"id": windowId,
 		"view": "window",
-		"height": 500,
-		"width": 900,
+		"height": 450,
+		"width": 600,
 		"move": true,
 		"resize": true,
 		"zIndex": "auto",
@@ -38,7 +38,8 @@ window = {
 		},
 		"00": {
 			"id": "flowchart_workflow_" + KEY,
-			"view": "mermaidFlowchart"
+			"view": "mermaidFlowchart",
+			"position": "center"
 		}
 	}
 };
@@ -49,29 +50,26 @@ protoViews = {
 	"flowchart_workflow_" + KEY: {
 		"name": "mermaidFlowchart",
 		"id": "mermaidFlowchart_workflow_" + KEY,
-		"data": data,
-		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"	
+		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='margin-left:20%;height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"
 	}
 };
 
 response.protoViews = protoViews;
 
 def getFlowchartData(data)
-    flowchart = "graph LR";
+    flowchart = "graph TB";
 
     stepsMap = {};
 
     for i = 0 to size(data.steps) - 1 do
         _thisStep = data.steps[i];
 
-        initiatingStep = (stepsMap[_thisStep.name] == null) ? _thisStep.name + "(" + _thisStep.name + ")" : _thisStep.name;
+        initiatingStep = (stepsMap[_thisStep.name] == null) ? _thisStep.name + "(" + _thisStep.name + "<br>" + _thisStep.executable + ")" : _thisStep.name;
 
         stepsMap[_thisStep.name] = true;
 
         for j = 0 to size(_thisStep.transitions) - 1 do
-            targetStep = (stepsMap[_thisStep.transitions[j]["targetStep"]] == null) ? _thisStep.transitions[j]["targetStep"] + "(" + _thisStep.transitions[j]["targetStep"] + ")" : _thisStep.transitions[j]["targetStep"];
-
-            stepsMap[_thisStep.transitions[j]["targetStep"]] = true;
+            targetStep = _thisStep.transitions[j]["targetStep"];
             
             // transition step name beginning with lowercase 'o' makes mermaid's parser barf
             // therefore, convert'o' to 'O'
@@ -83,7 +81,11 @@ def getFlowchartData(data)
                 transitionName = _thisStep.transitions[j]["name"];
             end
             
+            // add transition command
             flowchart += "\n\t" + initiatingStep + "--" + transitionName + "-->" + targetStep;
+
+            // add click command
+            flowchart += "\n\t click " + _thisStep.name + " tasks.workflowFlowchartStepClick";
         end
     end
 
