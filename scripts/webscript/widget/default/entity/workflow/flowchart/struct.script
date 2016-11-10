@@ -53,7 +53,7 @@ window = {
 					"view": "button",
 					"label": "Run Workflow",
 					"css": "table-action-button-container",
-					"click": "tasks.workflowRunner",
+					"click": "tasks.workflowRunner({'workflowPath':'" + KEY + "'})",
 					"height": 50
 				}
 			]

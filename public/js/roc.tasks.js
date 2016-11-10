@@ -346,6 +346,21 @@ var tasks = (function() {
 			tokens = $(targetWindowElem).find("svg g[id=" + id + "] div").html().split("<br>");
 
 			tasks.showScriptContent(tokens[1].replace("script:", "/"));
+		},
+		workflowRunner: function(params) {
+			roc.apiRequest("/webscript/runWorkflow", {
+						workflowPath: params.workflowPath
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text());
+
+						// TODO: create a new widget for listing workorders?
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
 		}
 	}
 })();
