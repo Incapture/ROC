@@ -17,7 +17,7 @@ window = {
 	"properties": {
 		"id": windowId,
 		"view": "window",
-		"height": 450,
+		"height": 500,
 		"width": 600,
 		"move": true,
 		"resize": true,
@@ -26,7 +26,7 @@ window = {
 	},
 	"count": {
 		"rows": 1,
-		"row0_cols": 1
+		"row0_cols": 2
 	},
 	"components": {
 		"head": {
@@ -39,7 +39,24 @@ window = {
 		"00": {
 			"id": "flowchart_workflow_" + KEY,
 			"view": "mermaidFlowchart",
-			"position": "center"
+			"height": 500,
+			"width": 475
+		},
+		"01": {
+			"top": 100,
+			"rows": [
+				{
+					"height": 133
+				},
+				{
+					"id": "button_workflowRunner",
+					"view": "button",
+					"label": "Run Workflow",
+					"css": "table-action-button-container",
+					"click": "tasks.workflowRunner",
+					"height": 50
+				}
+			]
 		}
 	}
 };
@@ -50,7 +67,7 @@ protoViews = {
 	"flowchart_workflow_" + KEY: {
 		"name": "mermaidFlowchart",
 		"id": "mermaidFlowchart_workflow_" + KEY,
-		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='margin-left:20%;height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"
+		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='margin-left:10%;height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"
 	}
 };
 
