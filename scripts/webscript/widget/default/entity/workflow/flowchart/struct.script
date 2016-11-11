@@ -85,25 +85,30 @@ def getFlowchartData(data)
 
         stepsMap[_thisStep.name] = true;
 
-        for j = 0 to size(_thisStep.transitions) - 1 do
-            targetStep = _thisStep.transitions[j]["targetStep"];
-            
-            // transition step name beginning with lowercase 'o' makes mermaid's parser barf
-            // therefore, convert'o' to 'O'
-            if _thisStep.transitions[j]["name"][0] == "o" do
-                name = _thisStep.transitions[j]["name"];
-                maxBound = size(name);
-                transitionName = "O" + name[1 .. maxBound];
-            else do
-                transitionName = _thisStep.transitions[j]["name"];
-            end
-            
-            // add transition command
-            flowchart += "\n\t" + initiatingStep + "--" + transitionName + "-->" + targetStep;
+        if size(_thisStep.transitions) == 0 do
+	        // command to draw a single node
+	        flowchart += "\n\t" + initiatingStep;
+	    else do
+			for j = 0 to size(_thisStep.transitions) - 1 do
+	            targetStep = _thisStep.transitions[j]["targetStep"];
 
-            // add click command
-            flowchart += "\n\t click " + _thisStep.name + " tasks.workflowFlowchartStepClick";
-        end
+	            // transition step name beginning with lowercase 'o' makes mermaid's parser barf
+	            // therefore, convert'o' to 'O'
+	            if _thisStep.transitions[j]["name"][0] == "o" do
+	                name = _thisStep.transitions[j]["name"];
+	                maxBound = size(name);
+	                transitionName = "O" + name[1 .. maxBound];
+	            else do
+	                transitionName = _thisStep.transitions[j]["name"];
+	            end
+
+	            // add transition command
+	            flowchart += "\n\t" + initiatingStep + "--" + transitionName + "-->" + targetStep;
+
+				// add click command
+	            flowchart += "\n\t click " + _thisStep.name + " tasks.workflowFlowchartStepClick";
+	        end
+	    end
     end
 
     return flowchart;

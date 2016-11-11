@@ -3,7 +3,7 @@
 response = {};
 parameters = web["parameters"];
 
-uri = "workflow:/" + web["workflowPath"];
+uri = "workflow://" + web["workflowPath"];
 
 if parameters == null do
 	parameters = {};
