@@ -27,7 +27,7 @@ window = {
 	"count": {
 		"rows": 2,
 		"row0_cols": 1,
-		"row1_cols": 1
+		"row1_cols": 2
 	},
 	"components": {
 		"head": {
@@ -43,18 +43,42 @@ window = {
 		},
 		"10": {
 			"view": "form",
-			"id": "form_script_run",
-			"cols": [
-				{},
+			"id": "form_script_addParameter_" + KEY,
+			"rows": [
 				{
-					"id": "button_scriptRunConfirm_" + KEY,
-					"view": "button",
-					"label": "Run",
-					"css": "table-action-button-container",
-					"click": "tasks.runScript",
-					"width": 150
-				},
-				{}
+					"cols": [
+						{},
+						{
+							"id": "button_scriptAddParameter_" + KEY,
+							"view": "button",
+							"label": "Add Parameter",
+							"css": "table-action-button-container",
+							"click": "tasks.renderScriptParameterElements({'formName':'form_script_addParameter_" + KEY + "', 'scriptPath':'" + KEY + "'})",
+							"width": 150
+						},
+						{}
+					]
+				}
+			]
+		},
+		"11": {
+			"view": "form",
+			"id": "form_script_run_" + KEY,
+			"rows": [
+				{
+					"cols": [
+						{},
+						{
+							"id": "button_scriptRunConfirm_" + KEY,
+							"view": "button",
+							"label": "Run",
+							"css": "table-action-button-container",
+							"click": "tasks.runScript",
+							"width": 150
+						},
+						{}
+					]
+				}
 			]
 		}
 	}
