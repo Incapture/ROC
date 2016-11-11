@@ -1,0 +1,18 @@
+// script to run a workflow (i.e. create a workorder)
+
+response = {};
+parameters = web["parameters"];
+
+uri = "workflow://" + web["workflowPath"];
+
+if parameters == null do
+	parameters = {};
+else do
+	parameters = fromjson(parameters);
+
+	response["parameters"] = parameters;
+end
+
+workflow = #decision.createWorkOrder(uri, parameters);
+
+println(json(response));

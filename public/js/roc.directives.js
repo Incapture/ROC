@@ -234,8 +234,12 @@ var directives = (function() {
                     }
 
                     if (flowcharts.length > 0) {
-                        for (var idx = 0; idx < flowcharts.length; idx++)
-                            mermaid.init(undefined, $("div[id^='" + flowcharts[idx]["id"] + "']"));
+                        for (var idx = 0; idx < flowcharts.length; idx++) {
+                            mermaid.init({useMaxWidth: true}, $("div[id^='" + flowcharts[idx]["id"] + "']"));
+
+                            // remove svg's automatically-assigned height attribute
+                            $("div[id^='" + flowcharts[idx]["id"] + "'] svg").removeAttr("height");
+                        }
                     }
                 }
             }

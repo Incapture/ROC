@@ -340,3 +340,7 @@ h2 {
     background-color: #f2f2f2;
     font-weight: 600;
 }
+
+g.node {
+    cursor: pointer;
+}

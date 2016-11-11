@@ -258,17 +258,45 @@ var tasks = (function() {
 			if (item.type === "file")
 				tasks.showScriptContent(item.id);
 		},
+		renderScriptParameterElements: function(params) {
+			var idx = $$(params.formName).getChildViews().length - 1,
+				viewId = "scriptParameters_" + params.scriptPath + "_" + idx,
+				keyId = "scriptParameterKey_" + params.scriptPath + "_" + idx,
+				valueId = "scriptParameterValue_" + params.scriptPath + "_" + idx;
+
+			$$(params.formName).addView({
+				id: viewId,
+				cols: [
+					{view: "text", placeholder: "key", name: 'key'},
+					{view: "text", placeholder: "value", name: 'value'},
+					{view: "icon", icon: "times", click: "$$('" + params.formName + "').removeView('" + viewId + "');"}
+				]
+			}, -1);
+		},
 		runScript: function() {
 			var elem = roc.dom().find("div[view_id^='window_output_script']")[0],
 				scriptPath = (($(this.$view).closest("div[view_id^='window_']")).attr("data-rapture-uri")),
 				aceEditorId = "aceEditor_script_" + scriptPath,
 				editor = ace.edit(aceEditorId),
-				editorScriptContent = editor.getValue();
+				editorScriptContent = editor.getValue(),
+				parameterCount = $$("form_script_addParameter_" + scriptPath).getChildViews().length - 1,
+				paramsMap = {};
+
+			// get parameters
+			if (parameterCount > 0) {
+				var paramElems;
+
+				for (var idx = 0; idx < parameterCount; idx++) {
+					paramElems = $$("scriptParameters_" + scriptPath + "_" + idx).getChildViews();
+
+					paramsMap[$$(paramElems[0].$view).getValue()] = $$(paramElems[1].$view).getValue();
+				}
+			}
 
 			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
-					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: scriptPath, scriptContent: editorScriptContent}},
+					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: scriptPath, scriptContent: editorScriptContent, paramsMap: paramsMap}},
 					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),	//TODO: is this parent the base window?
 					randomPositioning: {left: {min: 900, max: 900}, top: {min: 65, max: 65}}
 				});
@@ -281,7 +309,8 @@ var tasks = (function() {
 						widget: "//default/textarea/script_output",
 						widgetParams: {
 							scriptPath: scriptPath,
-							scriptContent: editorScriptContent
+							scriptContent: editorScriptContent,
+							paramsMap: paramsMap
 						},
 						onlyData: true
 					}, {
@@ -319,12 +348,48 @@ var tasks = (function() {
 						script: "/webscript/main",
 						scriptParameters: {widget: "//default/flowchart/workflow" , widgetParams: {key: tokens[1], raptureUri: tokens[1]}},	// raptureUri needed?
 						parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
-						randomPositioning: {left: {min: 100, max: 300}, top: {min: 65, max: 100}}
+						randomPositioning: {left: {min: 400, max: 500}, top: {min: 65, max: 100}}
 					});
 				}
 				else
 					directives.bringForward(elem);
 			}
+		},
+		workflowFlowchartStepClick: function(id) {
+			var windowElems = $("g[id="+id).closest("div[view_id^='window_']"),
+				highestZIndex = 0,
+				currentZIndex,
+				targetWindowElem,
+				tokens;
+
+			for (var idx = 0; idx < windowElems.length; idx++) {
+				currentZIndex = parseInt($(windowElems[idx]).css("z-index"), 10);
+
+				if (currentZIndex > highestZIndex) {
+					highestZIndex = currentZIndex;
+
+					targetWindowElem = windowElems[idx];
+				}
+			}
+
+			tokens = $(targetWindowElem).find("svg g[id=" + id + "] div").html().split("<br>");
+
+			tasks.showScriptContent(tokens[1].replace("script:", "/"));
+		},
+		workflowRunner: function(params) {
+			roc.apiRequest("/webscript/runWorkflow", {
+						workflowPath: params.workflowPath
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text());
+
+						// TODO: create a new widget for listing workorders?
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
 		}
 	}
 })();

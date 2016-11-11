@@ -18,7 +18,7 @@ window = {
 		"id": windowId,
 		"view": "window",
 		"height": 500,
-		"width": 900,
+		"width": 600,
 		"move": true,
 		"resize": true,
 		"zIndex": "auto",
@@ -26,7 +26,7 @@ window = {
 	},
 	"count": {
 		"rows": 1,
-		"row0_cols": 1
+		"row0_cols": 2
 	},
 	"components": {
 		"head": {
@@ -38,7 +38,25 @@ window = {
 		},
 		"00": {
 			"id": "flowchart_workflow_" + KEY,
-			"view": "mermaidFlowchart"
+			"view": "mermaidFlowchart",
+			"height": 500,
+			"width": 475
+		},
+		"01": {
+			"top": 100,
+			"rows": [
+				{
+					"height": 133
+				},
+				{
+					"id": "button_workflowRunner",
+					"view": "button",
+					"label": "Run Workflow",
+					"css": "table-action-button-container",
+					"click": "tasks.workflowRunner({'workflowPath':'" + KEY + "'})",
+					"height": 50
+				}
+			]
 		}
 	}
 };
@@ -49,42 +67,48 @@ protoViews = {
 	"flowchart_workflow_" + KEY: {
 		"name": "mermaidFlowchart",
 		"id": "mermaidFlowchart_workflow_" + KEY,
-		"data": data,
-		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"	
+		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='margin-left:10%;height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"
 	}
 };
 
 response.protoViews = protoViews;
 
 def getFlowchartData(data)
-    flowchart = "graph LR";
+    flowchart = "graph TB";
 
     stepsMap = {};
 
     for i = 0 to size(data.steps) - 1 do
         _thisStep = data.steps[i];
 
-        initiatingStep = (stepsMap[_thisStep.name] == null) ? _thisStep.name + "(" + _thisStep.name + ")" : _thisStep.name;
+        initiatingStep = (stepsMap[_thisStep.name] == null) ? _thisStep.name + "(" + _thisStep.name + "<br>" + _thisStep.executable + ")" : _thisStep.name;
 
         stepsMap[_thisStep.name] = true;
 
-        for j = 0 to size(_thisStep.transitions) - 1 do
-            targetStep = (stepsMap[_thisStep.transitions[j]["targetStep"]] == null) ? _thisStep.transitions[j]["targetStep"] + "(" + _thisStep.transitions[j]["targetStep"] + ")" : _thisStep.transitions[j]["targetStep"];
+        if size(_thisStep.transitions) == 0 do
+	        // command to draw a single node
+	        flowchart += "\n\t" + initiatingStep;
+	    else do
+			for j = 0 to size(_thisStep.transitions) - 1 do
+	            targetStep = _thisStep.transitions[j]["targetStep"];
 
-            stepsMap[_thisStep.transitions[j]["targetStep"]] = true;
-            
-            // transition step name beginning with lowercase 'o' makes mermaid's parser barf
-            // therefore, convert'o' to 'O'
-            if _thisStep.transitions[j]["name"][0] == "o" do
-                name = _thisStep.transitions[j]["name"];
-                maxBound = size(name);
-                transitionName = "O" + name[1 .. maxBound];
-            else do
-                transitionName = _thisStep.transitions[j]["name"];
-            end
-            
-            flowchart += "\n\t" + initiatingStep + "--" + transitionName + "-->" + targetStep;
-        end
+	            // transition step name beginning with lowercase 'o' makes mermaid's parser barf
+	            // therefore, convert'o' to 'O'
+	            if _thisStep.transitions[j]["name"][0] == "o" do
+	                name = _thisStep.transitions[j]["name"];
+	                maxBound = size(name);
+	                transitionName = "O" + name[1 .. maxBound];
+	            else do
+	                transitionName = _thisStep.transitions[j]["name"];
+	            end
+
+	            // add transition command
+	            flowchart += "\n\t" + initiatingStep + "--" + transitionName + "-->" + targetStep;
+
+				// add click command
+	            flowchart += "\n\t click " + _thisStep.name + " tasks.workflowFlowchartStepClick";
+	        end
+	    end
     end
 
     return flowchart;

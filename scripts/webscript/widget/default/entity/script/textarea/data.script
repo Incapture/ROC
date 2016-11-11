@@ -13,7 +13,7 @@ try do
 		#script.putScript(uri, interface);
 	end
 
-	result = fromjson(json(#script.runScriptExtended(uri, {})));
+	result = fromjson(json(#script.runScriptExtended(uri, w.paramsMap)));
 
 	output = "";
 	for idx = 0 to size(result.output) - 1 do
