@@ -7,6 +7,8 @@
 3. Tabulator: For every column that needs a formatter ("formatter") OR click action ("onClick"), pass a function name; the function is defined in roc.tasks.js, evaluated in roc.directives.js
 */
 
+require '///webscript/components' as components;
+
 response = {};
 
 w = (fromjson(widgetParams));
@@ -46,13 +48,7 @@ window = {
 		"row1_cols": 1
 	},
 	"components": {
-		"head": {
-			"view": "toolbar",
-			"cols": [
-				{ "view": "label", "label": title, "align": "center" },
-				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
-			]
-		},
+		"head": components.webixHeader({"windowId": windowId, "title": title}),
 		"00": {
 			"id": "datatable_currency",
 			"view": "tabulator",

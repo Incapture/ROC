@@ -1,6 +1,8 @@
 // A script to return structure of a list of workorders
 // components: webix (window, list)
 
+require '///webscript/components' as components;
+
 data = fromjson(data);
 w = fromjson(widgetParams);
 KEY = w.key;
@@ -36,13 +38,7 @@ window = {
 		"row0_cols": 1
 	},
 	"components": {
-		"head": {
-			"view": "toolbar",
-			"cols": [
-				{ "view": "label", "label": title + " of '" + KEY + "'", "align": "center" },
-				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
-			]
-		},
+		"head": components.webixHeader({"windowId": windowId, "title": title + " of '" + KEY + "'"}),
 		"00": {
 			"id": "list_workorders_" + KEY,
 			"view": "list",
