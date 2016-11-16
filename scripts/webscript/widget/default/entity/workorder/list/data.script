@@ -1,0 +1,24 @@
+// A script to return a list of all workorders for a specified workflow
+
+response = {};
+result = [];
+w = fromjson(widgetParams);
+wfUri = "workflow://" + w.key;
+
+workorders = #decision.getWorkOrdersByWorkflow(0, wfUri);
+
+for wo in workorders do
+    workorder = {};
+    workorder.uri = wo;
+    workorder.name = extractName(wo);
+    result += workorder;
+end
+
+def extractName(uri)
+    tokens = uri.split("/",-1);
+    return tokens[tokens.size() - 1];
+end
+
+response.data = result;
+
+return(json(response));

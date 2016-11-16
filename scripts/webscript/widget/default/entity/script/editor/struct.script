@@ -52,8 +52,8 @@ window = {
 							"id": "button_scriptAddParameter_" + KEY,
 							"view": "button",
 							"label": "Add Parameter",
-							"css": "table-action-button-container",
-							"click": "tasks.renderScriptParameterElements({'formName':'form_script_addParameter_" + KEY + "', 'scriptPath':'" + KEY + "'})",
+							"css": "action-button-container",
+							"click": "tasks.renderParameterElements({'formName':'form_script_addParameter_" + KEY + "', 'path':'" + KEY + "', 'prefix': 'script'})",
 							"width": 150
 						},
 						{}
@@ -72,7 +72,7 @@ window = {
 							"id": "button_scriptRunConfirm_" + KEY,
 							"view": "button",
 							"label": "Run",
-							"css": "table-action-button-container",
+							"css": "action-button-container",
 							"click": "tasks.runScript",
 							"width": 150
 						},

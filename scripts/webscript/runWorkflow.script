@@ -9,10 +9,18 @@ if parameters == null do
 	parameters = {};
 else do
 	parameters = fromjson(parameters);
-
-	response["parameters"] = parameters;
 end
 
-workflow = #decision.createWorkOrder(uri, parameters);
+workorderUri = #decision.createWorkOrder(uri, parameters);
+
+response.workorder = {
+	"uri": workorderUri,
+	"name": extractName(workorderUri)
+};
+
+def extractName(uri)
+    tokens = uri.split("/",-1);
+    return tokens[tokens.size() - 1];
+end
 
 println(json(response));

@@ -50,7 +50,7 @@ window = {
 					"id": "button_countrySaveConfirm_" + KEY,
 					"view": "button",
 					"label": "Save",
-					"css": "table-action-button-container",
+					"css": "action-button-container",
 					"click": "tasks.saveDoc({'aceEditorId': 'aceEditor_country_" + KEY + "', 'aceEditorIdKey':'" + KEY + "', 'tabulatorId': 'tabulator_country'})",
 					"width": 150
 				},

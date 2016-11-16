@@ -67,7 +67,7 @@ window = {
 					"id": "button_currency_moreData",
 					"view": "button",
 					"label": "More ..",
-					"css": "table-action-button-container",
+					"css": "action-button-container",
 					"click": "tasks.datatable_getMoreData('button_currency_moreData', 'menu_main', tabulator_currency)",
 					"width": 150
 				},

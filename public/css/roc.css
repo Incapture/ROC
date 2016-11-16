@@ -271,19 +271,19 @@ h2 {
     color: red;
 }
 
-.table-action-button-container {
+.action-button-container {
     text-align: center;
 }
 
-.table-action-button-container button,
-.table-action-button-container button:focus {
+.action-button-container button,
+.action-button-container button:focus {
     background-color: #fff;
     color: #416095;
     border-color: #416095;
     margin: 0 auto;
 }
 
-.table-action-button-container button:hover {
+.action-button-container button:hover {
     background-color: #416095;
     color: #fff;
 }
@@ -343,4 +343,26 @@ h2 {
 
 g.node {
     cursor: pointer;
+}
+
+.col-heading div {
+    color: #416095;
+    font-size: 120%;
+}
+
+.workflow-actions-container {
+    background-color: #fafafa;
+}
+
+.cushioned {
+    border-top: 1px solid #d9d9d9 !important;
+    padding: 15% 0;
+}
+
+.cushioned-last {
+    border-bottom: 1px solid #d9d9d9 !important;
+}
+
+.cushioned button {
+    width: 120px;
 }

@@ -1,5 +1,5 @@
 // A script to return structure of a flowchart
-// components: webix (window), mermaid (flowchart)
+// components: webix (window, forms), mermaid (flowchart)
 
 /* NOTES:
 1. Declare a non-webix component (e.g. mermaid flowchart) in window map, define in protoViews map ("flowchart_workflow_<KEY>" in this script)
@@ -40,21 +40,44 @@ window = {
 			"id": "flowchart_workflow_" + KEY,
 			"view": "mermaidFlowchart",
 			"height": 500,
-			"width": 475
+			"width": 400
 		},
 		"01": {
-			"top": 100,
+			"css": "workflow-actions-container",
 			"rows": [
 				{
-					"height": 133
+					"view": "label",
+					"label": "Actions",
+					"align": "center",
+					"css": "col-heading"
 				},
 				{
-					"id": "button_workflowRunner",
+					"id": "button_listWorkorders_" + KEY,
+					"view": "button",
+					"label": "Show Workorders",
+					"css": "action-button-container cushioned",
+					"click": "tasks.listWorkorders({'workflowPath': '" + KEY + "', 'parentViewId': '" + windowId + "'})"
+				},
+				{
+					"view": "layout",
+					"id": "form_workflow_addParameter_" + KEY,
+					"css": "cushioned",
+					"rows": [
+						{
+							"id": "button_workflowAddParameter_" + KEY,
+							"view": "button",
+							"label": "Add Parameter",
+							"css": "action-button-container",
+							"click": "tasks.renderParameterElements({'formName':'form_workflow_addParameter_" + KEY + "', 'path':'" + KEY + "', 'prefix': 'workflow'})"
+						}
+					]
+				},
+				{
+					"id": "button_workflowRunner_" + KEY,
 					"view": "button",
 					"label": "Run Workflow",
-					"css": "table-action-button-container",
-					"click": "tasks.workflowRunner({'workflowPath':'" + KEY + "'})",
-					"height": 50
+					"css": "action-button-container cushioned cushioned-last",
+					"click": "tasks.runWorkflow"
 				}
 			]
 		}

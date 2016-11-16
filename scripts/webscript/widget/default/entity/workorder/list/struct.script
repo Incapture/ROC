@@ -1,0 +1,58 @@
+// A script to return structure of a list of workorders
+// components: webix (window, list)
+
+data = fromjson(data);
+w = fromjson(widgetParams);
+KEY = w.key;
+
+response = {};
+
+modifiedData = [];
+for idx = 0 to size(data) - 1 do
+    item = {
+    	"id": idx + 1,
+        "name": data[idx]["name"],
+        "uri": data[idx]["uri"]
+    };
+    modifiedData += item;
+end
+
+windowId = "window_list_workorder_" + KEY;
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"left": 205,
+		"top": 45,
+		"height": 300,
+		"width": 400,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 1,
+		"row0_cols": 1
+	},
+	"components": {
+		"head": {
+			"view": "toolbar",
+			"cols": [
+				{ "view": "label", "label": title + " of '" + KEY + "'", "align": "center" },
+				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
+			]
+		},
+		"00": {
+			"id": "list_workorders_" + KEY,
+			"view": "list",
+			"template": "#name#", // + "<br>" + "#uri#",
+			"select": true,
+			"data": modifiedData
+		}
+	}
+};
+
+response.window = window;
+
+return(json(response));

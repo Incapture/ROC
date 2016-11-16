@@ -76,7 +76,7 @@ window = {
 					"id": "button_countryFilter",
 					"view": "button",
 					"label": "Get Filtered Data",
-					"css": "table-action-button-container",
+					"css": "action-button-container",
 					"click": "tasks.datatable_filterData('button_country_filter', 'menu_main', tabulator_country, 'form_country_filter', 'button_country_moreData')",
 					"width": 150
 				},
@@ -97,7 +97,7 @@ window = {
 					"id": "button_country_moreData",
 					"view": "button",
 					"label": "More ..",
-					"css": "table-action-button-container",
+					"css": "action-button-container",
 					"click": "tasks.datatable_getMoreData('button_country_moreData', 'menu_main', tabulator_country)",
 					"width": 150
 				},
