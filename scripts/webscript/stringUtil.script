@@ -1,0 +1,4 @@
+def extractName(uri)
+    tokens = uri.split("/",-1);
+    return tokens[tokens.size() - 1];
+end
