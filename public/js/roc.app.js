@@ -182,10 +182,12 @@ var app = (function() {
                                 components: {
                                     "head": {
                                         view: "toolbar",
-                                        cols: [{
-                                            view: "label",
-                                            label: "Login",
-                                            align: "center"}
+                                        cols: [
+                                            {
+                                                view: "label",
+                                                label: "Rapture Operator Console",
+                                                align: "center"
+                                            }
                                         ]
                                     },
                                     "00": {
@@ -207,17 +209,23 @@ var app = (function() {
                                             },
                                             {
                                                 margin: 5,
-                                                cols: [
+                                                rows: [
                                                     {
-                                                        view: "button",
-                                                        value: "Login",
-                                                        click: function() {
-                                                            return clickHandlers.authentication.login("window_login", "loginForm", "loginFeedback")
-                                                        }
-                                                    }, 
+                                                        height: 10
+                                                    },
                                                     {
-                                                        view: "button",
-                                                        value: "Cancel"
+                                                        cols: [
+                                                            {},
+                                                            {
+                                                                view: "button",
+                                                                value: "Login",
+                                                                css: "action-button-container",
+                                                                click: function() {
+                                                                    return clickHandlers.authentication.login("window_login", "loginForm", "loginFeedback")
+                                                                }
+                                                            },
+                                                            {}
+                                                        ]
                                                     }
                                                 ]
                                             },
