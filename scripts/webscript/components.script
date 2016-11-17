@@ -1,9 +1,13 @@
 def webixHeader(params)
+	cols = [];
+	cols += { "view": "label", "label": params.title, "align": "center" };
+	if params.refresh != null do
+		cols += { "view": "button", "type": "icon", "icon": "refresh", "width": 30, "click": params.refresh };
+	end
+	cols += { "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + params.windowId + "').close(); roc.deleteWindow('" + params.windowId + "')" };
+
 	return {
 		"view": "toolbar",
-		"cols": [
-			{ "view": "label", "label": params.title, "align": "center" },
-			{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + params.windowId + "').close(); roc.deleteWindow('" + params.windowId + "')" }
-		]
+		"cols": cols
 	};
 end

@@ -444,6 +444,27 @@ var tasks = (function() {
 				if (params.refresh)
 					params.refresh({listId: "list_workorders_" + params.workflowPath});
 			}
+		},
+		refreshWorkordersList: function(params) {
+			$$(params.listViewId).clearAll();
+
+			roc.apiRequest("/webscript/main", {
+					widget: params.widget,
+					widgetParams: params.widgetParams,
+					onlyData: true
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text());
+
+						$$(params.listViewId).define("data", response.data.data);
+
+						$$(params.listViewId).refresh();
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
 		}
 	}
 })();

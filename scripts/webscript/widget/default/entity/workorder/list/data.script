@@ -9,10 +9,17 @@ wfUri = "workflow://" + w.key;
 
 workorders = #decision.getWorkOrdersByWorkflow(0, wfUri);
 
+idx = 0;
+
 for wo in workorders do
-    workorder = {};
-    workorder.uri = wo;
-    workorder.name = stringUtil.extractName(wo);
+	idx += 1;
+
+	workorder = {
+		"id": idx,	// property required by webix list
+		"uri": wo,
+		"name": stringUtil.extractName(wo)
+	};
+
     result += workorder;
 end
 
