@@ -1,6 +1,8 @@
 // A script to return structure (for displaying information about a specific currency)
 // components: webix (window, read-only form)
 
+require '///webscript/components' as components;
+
 data = fromjson(data);
 w = fromjson(widgetParams);
 KEY = w.key;
@@ -42,13 +44,7 @@ window = {
 		"row0_cols": 1
 	},
 	"components": {
-		"head": {
-			"view": "toolbar",
-			"cols": [
-				{ "view": "label", "label": title, "align": "center" },
-				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
-			]
-		},
+		"head": components.webixHeader({"windowId": windowId, "title": title}),
 		"00": {
 			"id": "form_currency_" + KEY,
 			"view": "form",

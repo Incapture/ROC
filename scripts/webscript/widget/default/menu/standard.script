@@ -6,6 +6,7 @@ menu = [
 	{
 		"title": "Countries",
 		"id": "menuItem_countries",
+		"icon": "map-marker",
 		"widget": "//default/table/demo",
 		"params": {
 			"entity": "//standard/country",
@@ -15,6 +16,7 @@ menu = [
 	{
 		"title": "Currencies",
 		"id": "menuItem_currencies",
+		"icon": "money",
 		"widget": "//default/table/currency",
 		"params": {
 			"entity": "//standard/currency",
@@ -24,6 +26,7 @@ menu = [
 	{
 		"title": "Workflows",
 		"id": "menuItem_workflows",
+		"icon": "cogs",
 		"widget": "//default/tree/workflow",
 		"params": {
 			"prefix": "/"
@@ -32,6 +35,7 @@ menu = [
 	{
 		"title": "Scripts",
 		"id": "menuItem_scripts",
+		"icon": "code",
 		"widget": "//default/tree/script",
 		"params": {
 			"prefix": "/"

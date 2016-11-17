@@ -13,7 +13,7 @@ componentData = [];
 for idx = 0 to size(menu) - 1 do
 	item = {
 		"id": menu[idx]["id"],
-		"icon": "cubes",
+		"icon": menu[idx]["icon"],
 		"value": menu[idx]["title"],
 		"widget": menu[idx]["widget"],
 		"params": menu[idx]["params"]

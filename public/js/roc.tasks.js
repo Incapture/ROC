@@ -237,7 +237,7 @@ var tasks = (function() {
 				}
 			}
 		},
-		showScriptContent: function(id) {
+		showScriptContent: function(id, parentViewId) {
 			var tokens = id.split("//"),
 				elem = roc.dom().find("div[view_id^='window_editor_script_" + tokens[1] + "']")[0];
 
@@ -245,7 +245,7 @@ var tasks = (function() {
 				directives.createWidget({
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/editor/script" , widgetParams: {key: tokens[1], raptureUri: tokens[1]}},
-					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
+					parent: parentViewId,
 					randomPositioning: {left: {min: 100, max: 500}, top: {min: 65, max: 200}}
 				});
 			}
@@ -256,13 +256,13 @@ var tasks = (function() {
 			var item = this.getSelectedItem();
 
 			if (item.type === "file")
-				tasks.showScriptContent(item.id);
+				tasks.showScriptContent(item.id, "window_scripts");
 		},
-		renderScriptParameterElements: function(params) {
+		renderParameterElements: function(params) {
 			var idx = $$(params.formName).getChildViews().length - 1,
-				viewId = "scriptParameters_" + params.scriptPath + "_" + idx,
-				keyId = "scriptParameterKey_" + params.scriptPath + "_" + idx,
-				valueId = "scriptParameterValue_" + params.scriptPath + "_" + idx;
+				viewId = params.prefix + "Parameters_" + params.path + "_" + idx,
+				keyId = params.prefix + "ParameterKey_" + params.path + "_" + idx,
+				valueId = params.prefix + "ParameterValue_" + params.path + "_" + idx;
 
 			$$(params.formName).addView({
 				id: viewId,
@@ -273,31 +273,43 @@ var tasks = (function() {
 				]
 			}, -1);
 		},
-		runScript: function() {
-			var elem = roc.dom().find("div[view_id^='window_output_script']")[0],
-				scriptPath = (($(this.$view).closest("div[view_id^='window_']")).attr("data-rapture-uri")),
-				aceEditorId = "aceEditor_script_" + scriptPath,
-				editor = ace.edit(aceEditorId),
-				editorScriptContent = editor.getValue(),
-				parameterCount = $$("form_script_addParameter_" + scriptPath).getChildViews().length - 1,
-				paramsMap = {};
+		getParams: function(p) {
+			var parameterCount = $$(p.formName).getChildViews().length - 1,
+				paramsMap = {},
+				paramElems;
 
-			// get parameters
 			if (parameterCount > 0) {
-				var paramElems;
-
 				for (var idx = 0; idx < parameterCount; idx++) {
-					paramElems = $$("scriptParameters_" + scriptPath + "_" + idx).getChildViews();
+					paramElems = $$(p.paramElementsContainerIdPrefix + idx).getChildViews();
 
 					paramsMap[$$(paramElems[0].$view).getValue()] = $$(paramElems[1].$view).getValue();
 				}
 			}
 
+			return paramsMap;
+		},
+		runScript: function() {
+			var elem = roc.dom().find("div[view_id^='window_output_script']")[0],
+				scriptPath = (($(this.$view).closest("div[view_id^='window_']")).attr("data-rapture-uri")),
+				aceEditorId = "aceEditor_script_" + scriptPath,
+				editor = ace.edit(aceEditorId),
+				editorScriptContent = editor.getValue();
+
 			if (!elem) {
 				directives.createWidget({
 					script: "/webscript/main",
-					scriptParameters: {widget: "//default/textarea/script_output" , widgetParams: {scriptPath: scriptPath, scriptContent: editorScriptContent, paramsMap: paramsMap}},
-					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),	//TODO: is this parent the base window?
+					scriptParameters: {
+						widget: "//default/textarea/script_output",
+						widgetParams: {
+							scriptPath: scriptPath,
+							scriptContent: editorScriptContent,
+							paramsMap: tasks.getParams({
+								formName: "form_script_addParameter_" + scriptPath,
+								paramElementsContainerIdPrefix: "scriptParameters_" + scriptPath + "_"
+							})
+						}
+					},
+					parent: ($(this.$view).closest("div[view_id^='window_']")).attr("view_id"),
 					randomPositioning: {left: {min: 900, max: 900}, top: {min: 65, max: 65}}
 				});
 			}
@@ -310,7 +322,10 @@ var tasks = (function() {
 						widgetParams: {
 							scriptPath: scriptPath,
 							scriptContent: editorScriptContent,
-							paramsMap: paramsMap
+							paramsMap: tasks.getParams({
+								formName: "form_script_addParameter_" + scriptPath,
+								paramElementsContainerIdPrefix: "scriptParameters_" + scriptPath + "_"
+							})
 						},
 						onlyData: true
 					}, {
@@ -374,16 +389,76 @@ var tasks = (function() {
 
 			tokens = $(targetWindowElem).find("svg g[id=" + id + "] div").html().split("<br>");
 
-			tasks.showScriptContent(tokens[1].replace("script:", "/"));
+			tasks.showScriptContent(tokens[1].replace("script:", "/"), $(targetWindowElem).attr("view_id"));
 		},
-		workflowRunner: function(params) {
+		runWorkflow: function() {
+			var	workflowPath = (($(this.$view).closest("div[view_id^='window_']")).attr("data-rapture-uri")),
+				parentViewId = (($(this.$view).closest("div[view_id^='window_']")).attr("view_id"));
+
 			roc.apiRequest("/webscript/runWorkflow", {
-						workflowPath: params.workflowPath
+					workflowPath: workflowPath,
+					parameters: tasks.getParams({
+						formName: "form_workflow_addParameter_" + workflowPath,
+						paramElementsContainerIdPrefix: "workflowParameters_" + workflowPath + "_"
+					})
 				}, {
 					success: function(res) {
 						var response = JSON.parse(res.text());
 
-						// TODO: create a new widget for listing workorders?
+						tasks.listWorkorders({
+							workflowPath: workflowPath,
+							parentViewId: parentViewId,
+							refresh: function(params) {
+								var newListItemId = parseInt($$(params.listId).getLastId()) + 1;
+
+								// add the new workorder to list, select it
+								$$(params.listId).add({
+									name: response.workorder.name,
+									id: newListItemId
+								}, 0);
+
+								$$(params.listId).select(newListItemId);
+							}
+						});
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
+		},
+		listWorkorders: function(params) {
+			var elem = roc.dom().find("div[view_id^='window_list_workorder_" + params.workflowPath + "']")[0];
+
+			if (!elem) {
+				directives.createWidget({
+					script: "/webscript/main",
+					scriptParameters: {widget: "//default/list/workorder" , widgetParams: {key: params.workflowPath}},
+					parent: params.parentViewId,
+					randomPositioning: {left: {min: 400, max: 600}, top: {min: 100, max: 400}}
+				});
+			}
+			else {
+				directives.bringForward(elem);
+
+				if (params.refresh)
+					params.refresh({listId: "list_workorders_" + params.workflowPath});
+			}
+		},
+		refreshWorkordersList: function(params) {
+			$$(params.listViewId).clearAll();
+
+			roc.apiRequest("/webscript/main", {
+					widget: params.widget,
+					widgetParams: params.widgetParams,
+					onlyData: true
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text());
+
+						$$(params.listViewId).define("data", response.data.data);
+
+						$$(params.listViewId).refresh();
 					},
 					failure: function(error) {
 						console.warn(error);

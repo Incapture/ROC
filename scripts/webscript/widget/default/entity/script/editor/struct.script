@@ -5,6 +5,8 @@
 1. Declare a non-webix component (e.g. ACE editor) in window map, define in protoViews map ("editor_script_<KEY>" in this script)
 */
 
+require '///webscript/components' as components;
+
 data = fromjson(data);
 w = fromjson(widgetParams);
 KEY = w.key;
@@ -30,13 +32,7 @@ window = {
 		"row1_cols": 2
 	},
 	"components": {
-		"head": {
-			"view": "toolbar",
-			"cols": [
-				{ "view": "label", "label": title + ": " + data.name + ".script", "align": "center" },
-				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
-			]
-		},
+		"head": components.webixHeader({"windowId": windowId, "title": title + ": " + data.name + ".script"}),
 		"00": {
 			"id": "editor_script_" + KEY,
 			"view": "aceEditor"
@@ -52,8 +48,8 @@ window = {
 							"id": "button_scriptAddParameter_" + KEY,
 							"view": "button",
 							"label": "Add Parameter",
-							"css": "table-action-button-container",
-							"click": "tasks.renderScriptParameterElements({'formName':'form_script_addParameter_" + KEY + "', 'scriptPath':'" + KEY + "'})",
+							"css": "action-button-container",
+							"click": "tasks.renderParameterElements({'formName':'form_script_addParameter_" + KEY + "', 'path':'" + KEY + "', 'prefix': 'script'})",
 							"width": 150
 						},
 						{}
@@ -72,7 +68,7 @@ window = {
 							"id": "button_scriptRunConfirm_" + KEY,
 							"view": "button",
 							"label": "Run",
-							"css": "table-action-button-container",
+							"css": "action-button-container",
 							"click": "tasks.runScript",
 							"width": 150
 						},

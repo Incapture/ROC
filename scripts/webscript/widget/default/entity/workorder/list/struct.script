@@ -1,23 +1,15 @@
-// A script to return structure of a list of workflows
+// A script to return structure of a list of workorders
 // components: webix (window, list)
 
 require '///webscript/components' as components;
 
 data = fromjson(data);
+w = fromjson(widgetParams);
+KEY = w.key;
 
 response = {};
 
-modifiedData = [];
-for idx = 0 to size(data) - 1 do
-    item = {
-        "id": idx, //TODO: to be changed
-        "name": data[idx]["name"],
-        "uri": data[idx]["uri"]
-    };
-    modifiedData += item;
-end
-
-windowId = "window_workflows";
+windowId = "window_list_workorder_" + KEY;
 
 window = {
 	"properties": {
@@ -36,13 +28,13 @@ window = {
 		"row0_cols": 1
 	},
 	"components": {
-		"head": components.webixHeader({"windowId": windowId, "title": title}),
+		"head": components.webixHeader({ "windowId": windowId, "title": title + " of '" + KEY + "'", "refresh": "tasks.refreshWorkordersList({'widget': '" + widget + "', 'widgetParams': {'key': '" + KEY + "'} , 'listViewId': 'list_workorders_" + KEY + "'})" }),
 		"00": {
-			"id": "list_workflows",
+			"id": "list_workorders_" + KEY,
 			"view": "list",
 			"template": "#name#", // + "<br>" + "#uri#",
 			"select": true,
-			"data": modifiedData
+			"data": data
 		}
 	}
 };

@@ -7,6 +7,8 @@
 3. Tabulator: For every column that needs a formatter ("formatter") OR click action ("onClick"), pass a function name; the function is defined in roc.tasks.js, evaluated in roc.directives.js
 */
 
+require '///webscript/components' as components;
+
 response = {};
 
 w = (fromjson(widgetParams));
@@ -55,13 +57,7 @@ window = {
 		"row2_cols": 1
 	},
 	"components": {
-		"head": {
-			"view": "toolbar",
-			"cols": [
-				{ "view": "label", "label": title, "align": "center" },
-				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
-			]
-		},
+		"head": components.webixHeader({"windowId": windowId, "title": title}),
 		"00": {
 			"view": "form",
 			"id": "form_country_filter",
@@ -76,7 +72,7 @@ window = {
 					"id": "button_countryFilter",
 					"view": "button",
 					"label": "Get Filtered Data",
-					"css": "table-action-button-container",
+					"css": "action-button-container",
 					"click": "tasks.datatable_filterData('button_country_filter', 'menu_main', tabulator_country, 'form_country_filter', 'button_country_moreData')",
 					"width": 150
 				},
@@ -97,7 +93,7 @@ window = {
 					"id": "button_country_moreData",
 					"view": "button",
 					"label": "More ..",
-					"css": "table-action-button-container",
+					"css": "action-button-container",
 					"click": "tasks.datatable_getMoreData('button_country_moreData', 'menu_main', tabulator_country)",
 					"width": 150
 				},

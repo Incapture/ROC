@@ -5,6 +5,8 @@
 1. Declare a non-webix component (e.g. ACE editor) in window map, define in protoViews map ("datatable-country" in this script)
 */
 
+require '///webscript/components' as components;
+
 data = fromjson(data);
 w = fromjson(widgetParams);
 KEY = w.key;
@@ -30,13 +32,7 @@ window = {
 		"row1_cols": 1
 	},
 	"components": {
-		"head": {
-			"view": "toolbar",
-			"cols": [
-				{ "view": "label", "label": title + " - " + data.name, "align": "center" },
-				{ "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + windowId + "').close(); roc.deleteWindow('" + windowId + "')" }
-			]
-		},
+		"head": components.webixHeader({"windowId": windowId, "title": title + " - " + data.name}),
 		"00": {
 			"id": "editor_country_" + KEY,
 			"view": "aceEditor"
@@ -50,7 +46,7 @@ window = {
 					"id": "button_countrySaveConfirm_" + KEY,
 					"view": "button",
 					"label": "Save",
-					"css": "table-action-button-container",
+					"css": "action-button-container",
 					"click": "tasks.saveDoc({'aceEditorId': 'aceEditor_country_" + KEY + "', 'aceEditorIdKey':'" + KEY + "', 'tabulatorId': 'tabulator_country'})",
 					"width": 150
 				},

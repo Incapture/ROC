@@ -1,0 +1,28 @@
+// A script to return a list of all workorders for a specified workflow
+
+require '///webscript/stringUtil' as stringUtil;
+
+response = {};
+result = [];
+w = fromjson(widgetParams);
+wfUri = "workflow://" + w.key;
+
+workorders = #decision.getWorkOrdersByWorkflow(0, wfUri);
+
+idx = 0;
+
+for wo in workorders do
+	idx += 1;
+
+	workorder = {
+		"id": idx,	// property required by webix list
+		"uri": wo,
+		"name": stringUtil.extractName(wo)
+	};
+
+    result += workorder;
+end
+
+response.data = result;
+
+return(json(response));

@@ -1,5 +1,7 @@
 // script to run a workflow (i.e. create a workorder)
 
+require '///webscript/stringUtil' as stringUtil;
+
 response = {};
 parameters = web["parameters"];
 
@@ -9,10 +11,13 @@ if parameters == null do
 	parameters = {};
 else do
 	parameters = fromjson(parameters);
-
-	response["parameters"] = parameters;
 end
 
-workflow = #decision.createWorkOrder(uri, parameters);
+workorderUri = #decision.createWorkOrder(uri, parameters);
+
+response.workorder = {
+	"uri": workorderUri,
+	"name": stringUtil.extractName(workorderUri)
+};
 
 println(json(response));
