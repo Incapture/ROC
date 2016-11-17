@@ -305,7 +305,8 @@ h2 {
 .webix_sidebar .webix_tree_item.webix_selected,
 .webix_sidebar .webix_tree_item.webix_selected span,
 .webix_list_item.webix_selected,
-.webix_tree_item.webix_selected span {
+.webix_tree_item.webix_selected span,
+.webix_sidebar_popup_title.webix_selected {
     background-color: #8fa6ca;
 }
 
