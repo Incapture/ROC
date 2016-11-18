@@ -277,10 +277,22 @@ h2 {
 
 .action-button-container button,
 .action-button-container button:focus {
-    background-color: #fff;
-    color: #416095;
-    border-color: #416095;
-    margin: 0 auto;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-color: #416095;
+    border: none;
+    -webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+    -webkit-box-shadow: 0 10px #bcbccc;
+    -moz-box-shadow: 0 10px #bcbccc;
+    box-shadow: 0 10px #bcbccc;
+    color: #fff;
+    line-height: 1;
+    margin: 0 10px 0 0;
+    padding: 5px 5px;
+    vertical-align: bottom
 }
 
 .action-button-container button:hover {

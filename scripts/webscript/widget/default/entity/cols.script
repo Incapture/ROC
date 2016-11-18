@@ -45,7 +45,7 @@ window = {
 		"left": 205,
 		"top": 45,
 		"width": 880,
-		"height": 600,
+		"height": 500,
 		"move": true,
 		"resize": true,
 		"body": {}
@@ -114,7 +114,7 @@ protoViews = {
 		"config": {
 			"columns": columns,
 			"fitColumns": true,
-			"height": "466px",
+			"height": "375px",
 			"pagination": true,
 			"paginationSize": w.limit,
 			//"groupBy": "ccy",
