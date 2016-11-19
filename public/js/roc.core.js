@@ -29,13 +29,23 @@ var roc = (function() {
 			if (windows[params.windowId] == null) {
 				windows[params.windowId] = {
 					parent: params.parentId,
-					children: []
+					children: [],
+					script: params.script,
+					scriptParameters: params.scriptParameters
 				};
 
 				// add this window as a child in its parent's object
 				// this is for all windows EXCEPT the ones triggered by main menu clicks (those are parent-less)
-				if (windows[params.parentId]) {
+				if (windows[params.parentId])
 					windows[params.parentId]["children"].push(params.windowId);
+
+				// params.children is set ONLY while launching windows from a saved workspace definition
+				// the following block is executed to account for children that might have been rendered before their parent
+				if (params.children && params.children.length > 0) {
+					for (var idx = 0; idx < params.children.length; idx++) {
+						if (windows[params.children[idx]])
+							windows[params.windowId]["children"].push(params.children[idx]);
+					}
 				}
 			}
 		},

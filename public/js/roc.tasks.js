@@ -9,7 +9,7 @@ var tasks = (function() {
 				return value;
 		},
 		datatable_country_ccy_styleAsLink: function(value, data, cell, row, options) {
-			return "<span style='color: blue; text-decoration: underline;'>" + value + "</span>";
+			return "<span style='color: #416095; text-decoration: underline;'>" + value + "</span>";
 		},
 		datatable_country_ccy_showInfo: function(e, cell, value, data) {
 			var elem = roc.dom().find("div[view_id^='window_form_currency_" + value + "']")[0];
@@ -19,7 +19,7 @@ var tasks = (function() {
 					script: "/webscript/main",
 					scriptParameters: {widget: "//default/form/currency" , widgetParams: {entity: "//standard/currency", key: value}},
 					parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id"),
-					randomPositioning: {left: {min: 1100, max: 1110}, top: {min: 45, max: 450}}
+					randomPositioning: {left: {min: 950, max: 980}, top: {min: 45, max: 450}}
 				});
 			}
 			else

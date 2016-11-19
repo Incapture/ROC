@@ -33,18 +33,56 @@ var app = (function() {
                             if (!response.error) {
                                 $$(windowId).close();
 
-                                directives.setData({
-                                    script: "/webscript/init",
-                                    scriptParameters: {"widget": "//default/menu/standard"},
-                                    element: "menu_main"
-                                });
-
                                 roc.setLoginStatus(true);
 
-                                directives.setComponentData({
-                                    concept: "default",
-                                    componentType: "menu"
-                                });
+                                roc.apiRequest("webscript/retrieveWorkspace", {},
+                                    {
+                                        success: function(res) {
+                                            var response = JSON.parse(res.text()),
+                                                windowDefinitions = null,
+                                                wsMaxZIndex = 0;
+
+                                            directives.setData({
+                                                script: "/webscript/init",
+                                                scriptParameters: {"widget": "//default/menu/standard"},
+                                                element: "menu_main"
+                                            });
+
+                                            if (response !== "NULL") {
+                                                windowDefinitions = response;
+
+                                                for (var idx = 0; idx < windowDefinitions.length; idx++) {
+                                                    wsMaxZIndex = Math.max(wsMaxZIndex, windowDefinitions[idx]["zIndex"]);
+
+                                                    directives.createWidget({
+                                                        script: windowDefinitions[idx]["script"],
+                                                        scriptParameters: windowDefinitions[idx]["scriptParameters"],
+                                                        parent: windowDefinitions[idx]["parent"],
+                                                        randomPositioning: {
+                                                            left: {
+                                                                min: windowDefinitions[idx]["left"],
+                                                                max: windowDefinitions[idx]["left"]
+                                                            },
+                                                            top: {
+                                                                min: windowDefinitions[idx]["top"],
+                                                                max: windowDefinitions[idx]["top"]
+                                                            }
+                                                        },
+                                                        zIndex: windowDefinitions[idx]["zIndex"],
+                                                        children: windowDefinitions[idx]["children"]
+                                                    });
+                                                }
+
+                                                // webix zIndex and workspace zIndex should be in sync
+                                                for (var z = webix.ui.zIndex(); z < wsMaxZIndex; z++)
+                                                    webix.ui.zIndex();
+                                            }
+                                        },
+                                        failure: function(error) {
+                                            console.warn(error);
+                                        }
+                                    }
+                                );
                             }
                             else {
                                 $$(feedbackId).config.label = "<span class='error-text'><span class='webix_icon fa-exclamation'></span> " + response.error + "</span>";
@@ -61,17 +99,50 @@ var app = (function() {
                 );
             },
             logout: function() {
-                roc.apiRequest("/login/logout", {
-                        redirect: "/index.html"
-                    }, {
+               var windows = roc.getWindows(),
+                    elem,
+                    workspace = [];
+
+                for (var w in windows) {
+                    if (windows.hasOwnProperty(w)) {
+                        elem = $("div[view_id^='" + w + "'");
+
+                        windows[w]["zIndex"] = parseInt(elem.css("z-index"), 10);
+
+                        windows[w]["left"] = parseInt(elem.css("left").replace("px", ""), 10);
+
+                        windows[w]["top"] = parseInt(elem.css("top").replace("px", ""), 10);
+
+                        workspace.push(windows[w]);
+                    }
+                }
+
+                roc.apiRequest("webscript/saveWorkspace", {
+                        workspace: workspace
+                    },
+                    {
                         success: function(res) {
                             var response = JSON.parse(res.text());
 
-                            if (response.redirect) {
-                                window.location.href = response.redirect;
-                            }
-                            else {
-                                console.warn("redirect not set");
+                            if (response.success) {
+                                roc.apiRequest("/login/logout", {
+                                        redirect: "/index.html"
+                                    }, {
+                                        success: function(res) {
+                                            var response = JSON.parse(res.text());
+
+                                            if (response.redirect) {
+                                                window.location.href = response.redirect;
+                                            }
+                                            else {
+                                                console.warn("redirect not set");
+                                            }
+                                        },
+                                        failure: function(error) {
+                                            console.warn(error);
+                                        }
+                                    }
+                                );
                             }
                         },
                         failure: function(error) {

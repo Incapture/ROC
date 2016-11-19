@@ -1,0 +1,16 @@
+// script to store a user's workspace (list of open windows)
+
+response = {};
+
+try do
+	if (#user.getPreference("ROC", "workspace") != null) do
+		#user.removePreference("ROC", "workspace");
+	end
+	#user.storePreference("ROC", "workspace", web["workspace"]);
+	response.success = true;
+end
+catch e do
+	response.error = e;
+end
+
+println(json(response));
