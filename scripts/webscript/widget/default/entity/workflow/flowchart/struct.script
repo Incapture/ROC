@@ -23,7 +23,6 @@ window = {
 		"width": 600,
 		"move": true,
 		"resize": true,
-		"zIndex": "auto",
 		"body": {}
 	},
 	"count": {

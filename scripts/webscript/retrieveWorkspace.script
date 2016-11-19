@@ -1,0 +1,3 @@
+// script to retrieve a user's workspace (set of open windows when the user last logged out)
+
+println(json(fromjson(#user.getPreference("ROC", "workspace"))));

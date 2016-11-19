@@ -19,9 +19,15 @@ var directives = (function() {
                     }
 
                     try {
-                        widget = directives.getLayout(response.structure.window, params.randomPositioning);
+                        widget = directives.getLayout(response.structure.window, params.randomPositioning, params.zIndex);
 
-                        roc.addWindow({windowId: widget.id, parentId: params.parent});
+                        roc.addWindow({
+                            windowId: widget.id,
+                            parentId: params.parent,
+                            script: params.script,
+                            scriptParameters: params.scriptParameters,
+                            children: params.children
+                        });
 
                         directives.render({
                             widget: widget,
@@ -29,14 +35,17 @@ var directives = (function() {
                             entityUri: params.scriptParameters.widgetParams.entity,
                             raptureUri: params.scriptParameters.widgetParams.raptureUri
                         });
-                    } catch(e){console.warn(e)}
+                    }
+                    catch(e) {
+                        console.warn(e);
+                    }
                 },
                 failure: function() {
                     console.warn(error);
                 }
             });
         },
-        getLayout: function(params, randomPositioning) {
+        getLayout: function(params, randomPositioning, zIndex) {
             var layout = {},
                 count = params.count,
                 components = params.components,
@@ -60,6 +69,9 @@ var directives = (function() {
                 if (randomPositioning.top)
                     layout["top"] = directives.getRandomInt(randomPositioning.top.min, randomPositioning.top.max)
             }
+
+            if (zIndex)
+                layout["zIndex"] = zIndex;
 
             if (count.rows && count.rows > 0) {
                 var rows = [];
@@ -163,7 +175,8 @@ var directives = (function() {
                 _thisElem,
                 tabulatorColumnHeaders,
                 aceEditors = [],
-                flowcharts = [];
+                flowcharts = [],
+                zIndex;
 
             if (params.widget) {
                 if (!params.protoViews)
@@ -193,9 +206,11 @@ var directives = (function() {
 
                     _thisElem.show();
 
-                    // set z-index such that this window is top-most
+                    // set z-index such that this window is top-most (if z-index has not been specified)
                     // also, add entity uri as an attribute
-                    $(_thisElem.$view).css("z-index", webix.ui.zIndex()).attr("data-entity-uri", params.entityUri).attr("data-rapture-uri", params.raptureUri);
+                    zIndex = params.widget.zIndex ? params.widget.zIndex : webix.ui.zIndex();
+
+                    $(_thisElem.$view).css("z-index", zIndex).attr("data-entity-uri", params.entityUri).attr("data-rapture-uri", params.raptureUri);
 
                     if (tabulators.length > 0) {
                         for (var idx = 0; idx < tabulators.length; idx++) {
