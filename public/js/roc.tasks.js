@@ -42,11 +42,10 @@ var tasks = (function() {
 			else
 				directives.bringForward(elem);
 		},
-		datatable_getMoreData: function(buttonViewId, parentViewId, tabulatorElement) {
-			var tabulatorId = $(tabulatorElement)[0].id,
-				limit = roc.getLimitValue(),
+		datatable_getMoreData: function(params) {
+			var limit = roc.getLimitValue(),
 				skip = roc.getSkipValue(),
-				item = $$(parentViewId).getSelectedItem();
+				item = $$(params.parentViewId).getSelectedItem();
 
 			roc.apiRequest("/webscript/main", {
 					widget: item.widget,
@@ -60,7 +59,15 @@ var tasks = (function() {
 					success: function(res) {
 						var response = JSON.parse(res.text());
 
-						if (response.data.data.length) {
+						if (response.data.error) {
+							directives.createWebixAlert(
+								"error",
+								response.data.error,
+								4000);
+
+							$("#" + params.tabulatorId).tabulator("setData", []);
+						}
+						else {
 							if (response.data.limit) {
 								roc.setLimitValue(response.data.limit);
 
@@ -68,12 +75,12 @@ var tasks = (function() {
 							}
 
 							for (var i = 0; i < response.data.data.length; i++)
-								$("#" + tabulatorId).tabulator("addRow", response.data.data[i]);
+								$("#" + params.tabulatorId).tabulator("addRow", response.data.data[i]);
 
-							$("#" + tabulatorId).tabulator("setPageSize", response.data.limit);
+							$("#" + params.tabulatorId).tabulator("setPageSize", response.data.limit);
 
 							if (!response.data.moreData)
-								$$(buttonViewId).disable();
+								$$(params.buttonViewId).disable();
 						}
 					},
 					failure: function(error) {
@@ -82,11 +89,18 @@ var tasks = (function() {
 				}
 			);
 		},
-		datatable_filterData: function(buttonViewId, parentViewId, tabulatorElement, formViewId, moreButtonViewId) {
-			var tabulatorId = $(tabulatorElement)[0].id,
-				limit = roc.getLimitValue(),
+		datatable_filterData: function(params) {
+			var limit = roc.getLimitValue(),
 				skip = 0,
-				item = $$(parentViewId).getSelectedItem();
+				item = $$(params.parentViewId).getSelectedItem();
+
+			roc.resetSkipValue();
+
+			if (params.reset) {
+				$$(params.formViewId).setValues({
+					where_clause: ""
+				});
+			}
 
 			roc.apiRequest("/webscript/main", {
 					widget: item.widget,
@@ -94,23 +108,31 @@ var tasks = (function() {
 						entity: item.params.entity,
 						skip: skip,
 						limit: item.params.limit,
-						whereClause: $$(formViewId).getValues()["where_clause"]
+						whereClause: $$(params.formViewId).getValues()["where_clause"]
 					},
 					onlyData: true
 				}, {
 					success: function(res) {
 						var response = JSON.parse(res.text());
 
-						if (response.data.data.length) {
+						if (response.data.error) {
+							directives.createWebixAlert(
+								"error",
+								response.data.error,
+								4000);
+
+							$("#" + params.tabulatorId).tabulator("setData", []);
+						}
+						else {
 							if (response.data.limit) {
 								roc.setLimitValue(response.data.limit);
 
 								roc.setSkipValue(response.data.limit);
 							}
 
-							$("#" + tabulatorId).tabulator("setData", response.data.data);
+							$("#" + params.tabulatorId).tabulator("setData", response.data.data);
 
-							!response.data.moreData ? $$(moreButtonViewId).disable() : $$(moreButtonViewId).enable();
+							!response.data.moreData ? $$(params.moreButtonViewId).disable() : $$(params.moreButtonViewId).enable();
 						}
 					},
 					failure: function(error) {

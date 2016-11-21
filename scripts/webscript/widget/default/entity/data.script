@@ -16,14 +16,19 @@ end
 
 data = [];
 count = 0;
-vd = #entity.getViewData(entity, whereClause, skip, limit);
-for i = 0 to size(vd) - 1 do
-    item = {};
-    for j = 0 to size(props) - 1 do
-        item[props[j]] = vd[i]["data"][props[j]];
-    end
-    data += item;
-    count += 1;
+try do
+	vd = #entity.getViewData(entity, whereClause, skip, limit);
+	for i = 0 to size(vd) - 1 do
+	    item = {};
+	    for j = 0 to size(props) - 1 do
+	        item[props[j]] = vd[i]["data"][props[j]];
+	    end
+	    data += item;
+	    count += 1;
+	end
+end
+catch e do
+	response.error = (fromjson(json(e)))["message"];
 end
 
 response.limit = limit;
