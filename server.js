@@ -3,6 +3,7 @@
 var raptureAuth = require("./node_modules_incapture/core-auth"),
     httpProxy = require("http-proxy"),
     express = require("express"),
+    compression = require("compression"),
     forwardingUrl,
     routes,
     apiProxy,
@@ -38,6 +39,8 @@ raptureAuth.apiLogin({projectDir: __dirname, scriptsBaseDir: "/scripts"});
 apiProxy = httpProxy.createProxyServer();
 
 app = express();
+
+app.use(compression({threshold: 0}));
 
 app.use(express.static(__dirname + "/public"));
 
