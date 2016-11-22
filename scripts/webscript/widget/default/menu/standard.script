@@ -7,7 +7,7 @@ menu = [
 		"title": "Countries",
 		"id": "menuItem_countries",
 		"icon": "map-marker",
-		"widget": "//default/table/demo",
+		"widget": "//default/table/country",
 		"params": {
 			"entity": "//standard/country",
 			"limit": 50

@@ -10,7 +10,7 @@ data = (fromjson(#script.runScript("/webscript" + w.actions.data, {"widgetParams
 if (web["onlyData"] == null) do
 	response.componentType = w.paneType;
 
-	structure = fromjson(#script.runScript("/webscript" + w.actions.cols, {"title": w.title, "widget": widget, "widgetParams": widgetParams, "componentType": w.paneType, "data": json(data.data)}));
+	structure = fromjson(#script.runScript("/webscript" + w.actions.struct, {"title": w.title, "widget": widget, "widgetParams": widgetParams, "componentType": w.paneType, "data": json(data.data)}));
 
 	response.structure = structure;
 end
