@@ -436,7 +436,8 @@ var tasks = (function() {
 								// add the new workorder to list, select it
 								$$(params.listId).add({
 									name: response.workorder.name,
-									id: newListItemId
+									id: newListItemId,
+									status: response.workorder.status
 								}, 0);
 
 								$$(params.listId).select(newListItemId);
