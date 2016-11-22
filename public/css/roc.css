@@ -302,7 +302,7 @@ h2 {
 
 /* overriding webix, tabulator styles */
 .webix_view {
-    font-family: "Gill Sans", "Gill Sans MT", Calibri, sans-serif;
+    font-family: Avenir, Ubuntu, Tahoma, Verdana, Helvetica, sans-serif;
     letter-spacing: 0.3px;
 }
 
@@ -340,7 +340,7 @@ h2 {
 }
 
 .tabulator .tabulator-tableHolder .tabulator-table .tabulator-row.selectable:hover {
-    background-color: #fff0e8;
+    background-color: #ececff;
 }
 
 .tabulator .tabulator-header {

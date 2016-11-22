@@ -2,13 +2,7 @@ var tasks = (function() {
 	"use strict";
 
 	return {
-		datatable_country_numId_greaterThan500: function(value, data, cell, row, options) {
-			if (value > 500)
-				return "<span style='color: green; font-weight: bold;'>" + value + "</span>";
-			else
-				return value;
-		},
-		datatable_country_ccy_styleAsLink: function(value, data, cell, row, options) {
+		datatable_styleElementAsLink: function(value, data, cell, row, options) {
 			return "<span style='color: #416095; text-decoration: underline;'>" + value + "</span>";
 		},
 		datatable_country_ccy_showInfo: function(e, cell, value, data) {
@@ -25,7 +19,7 @@ var tasks = (function() {
 			else
 				directives.bringForward(elem);
 		},
-		datatable_country_action_displayIcon: function(value, data, cell, row, options) {
+		datatable_renderEditIcon: function(value, data, cell, row, options) {
 			return "<i class='fa fa-pencil'></i>";
 		},
 		datatable_country_action_editCountryJSON: function(e, cell, value, data) {

@@ -131,8 +131,8 @@ protoViews = {
 		"innerHtml": "<div id='tabulator_country' style='width:100%'></div>",
 		//"filter": ["numId", ">", 100],
 		"formatter": {
-			"ccy": "tasks.datatable_country_ccy_styleAsLink",
-			"action": "tasks.datatable_country_action_displayIcon"
+			"ccy": "tasks.datatable_styleElementAsLink",
+			"action": "tasks.datatable_renderEditIcon"
 		},
 		"onClick": {
 			"ccy": "tasks.datatable_country_ccy_showInfo",
