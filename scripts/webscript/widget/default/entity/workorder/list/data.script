@@ -17,7 +17,8 @@ for wo in workorders do
 	workorder = {
 		"id": idx,	// property required by webix list
 		"uri": wo,
-		"name": stringUtil.extractName(wo)
+		"name": stringUtil.extractName(wo),
+		"status": (fromjson(json(#decision.getWorkOrderStatus(wo))))["status"]
 	};
 
     result += workorder;

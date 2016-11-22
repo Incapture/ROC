@@ -71,6 +71,9 @@ var roc = (function() {
 		setSkipValue: function(val) {
 			skip += val;
 		},
+		resetSkipValue: function(val) {
+			skip = 0;
+		},
 		getLimitValue: function() {
 			return limit;
 		},

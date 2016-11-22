@@ -17,7 +17,8 @@ workorderUri = #decision.createWorkOrder(uri, parameters);
 
 response.workorder = {
 	"uri": workorderUri,
-	"name": stringUtil.extractName(workorderUri)
+	"name": stringUtil.extractName(workorderUri),
+	"status": (fromjson(json(#decision.getWorkOrderStatus(workorderUri))))["status"]
 };
 
 println(json(response));

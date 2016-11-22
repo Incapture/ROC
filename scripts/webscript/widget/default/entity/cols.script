@@ -69,14 +69,21 @@ window = {
 					"placeholder": "query"
 				},
 				{
-					"id": "button_countryFilter",
+					"id": "button_country_filter",
 					"view": "button",
 					"label": "Get Filtered Data",
 					"css": "action-button-container",
-					"click": "tasks.datatable_filterData('button_country_filter', 'menu_main', tabulator_country, 'form_country_filter', 'button_country_moreData')",
+					"click": "tasks.datatable_filterData({'parentViewId': 'menu_main', 'tabulatorId': 'tabulator_country', 'formViewId': 'form_country_filter', 'moreButtonViewId': 'button_country_moreData'})",
 					"width": 150
 				},
-				{}
+				{
+					"id": "button_country_reset",
+					"view": "button",
+					"label": "Reset",
+					"css": "action-button-container",
+					"click": "tasks.datatable_filterData({'parentViewId': 'menu_main', 'tabulatorId': 'tabulator_country', 'formViewId': 'form_country_filter', 'moreButtonViewId': 'button_country_moreData', 'reset': true})",
+					"width": 150
+				}
 			]
 		},
 		"10": {
@@ -94,7 +101,7 @@ window = {
 					"view": "button",
 					"label": "More ..",
 					"css": "action-button-container",
-					"click": "tasks.datatable_getMoreData('button_country_moreData', 'menu_main', tabulator_country)",
+					"click": "tasks.datatable_getMoreData({'buttonViewId': 'button_country_moreData', 'parentViewId': 'menu_main', 'tabulatorId': 'tabulator_country'})",
 					"width": 150
 				},
 				{},
@@ -124,8 +131,8 @@ protoViews = {
 		"innerHtml": "<div id='tabulator_country' style='width:100%'></div>",
 		//"filter": ["numId", ">", 100],
 		"formatter": {
-			"ccy": "tasks.datatable_country_ccy_styleAsLink",
-			"action": "tasks.datatable_country_action_displayIcon"
+			"ccy": "tasks.datatable_styleElementAsLink",
+			"action": "tasks.datatable_renderEditIcon"
 		},
 		"onClick": {
 			"ccy": "tasks.datatable_country_ccy_showInfo",

@@ -85,7 +85,7 @@ protoViews = {
 	"flowchart_workflow_" + KEY: {
 		"name": "mermaidFlowchart",
 		"id": "mermaidFlowchart_workflow_" + KEY,
-		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='margin-left:10%;height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"
+		"innerHtml": "<div id='mermaidFlowchart_workflow_" + KEY + "' style='margin-left:2%;height:100%;width:100%;overflow:scroll' class='mermaid'>" + getFlowchartData(data) + "</div>"
 	}
 };
 

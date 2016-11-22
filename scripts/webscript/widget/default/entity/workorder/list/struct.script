@@ -32,7 +32,7 @@ window = {
 		"00": {
 			"id": "list_workorders_" + KEY,
 			"view": "list",
-			"template": "#name#", // + "<br>" + "#uri#",
+			"template": "[#status#] #name#",
 			"select": true,
 			"data": data
 		}
