@@ -48,7 +48,7 @@ window = {
 		"row1_cols": 1
 	},
 	"components": {
-		"head": components.webixHeader({"windowId": windowId, "title": title}),
+		"head": components.webixHeader({"windowId": windowId, "title": title, "click": "roc.resetSkipValue('" + w.entity + "')"}),
 		"00": {
 			"id": "datatable_currency",
 			"view": "tabulator",
@@ -64,7 +64,7 @@ window = {
 					"view": "button",
 					"label": "More ..",
 					"css": "action-button-container",
-					"click": "tasks.datatable_getMoreData('button_currency_moreData', 'menu_main', tabulator_currency)",
+					"click": "tasks.datatable_getMoreData({'buttonViewId': 'button_currency_moreData', 'entity': '" + w.entity + "', 'widget': '" + widget + "', 'tabulatorId': 'tabulator_currency'})",
 					"width": 150
 				},
 				{},

@@ -37,16 +37,12 @@ var tasks = (function() {
 				directives.bringForward(elem);
 		},
 		datatable_getMoreData: function(params) {
-			var limit = roc.getLimitValue(),
-				skip = roc.getSkipValue(),
-				item = $$(params.parentViewId).getSelectedItem();
-
 			roc.apiRequest("/webscript/main", {
-					widget: item.widget,
+					widget: params.widget,
 					widgetParams: {
-						entity: item.params.entity,
-						skip: roc.getSkipValue(),
-						limit: item.params.limit
+						entity: params.entity,
+						skip: roc.getSkipValue(params.entity),
+						limit: roc.getLimitValue(params.entity)
 					},
 					onlyData: true
 				}, {
@@ -63,9 +59,9 @@ var tasks = (function() {
 						}
 						else {
 							if (response.data.limit) {
-								roc.setLimitValue(response.data.limit);
+								roc.setLimitValue(response.data.limit, params.entity);
 
-								roc.setSkipValue(response.data.limit);
+								roc.setSkipValue(response.data.limit, params.entity);
 							}
 
 							for (var i = 0; i < response.data.data.length; i++)
@@ -84,11 +80,10 @@ var tasks = (function() {
 			);
 		},
 		datatable_filterData: function(params) {
-			var limit = roc.getLimitValue(),
-				skip = 0,
-				item = $$(params.parentViewId).getSelectedItem();
+			var limit = roc.getLimitValue(params.entity),
+				skip = 0;
 
-			roc.resetSkipValue();
+			roc.resetSkipValue(params.entity);
 
 			if (params.reset) {
 				$$(params.formViewId).setValues({
@@ -97,11 +92,11 @@ var tasks = (function() {
 			}
 
 			roc.apiRequest("/webscript/main", {
-					widget: item.widget,
+					widget: params.widget,
 					widgetParams: {
-						entity: item.params.entity,
+						entity: params.entity,
 						skip: skip,
-						limit: item.params.limit,
+						limit: limit,
 						whereClause: $$(params.formViewId).getValues()["where_clause"]
 					},
 					onlyData: true
@@ -119,9 +114,9 @@ var tasks = (function() {
 						}
 						else {
 							if (response.data.limit) {
-								roc.setLimitValue(response.data.limit);
+								roc.setLimitValue(response.data.limit, params.entity);
 
-								roc.setSkipValue(response.data.limit);
+								roc.setSkipValue(response.data.limit, params.entity);
 							}
 
 							$("#" + params.tabulatorId).tabulator("setData", response.data.data);
