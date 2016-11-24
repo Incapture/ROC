@@ -1,10 +1,15 @@
 def webixHeader(params)
+	click = "$$('" + params.windowId + "').close(); roc.deleteWindow('" + params.windowId + "')";
 	cols = [];
 	cols += { "view": "label", "label": params.title, "align": "center" };
+
 	if params.refresh != null do
 		cols += { "view": "button", "type": "icon", "icon": "refresh", "width": 30, "click": params.refresh };
 	end
-	cols += { "view": "button", "type": "icon", "icon": "times", "width": 30, "click": "$$('" + params.windowId + "').close(); roc.deleteWindow('" + params.windowId + "')" };
+	if params.click != null do
+		click += ";" + params.click;
+	end
+	cols += { "view": "button", "type": "icon", "icon": "times", "width": 30, "click": click };
 
 	return {
 		"view": "toolbar",

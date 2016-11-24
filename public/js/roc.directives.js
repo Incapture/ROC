@@ -13,9 +13,9 @@ var directives = (function() {
                         protoViews = response.structure.protoViews;
 
                     if (response.componentType == "datatable" && response.data.limit) {
-                        roc.setLimitValue(response.data.limit);
+                        roc.setLimitValue(response.data.limit, params.scriptParameters.widgetParams.entity);
 
-                        roc.setSkipValue(response.data.limit);
+                        roc.setSkipValue(response.data.limit, params.scriptParameters.widgetParams.entity);
                     }
 
                     try {

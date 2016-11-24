@@ -57,7 +57,7 @@ window = {
 		"row2_cols": 1
 	},
 	"components": {
-		"head": components.webixHeader({"windowId": windowId, "title": title}),
+		"head": components.webixHeader({"windowId": windowId, "title": title, "click": "roc.resetSkipValue('" + w.entity + "')"}),
 		"00": {
 			"view": "form",
 			"id": "form_country_filter",
@@ -73,7 +73,7 @@ window = {
 					"view": "button",
 					"label": "Get Filtered Data",
 					"css": "action-button-container",
-					"click": "tasks.datatable_filterData({'parentViewId': 'menu_main', 'tabulatorId': 'tabulator_country', 'formViewId': 'form_country_filter', 'moreButtonViewId': 'button_country_moreData'})",
+					"click": "tasks.datatable_filterData({'entity': '" + w.entity + "', 'widget': '" + widget + "', 'tabulatorId': 'tabulator_country', 'formViewId': 'form_country_filter', 'moreButtonViewId': 'button_country_moreData'})",
 					"width": 150
 				},
 				{
@@ -81,7 +81,7 @@ window = {
 					"view": "button",
 					"label": "Reset",
 					"css": "action-button-container",
-					"click": "tasks.datatable_filterData({'parentViewId': 'menu_main', 'tabulatorId': 'tabulator_country', 'formViewId': 'form_country_filter', 'moreButtonViewId': 'button_country_moreData', 'reset': true})",
+					"click": "tasks.datatable_filterData({'entity': '" + w.entity + "', 'widget': '" + widget + "', 'tabulatorId': 'tabulator_country', 'formViewId': 'form_country_filter', 'moreButtonViewId': 'button_country_moreData', 'reset': true})",
 					"width": 150
 				}
 			]
@@ -101,7 +101,7 @@ window = {
 					"view": "button",
 					"label": "More ..",
 					"css": "action-button-container",
-					"click": "tasks.datatable_getMoreData({'buttonViewId': 'button_country_moreData', 'parentViewId': 'menu_main', 'tabulatorId': 'tabulator_country'})",
+					"click": "tasks.datatable_getMoreData({'buttonViewId': 'button_country_moreData', 'entity': '" + w.entity + "', 'widget': '" + widget + "', 'tabulatorId': 'tabulator_country'})",
 					"width": 150
 				},
 				{},
