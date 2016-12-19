@@ -40,6 +40,33 @@ menu = [
 		"params": {
 			"prefix": "/"
 		}
+	},
+	{
+		"title": "Users",
+		"id": "menuItem_users",
+		"icon": "users",
+		"widget": "//default/table/user",
+		"params": {
+			"limit": 20
+		}
+	},
+	{
+		"title": "Entitlements",
+		"id": "menuItem_entitlements",
+		"icon": "lock",
+		"widget": "//default/table/entitlement",
+		"params": {
+			"limit": 30
+		}
+	},
+	{
+		"title": "Entitlement Groups",
+		"id": "menuItem_entitlementGroups",
+		"icon": "sitemap",
+		"widget": "//default/table/entitlementGroup",
+		"params": {
+			"limit": 20
+		}
 	}
 ];
 

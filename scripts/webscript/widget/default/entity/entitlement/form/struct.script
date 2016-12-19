@@ -1,0 +1,76 @@
+// A script to return structure (for displaying list of all groups and groups associated with specified entitlement)
+// components: webix (window, list of checkboxed items)
+
+require '///webscript/components' as components;
+
+data = fromjson(data);
+w = fromjson(widgetParams);
+KEY = w.key;
+
+response = {};
+
+elements = [];
+for idx = 0 to size(data.allGroups) - 1 do
+	if (data.entitlementGroups[data.allGroups[idx]["name"]] == true) do
+		selected = 1;
+	else do
+		selected = 0;
+	end
+
+    element = {
+		"view": "checkbox",
+		"id": "checklist_entitlement_group_" + data.allGroups[idx]["name"],
+		"label": data.allGroups[idx]["name"],
+		"labelWidth": 100,
+		"value": selected
+    };
+    elements += element;
+end
+
+windowId = "window_form_entitlement_" + KEY;
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"width": 300,
+		"height": 400,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
+	},
+	"components": {
+		"head": components.webixHeader({"windowId": windowId, "title": KEY + " Groups"}),
+		"00": {
+			"id": "form_entitlement_" + KEY,
+			"view": "form",
+			"elements": elements
+		},
+		"10": {
+			"view": "layout",
+			"cols": [
+				{},
+				{},
+				{
+					"id": "button_entitlement_updateGroups_" + KEY,
+					"view": "button",
+					"label": "Save",
+					"css": "action-button-container",
+					"click": "tasks.updateGroups({'buttonViewId': 'button_entitlement_updateGroups_" + KEY + "', 'entitlementName': '" + KEY + "', 'widget': '" + widget + "', 'formId': 'form_entitlement_" + KEY + "', 'tabulatorId': 'tabulator_entitlement', 'previousGroups':" + json(data.entitlementGroupsList) + ", 'rowDataId':'" + w.rowDataId + "', 'windowId': '" + windowId + "'})",
+					"width": 150
+				},
+				{},
+				{}
+			]
+		}
+	}
+};
+
+response.window = window;
+
+return(json(response));

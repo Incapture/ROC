@@ -1,0 +1,76 @@
+// A script to return structure (for displaying list of all groups and specified user's groups)
+// components: webix (window, list of checkboxed items)
+
+require '///webscript/components' as components;
+
+data = fromjson(data);
+w = fromjson(widgetParams);
+KEY = w.key;
+
+response = {};
+
+elements = [];
+for idx = 0 to size(data.allGroups) - 1 do
+	if (data.userGroups[data.allGroups[idx]["name"]] == true) do
+		selected = 1;
+	else do
+		selected = 0;
+	end
+
+    element = {
+		"view": "checkbox",
+		"id": "checklist_user_group_" + data.allGroups[idx]["name"],
+		"label": data.allGroups[idx]["name"],
+		"labelWidth": 100,
+		"value": selected
+    };
+    elements += element;
+end
+
+windowId = "window_form_user_" + KEY;
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"width": 300,
+		"height": 400,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
+	},
+	"components": {
+		"head": components.webixHeader({"windowId": windowId, "title": KEY + "'s Groups"}),
+		"00": {
+			"id": "form_user_" + KEY,
+			"view": "form",
+			"elements": elements
+		},
+		"10": {
+			"view": "layout",
+			"cols": [
+				{},
+				{},
+				{
+					"id": "button_user_updateGroups_" + KEY,
+					"view": "button",
+					"label": "Update",
+					"css": "action-button-container",
+					"click": "tasks.updateGroups({'buttonViewId': 'button_user_updateGroups_" + KEY + "', 'username': '" + KEY + "', 'widget': '" + widget + "', 'formId': 'form_user_" + KEY + "', 'tabulatorId': 'tabulator_user', 'previousGroups':" + json(data.userGroupsList) + ", 'rowDataId':'" + w.rowDataId + "', 'windowId': '" + windowId + "'})",
+					"width": 150
+				},
+				{},
+				{}
+			]
+		}
+	}
+};
+
+response.window = window;
+
+return(json(response));

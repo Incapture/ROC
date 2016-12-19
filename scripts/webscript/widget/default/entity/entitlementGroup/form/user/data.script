@@ -1,0 +1,24 @@
+// A script to return list of all users and users associated with specified entitlement group
+
+response = {};
+data = {};
+
+w = (fromjson(widgetParams));
+groupName = w.key;
+
+data.allUsers = #admin.getAllUsers();
+
+users = {};
+u = (#entitlement.getEntitlementGroup(groupName))["users"];
+for idx = 0 to size(u) - 1 do
+	if (users[u[idx]] == null) do
+		users[u[idx]] = true;
+	end
+end
+
+data.users = users;
+data.usersList = u;
+
+response.data = data;
+
+return(json(response));

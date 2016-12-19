@@ -1,0 +1,24 @@
+// A script to return list of all groups and groups associated with specified entitlement
+
+response = {};
+data = {};
+
+w = (fromjson(widgetParams));
+entitlementName = w.key;
+
+data.allGroups = #entitlement.getEntitlementGroups();
+
+entitlementGroups = {};
+groups = (#entitlement.getEntitlement(entitlementName))["groups"];
+for idx = 0 to size(groups) - 1 do
+	if (entitlementGroups[groups[idx]] == null) do
+		entitlementGroups[groups[idx]] = true;
+	end
+end
+
+data.entitlementGroups = entitlementGroups;
+data.entitlementGroupsList = groups;
+
+response.data = data;
+
+return(json(response));

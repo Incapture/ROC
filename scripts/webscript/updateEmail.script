@@ -1,0 +1,12 @@
+// update user's email
+
+response = {};
+
+try do
+    #admin.updateUserEmail(web["username"], web["newEmail"]);
+end
+catch e do
+	response.error = (fromjson(json(e)))["message"];
+end
+
+println(json(response));

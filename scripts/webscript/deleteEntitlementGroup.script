@@ -1,0 +1,16 @@
+/* script to delete an entitlement group */
+
+response = {};
+
+try do
+    #entitlement.deleteEntitlementGroup(web["groupName"]);
+
+    if (#entitlement.getEntitlementGroup(web["groupName"]) == null) do
+    	response.error = false;
+    end
+end
+catch e do
+    response.error = (fromjson(json(e)))["message"];
+end
+
+println(json(response));

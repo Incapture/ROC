@@ -1,0 +1,29 @@
+// update users
+
+response = {};
+
+name = web["name"];
+addUsers = fromjson(web["addUsers"]);
+removeUsers = fromjson(web["removeUsers"]);
+
+for i = 0 to (addUsers.size() - 1) do
+	try do
+		#entitlement.addUserToEntitlementGroup(name, addUsers[i]);
+	end
+	catch e do
+		response.error = (fromjson(json(e)))["message"];
+	    break;
+	end
+end
+
+for j = 0 to (removeUsers.size() - 1) do
+	try do
+		#entitlement.removeUserFromEntitlementGroup(name, removeUsers[j]);
+	end
+	catch e do
+		response.error = (fromjson(json(e)))["message"];
+	    break;
+	end
+end
+
+println(json(response));

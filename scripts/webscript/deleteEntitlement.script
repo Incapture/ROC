@@ -1,0 +1,16 @@
+/* script to delete an entitlement */
+
+response = {};
+
+try do
+    #entitlement.deleteEntitlement(web["entitlementName"]);
+
+    if (#entitlement.getEntitlement(web["entitlementName"]) == null) do
+    	response.error = false;
+    end
+end
+catch e do
+    response.error = (fromjson(json(e)))["message"];
+end
+
+println(json(response));
