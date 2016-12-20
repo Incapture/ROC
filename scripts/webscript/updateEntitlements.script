@@ -1,0 +1,29 @@
+// update entitlements
+
+response = {};
+
+name = web["name"];
+addEntitlements = fromjson(web["addEntitlements"]);
+removeEntitlements = fromjson(web["removeEntitlements"]);
+
+for i = 0 to (addEntitlements.size() - 1) do
+	try do
+		#entitlement.addGroupToEntitlement(addEntitlements[i], name);
+	end
+	catch e do
+		response.error = (fromjson(json(e)))["message"];
+	    break;
+	end
+end
+
+for j = 0 to (removeEntitlements.size() - 1) do
+	try do
+		#entitlement.removeGroupFromEntitlement(removeEntitlements[j], name);
+	end
+	catch e do
+		response.error = (fromjson(json(e)))["message"];
+	    break;
+	end
+end
+
+println(json(response));

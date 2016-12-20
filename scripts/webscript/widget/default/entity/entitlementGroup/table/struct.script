@@ -1,0 +1,113 @@
+// A script to return structure (for entitlementGroups datatable)
+// components: webix (window), tabulator (table)
+
+require '///webscript/components' as components;
+
+response = {};
+
+w = (fromjson(widgetParams));
+windowId = "window_entitlementGroups";
+data = fromjson(data);
+
+columns = [];
+k = keys(data["groups"][0]);
+for idx = 0 to size(k) - 1 do
+	column = {
+		"id": k[idx],
+		"title": k[idx],
+		"header": k[idx],
+		"field": k[idx],
+		"fieldType": "STRING"
+	};
+
+	columns += column;
+end
+
+columns += {
+		"id": "delete",
+		"field": "delete",
+		"title": "Delete",
+		"header": "Delete",
+		"description": "Delete group",
+		"fieldType": "icon"
+	};
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"left": 205,
+		"top": 45,
+		"width": 880,
+		"height": 300,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
+	},
+	"components": {
+		"head": components.webixHeader({"windowId": windowId, "title": title}),
+		"00": {
+			"view": "form",
+			"id": "form_entitlementGroup_addEntitlementGroup",
+			"cols": [
+				{},
+				{
+					"name": "groupName",
+					"view": "text",
+					"placeholder": "group name"
+				},
+				{
+					"id": "button_entitlementGroup_addEntitlementGroup",
+					"view": "button",
+					"label": "Add Entitlement",
+					"css": "action-button-container",
+					"click": "tasks.addEntitlementGroup({'tabulatorId': 'tabulator_entitlementGroup', 'formId': 'form_entitlementGroup_addEntitlementGroup'})",
+					"width": 150
+				},
+				{}
+			]
+		},
+		"10": {
+			"id": "datatable_entitlementGroup",
+			"view": "tabulator",
+			"columns": columns
+		}
+	}
+};
+
+response.window = window;
+
+protoViews = {
+	"datatable_entitlementGroup": {
+		"name": "tabulator",
+		"id": "tabulator_entitlementGroup",
+		"data": data["groups"],
+		"config": {
+			"columns": columns,
+			"fitColumns": true,
+			"height": "280px",
+			"pagination": true,
+			"paginationSize": w.limit,
+			"sortBy": "name",
+			"sortDir": "asc"
+		},
+		"innerHtml": "<div id='tabulator_entitlementGroup' style='width:100%'></div>",
+		"formatter": {
+			"delete": "tasks.datatable_renderDeleteIcon"
+		},
+		"onClick": {
+			"users": "tasks.datatable_editCellList",
+			"entitlements": "tasks.datatable_editCellList",
+			"delete": "tasks.deleteEntitlementGroup"
+		}
+	}
+};
+
+response.protoViews = protoViews;
+
+return(json(response));

@@ -2,3 +2,20 @@ def extractName(uri)
     tokens = uri.split("/",-1);
     return tokens[tokens.size() - 1];
 end
+
+def joiner(arr)
+	str = "";
+
+	if size(arr) == 0 do
+		return "";
+	else if size(arr) == 1 do
+		return arr[0];
+	else do
+		for idx = 0 to size(arr) - 2 do
+			str += arr[idx] + ", ";
+		end
+		str += arr[size(arr) - 1];
+
+		return str;
+	end
+end

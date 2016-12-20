@@ -1,0 +1,28 @@
+// A script to return data (for entitlements datatable)
+
+require '///webscript/stringUtil' as stringUtil;
+
+response = {};
+data = {};
+
+entitlements = [];
+ents = #entitlement.getEntitlements();
+for i = 0 to size(ents) - 1 do
+	ent = {};
+	ent.entitlementName = ents[i]["name"];
+	ent.groups = stringUtil.joiner(ents[i]["groups"]);
+
+	entitlements += ent;
+end
+data.entitlements = entitlements;
+
+groups = [];
+grps = #entitlement.getEntitlementGroups();
+for j = 0 to size(grps) - 1 do
+	groups += grps[j]["name"];
+end
+data.groups = groups;
+
+response.data = data;
+
+return(json(response));

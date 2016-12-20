@@ -1,0 +1,134 @@
+// A script to return structure (for users datatable)
+// components: webix (window), tabulator (table)
+
+require '///webscript/components' as components;
+
+response = {};
+
+w = (fromjson(widgetParams));
+windowId = "window_users";
+
+columns = [];
+k = keys(fromjson(data)[0]);
+
+for idx = 0 to size(k) - 1 do
+	column = {
+		"id": k[idx],
+		"title": k[idx],
+		"header": k[idx],
+		"field": k[idx],
+		"fieldType": "STRING"
+	};
+
+	columns += column;
+end
+
+columns = columns + [{
+		"id": "password",
+		"field": "password",
+		"title": "Password",
+		"header": "Password",
+		"description": "User's password",
+		"fieldType": "STRING"
+	},
+	{
+		"id": "toggle",
+		"field": "toggle",
+		"title": "Disable/Enable",
+		"header": "Disable/Enable",
+		"description": "Disable/enable user",
+		"fieldType": "icon"
+	}
+];
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"left": 205,
+		"top": 45,
+		"width": 880,
+		"height": 380,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
+	},
+	"components": {
+		"head": components.webixHeader({"windowId": windowId, "title": title}),
+		"00": {
+			"view": "form",
+			"id": "form_user_addUser",
+			"cols": [
+				{
+					"name": "username",
+					"view": "text",
+					"placeholder": "username"
+				},
+				{
+					"name": "email",
+					"view": "text",
+					"placeholder": "email"
+				},
+				{
+					"name": "password",
+					"view": "text",
+					"type": "password",
+					"placeholder": "password"
+				},
+				{
+					"id": "button_user_addUser",
+					"view": "button",
+					"label": "Add User",
+					"css": "action-button-container",
+					"click": "tasks.addUser({'tabulatorId': 'tabulator_user', 'formId': 'form_user_addUser'})",
+					"width": 150
+				}
+			]
+		},
+		"10": {
+			"id": "datatable_user",
+			"view": "tabulator",
+			"columns": columns
+		}
+	}
+};
+
+response.window = window;
+
+protoViews = {
+	"datatable_user": {
+		"name": "tabulator",
+		"id": "tabulator_user",
+		"data": fromjson(data),
+		"config": {
+			"columns": columns,
+			"fitColumns": true,
+			"height": "375px",
+			"groupBy": "status",
+			"pagination": true,
+			"paginationSize": w.limit,
+			"sortBy": "status",
+			"sortDir": "asc",
+			"cellEdited": "tasks.datatable_user_cellEdit"
+		},
+		"innerHtml": "<div id='tabulator_user' style='width:100%'></div>",
+		"formatter": {
+			"password": "tasks.datatable_renderPasswordString",
+			"toggle": "tasks.datatable_renderToggleIcon"
+		},
+		"onClick": {
+			"groups": "tasks.datatable_editCellList",
+			"toggle": "tasks.datatable_user_toggle_status"
+		},
+		"editableColumns": ["email", "password"]
+	}
+};
+
+response.protoViews = protoViews;
+
+return(json(response));

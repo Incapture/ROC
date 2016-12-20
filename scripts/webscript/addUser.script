@@ -1,0 +1,20 @@
+// script to add a new user to the system
+
+response = {};
+
+// check if username exists already
+getUser = #admin.getUser(web["username"]);
+
+if(getUser == null) do               // user does not exist
+    // create user
+    try do
+        #admin.addUser(web["username"], "", web["hashPassword"], web["email"]);
+    end
+    catch e do
+        response.error = (fromjson(json(e)))["message"];
+    end
+else do
+    response.error = "Username taken.";
+end
+
+println(json(response));

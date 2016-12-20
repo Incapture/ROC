@@ -131,7 +131,7 @@ var directives = (function() {
                     tabulatorInfo.config.columns[i]["onClick"] = eval(tabulatorInfo.onClick[tabulatorInfo.config.columns[i]["id"]]);
 
                 // make specified columns editable
-                if (tabulatorInfo.editableColumns && tabulatorInfo.config.rowEdit) {
+                if (tabulatorInfo.editableColumns && tabulatorInfo.config.cellEdited) {
                     for (var j = 0; j < tabulatorInfo.editableColumns.length; j++) {
                         if (tabulatorInfo.config.columns[i]["id"] == tabulatorInfo.editableColumns[j]) {
                             tabulatorInfo.config.columns[i]["editable"] = true;
@@ -140,7 +140,7 @@ var directives = (function() {
                         }
                     }
 
-                    tabulatorInfo.config.rowEdit = eval(tabulatorInfo.config.rowEdit);
+                    tabulatorInfo.config.cellEdited = eval(tabulatorInfo.config.cellEdited);
                 }
             }
 

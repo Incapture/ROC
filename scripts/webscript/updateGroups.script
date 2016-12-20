@@ -1,0 +1,37 @@
+// update groups
+
+response = {};
+
+name = web["name"];
+addGroups = fromjson(web["addGroups"]);
+removeGroups = fromjson(web["removeGroups"]);
+
+for i = 0 to (addGroups.size() - 1) do
+	try do
+		if (web["type"] == "user") do
+			#entitlement.addUserToEntitlementGroup(addGroups[i], name);
+	    else if (web["type"] == "entitlement") do
+			#entitlement.addGroupToEntitlement(name, addGroups[i]);
+	    end
+	end
+	catch e do
+		response.error = (fromjson(json(e)))["message"];
+	    break;
+	end
+end
+
+for j = 0 to (removeGroups.size() - 1) do
+	try do
+		if (web["type"] == "user") do
+			#entitlement.removeUserFromEntitlementGroup(removeGroups[j], name);
+	    else if (web["type"] == "entitlement") do
+			#entitlement.removeGroupFromEntitlement(name, removeGroups[j]);
+	    end
+	end
+	catch e do
+		response.error = (fromjson(json(e)))["message"];
+	    break;
+	end
+end
+
+println(json(response));

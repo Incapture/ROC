@@ -1,0 +1,28 @@
+// A script to return data (for users datatable) -- omitting currently-logged-in user
+
+require '///webscript/stringUtil' as stringUtil;
+
+response = {};
+
+myUsername = #user.getWhoAmI()["username"];
+
+users = #admin.getAllUsers();
+
+data = [];
+
+for idx = 0 to size(users) - 1 do
+	username = users[idx]["username"];
+	if (username != myUsername ) do
+		user = {};
+		user.username = username;
+		user.email = users[idx]["emailAddress"];
+		user.groups = stringUtil.joiner(#admin.findGroupNamesByUser(username));
+		user.status = users[idx]["inactive"] == false ? "Active" : "Inactive";
+
+		data += user;
+	end
+end
+
+response.data = data;
+
+return(json(response));

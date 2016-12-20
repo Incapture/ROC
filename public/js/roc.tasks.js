@@ -22,6 +22,18 @@ var tasks = (function() {
 		datatable_renderEditIcon: function(value, data, cell, row, options) {
 			return "<i class='fa fa-pencil'></i>";
 		},
+		datatable_renderPasswordString: function(value, data, cell, row, options) {
+			return "*****";
+		},
+		datatable_renderToggleIcon: function(value, data, cell, row, options) {
+			if (data.status == "Active")
+				return "<i class='fa fa-user-times'></i>";
+			else if (data.status == "Inactive")
+				return "<i class='fa fa-user-plus'></i>";
+		},
+		datatable_renderDeleteIcon: function(value, data, cell, row, options) {
+			return "<i class='fa fa-trash'></i>";
+		},
 		datatable_country_action_editCountryJSON: function(e, cell, value, data) {
 			var elem = roc.dom().find("div[view_id^='window_editor_country_" + data.id + "']")[0];
 
@@ -35,6 +47,81 @@ var tasks = (function() {
 			}
 			else
 				directives.bringForward(elem);
+		},
+		datatable_editCellList: function(e, cell, value, data) {
+			var widget,
+				key;
+
+			if (data.username) {
+				widget = "//default/form/user";
+
+				key = data.username;
+			}
+			else if (data.entitlementName) {
+				widget = "//default/form/entitlement";
+
+				key = data.entitlementName;
+			}
+			else if (data.groupName) {
+				if ($(cell).attr("data-field") === "users")
+					widget = "//default/form/entitlementGroup__user";
+				else if ($(cell).attr("data-field") === "entitlements")
+					widget = "//default/form/entitlementGroup__entitlement";
+
+				key = data.groupName;
+			}
+
+			directives.createWidget({
+				script: "/webscript/main",
+				scriptParameters: {widget: widget, widgetParams: {key: key, rowDataId: $(cell).closest(".tabulator-row").attr("data-id")}},
+				parent: ($(e.currentTarget).closest("div[view_id^='window_']")).attr("view_id"),
+				randomPositioning: {left: {min: 600, max: 800}, top: {min: 150, max: 200}}
+			});
+		},
+		datatable_user_toggle_status: function(e, cell, value, data) {
+			var tabulatorId = $(cell).closest(".tabulator").attr("id"),
+				rowDataId = $(cell).closest(".tabulator-row").attr("data-id"),
+				rowData,
+				endpoint;
+
+			if (data.status == "Active") {
+				endpoint = "/webscript/disableUser";
+
+				rowData = {status: "Inactive"};
+			}
+			else if (data.status == "Inactive") {
+				endpoint = "/webscript/restoreUser";
+
+				rowData = {status: "Active"};
+			}
+
+			roc.apiRequest(endpoint, {
+					username: data.username
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text()),
+							newData;
+
+						if (!response.error) {
+							if (!tasks.updateTabulatorRow({tabulatorId: tabulatorId, rowDataId: rowDataId, rowData: rowData}))
+								console.warn("Could not update " + tabulatorId + ": " + rowDataId);
+
+							newData = $("#" + tabulatorId).tabulator("getData");
+
+							tasks.refreshTabulator({tabulatorId: tabulatorId, newData: newData});
+						}
+						else {
+							directives.createWebixAlert(
+								"error",
+								response.error,
+								4000);
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
 		},
 		datatable_getMoreData: function(params) {
 			roc.apiRequest("/webscript/main", {
@@ -55,7 +142,7 @@ var tasks = (function() {
 								response.data.error,
 								4000);
 
-							$("#" + params.tabulatorId).tabulator("setData", []);
+							tasks.refreshTabulator({tabulatorId: params.tabulatorId, newData: []});
 						}
 						else {
 							if (response.data.limit) {
@@ -110,7 +197,7 @@ var tasks = (function() {
 								response.data.error,
 								4000);
 
-							$("#" + params.tabulatorId).tabulator("setData", []);
+							tasks.refreshTabulator({tabulatorId: params.tabulatorId, newData: []});
 						}
 						else {
 							if (response.data.limit) {
@@ -119,7 +206,7 @@ var tasks = (function() {
 								roc.setSkipValue(response.data.limit, params.entity);
 							}
 
-							$("#" + params.tabulatorId).tabulator("setData", response.data.data);
+							tasks.refreshTabulator({tabulatorId: params.tabulatorId, newData: response.data.data});
 
 							!response.data.moreData ? $$(params.moreButtonViewId).disable() : $$(params.moreButtonViewId).enable();
 						}
@@ -130,7 +217,7 @@ var tasks = (function() {
 				}
 			);
 		},
-		row_edit: function(id, data, row) {
+		datatable_currency_cellEdit: function(id, field, value, oldValue, data, cell, row) {
 			var entityUri = $(row[0]).closest("div[view_id^='window_']").attr("data-entity-uri"),
 				tabulatorId = $(row[0]).closest(".tabulator").attr("id"),
 				tabulatorElem = $(($("#" + tabulatorId))[0]),
@@ -203,6 +290,381 @@ var tasks = (function() {
 				);
 			}
 		},
+		datatable_user_cellEdit: function(id, field, value, oldValue, data, cell, row) {
+			var endpoint,
+				params;
+
+			if (field == "email") {
+				endpoint = "/webscript/updateEmail";
+
+				params = {
+					username: data.username,
+					newEmail: value
+				};
+			}
+			else if (field == "password") {
+				endpoint = "/webscript/resetPassword";
+
+				params = {
+					username: data.username,
+					newHashPassword: MD5(value)
+				};
+			}
+
+			roc.apiRequest(endpoint, params, {
+					success: function(res) {
+						var response = JSON.parse(res.text());
+
+						if (response.error) {
+							directives.createWebixAlert(
+								"error",
+								response.error,
+								4000);
+						}
+						else {
+							if (field == "password")
+								directives.createWebixAlert("success", "Password changed successfully.", 2000);
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
+		},
+		addUser: function(params) {
+			// TODO: get validation regex requirements
+			var username = $$(params.formId).getValues().username,
+				email = $$(params.formId).getValues().email,
+				password = $$(params.formId).getValues().password;
+
+			if (username && email && password) {
+				roc.apiRequest("/webscript/addUser", {
+						username: username,
+						email: email,
+						hashPassword: MD5(password)
+					}, {
+						success: function(res) {
+							var response = JSON.parse(res.text()),
+								newData;
+
+							if (response.error) {
+								directives.createWebixAlert(
+									"error",
+									response.error,
+									4000);
+							}
+							else {
+								try {
+									$("#" + params.tabulatorId).tabulator("addRow", {username: username, email: email, groups: [], status: "Active"}, true);
+
+									newData = $("#" + params.tabulatorId).tabulator("getData");
+
+									tasks.refreshTabulator({tabulatorId: params.tabulatorId, newData: newData})
+								}
+								catch(e) {
+									console.warn(e)
+								}
+							}
+						},
+						failure: function(error) {
+							console.warn(error);
+						}
+					}
+				);
+			}
+		},
+		addEntitlement: function(params) {
+			var entitlementName = $$(params.formId).getValues().entitlementName,
+				groupName = $$(params.formId).getValues().groupName;
+
+			if (entitlementName && groupName) {
+				roc.apiRequest("/webscript/addEntitlement", {
+						entitlementName: entitlementName,
+						groupName: groupName
+					}, {
+						success: function(res) {
+							var response = JSON.parse(res.text()),
+								newData;
+
+							if (response.error) {
+								directives.createWebixAlert(
+									"error",
+									response.error,
+									4000);
+							}
+							else {
+								try {
+									$("#" + params.tabulatorId).tabulator("addRow", {entitlementName: entitlementName, groups: groupName}, true);
+								}
+								catch(e) {
+									console.warn(e)
+								}
+							}
+						},
+						failure: function(error) {
+							console.warn(error);
+						}
+					}
+				);
+			}
+		},
+		addEntitlementGroup: function(params) {
+			var groupName = $$(params.formId).getValues().groupName;
+
+			if (groupName) {
+				roc.apiRequest("/webscript/addEntitlementGroup", {
+						groupName: groupName
+					}, {
+						success: function(res) {
+							var response = JSON.parse(res.text()),
+								newData;
+
+							if (response.error) {
+								directives.createWebixAlert(
+									"error",
+									response.error,
+									4000);
+							}
+							else {
+								try {
+									$("#" + params.tabulatorId).tabulator("addRow", {groupName: groupName}, true);
+								}
+								catch(e) {
+									console.warn(e)
+								}
+							}
+						},
+						failure: function(error) {
+							console.warn(error);
+						}
+					}
+				);
+			}
+		},
+		deleteEntitlement: function(e, cell, value, data) {
+			var tabulatorId = $(cell).closest(".tabulator").attr("id"),
+				rowDataId = $(cell).closest(".tabulator-row").attr("data-id");
+
+			roc.apiRequest("/webscript/deleteEntitlement", {
+					entitlementName: data.entitlementName
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text()),
+							newData;
+
+						if (!response.error)
+							$("#" + tabulatorId).tabulator("deleteRow", rowDataId);
+						else {
+							directives.createWebixAlert(
+								"error",
+								response.error,
+								4000);
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
+		},
+		deleteEntitlementGroup: function(e, cell, value, data) {
+			var tabulatorId = $(cell).closest(".tabulator").attr("id"),
+				rowDataId = $(cell).closest(".tabulator-row").attr("data-id");
+
+			roc.apiRequest("/webscript/deleteEntitlementGroup", {
+					groupName: data.groupName
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text()),
+							newData;
+
+						if (!response.error)
+							$("#" + tabulatorId).tabulator("deleteRow", rowDataId);
+						else {
+							directives.createWebixAlert(
+								"error",
+								response.error,
+								4000);
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
+		},
+		updateGroups: function(params) {
+			var options = $$(params.formId).getChildViews(),
+				selectedGroups = [],
+				previousGroups = params.previousGroups,
+				groupsToBeAdded,
+				groupsToBeRemoved,
+				endpoint = "/webscript/updateGroups",
+				name,
+				type;
+
+			for (var idx = 0; idx < options.length; idx++) {
+				if ($$(options[idx]).getValue() === 1)
+					selectedGroups.push($$(options[idx]).data.label);
+			}
+
+			groupsToBeAdded = $(selectedGroups).not(previousGroups).get();
+
+			groupsToBeRemoved = $(previousGroups).not(selectedGroups).get();
+
+			if (params.username) {
+				name = params.username;
+
+				type = "user";
+			}
+			else if (params.entitlementName) {
+				name = params.entitlementName;
+
+				type = "entitlement";
+			}
+
+			roc.apiRequest(endpoint, {
+					"name": name,
+					"addGroups": groupsToBeAdded,
+					"removeGroups": groupsToBeRemoved,
+					"type": type
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text()),
+							newData;
+
+						if (response.error) {
+							directives.createWebixAlert(
+								"error",
+								response.error,
+								4000);
+						}
+						else {
+							if (groupsToBeAdded.length > 0 || groupsToBeRemoved.length > 0) {
+								if (!tasks.updateTabulatorRow({tabulatorId: params.tabulatorId, rowDataId: params.rowDataId, rowData: {groups: selectedGroups.join(", ")}}))
+									console.warn("Could not update " + params.tabulatorId + ": " + params.rowDataId);
+
+								$$(params.windowId).close();
+
+								roc.deleteWindow(params.windowId);
+
+								newData = $("#" + tabulatorId).tabulator("getData");
+
+								tasks.refreshTabulator({tabulatorId: params.tabulatorId, newData: newData});
+							}
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
+		},
+		updateUsers: function(params) {
+			var options = $$(params.formId).getChildViews(),
+				selectedUsers = [],
+				previousUsers = params.previousUsers,
+				usersToBeAdded,
+				usersToBeRemoved;
+
+			for (var idx = 0; idx < options.length; idx++) {
+				if ($$(options[idx]).getValue() === 1)
+					selectedUsers.push($$(options[idx]).data.label);
+			}
+
+			usersToBeAdded = $(selectedUsers).not(previousUsers).get();
+
+			usersToBeRemoved = $(previousUsers).not(selectedUsers).get();
+
+			roc.apiRequest("/webscript/updateUsers", {
+					"name": params.groupName,
+					"addUsers": usersToBeAdded,
+					"removeUsers": usersToBeRemoved
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text()),
+							newData;
+
+						if (response.error) {
+							directives.createWebixAlert(
+								"error",
+								response.error,
+								4000);
+						}
+						else {
+							if (usersToBeAdded.length > 0 || usersToBeRemoved.length > 0) {
+								if (!tasks.updateTabulatorRow({tabulatorId: params.tabulatorId, rowDataId: params.rowDataId, rowData: {users: selectedUsers.join(", ")}}))
+									console.warn("Could not update " + params.tabulatorId + ": " + params.rowDataId);
+
+								$$(params.windowId).close();
+
+								roc.deleteWindow(params.windowId);
+
+								newData = $("#" + tabulatorId).tabulator("getData");
+
+								tasks.refreshTabulator({tabulatorId: params.tabulatorId, newData: newData});
+							}
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
+		},
+		updateEntitlements: function(params) {
+			var options = $$(params.formId).getChildViews(),
+				selectedEntitlements = [],
+				previousEntitlements = params.previousEntitlements,
+				entitlementsToBeAdded,
+				entitlementsToBeRemoved;
+
+			for (var idx = 0; idx < options.length; idx++) {
+				if ($$(options[idx]).getValue() === 1)
+					selectedEntitlements.push($$(options[idx]).data.label);
+			}
+
+			entitlementsToBeAdded = $(selectedEntitlements).not(previousEntitlements).get();
+
+			entitlementsToBeRemoved = $(previousEntitlements).not(selectedEntitlements).get();
+
+			roc.apiRequest("/webscript/updateEntitlements", {
+					"name": params.groupName,
+					"addEntitlements": entitlementsToBeAdded,
+					"removeEntitlements": entitlementsToBeRemoved
+				}, {
+					success: function(res) {
+						var response = JSON.parse(res.text()),
+							newData;
+
+						if (response.error) {
+							directives.createWebixAlert(
+								"error",
+								response.error,
+								4000);
+						}
+						else {
+							if (entitlementsToBeAdded.length > 0 || entitlementsToBeRemoved.length > 0) {
+								if (!tasks.updateTabulatorRow({tabulatorId: params.tabulatorId, rowDataId: params.rowDataId, rowData: {entitlements: selectedEntitlements.join(", ")}}))
+									console.warn("Could not update " + params.tabulatorId + ": " + params.rowDataId);
+
+								$$(params.windowId).close();
+
+								roc.deleteWindow(params.windowId);
+
+								newData = $("#" + tabulatorId).tabulator("getData");
+
+								tasks.refreshTabulator({tabulatorId: params.tabulatorId, newData: newData});
+							}
+						}
+					},
+					failure: function(error) {
+						console.warn(error);
+					}
+				}
+			);
+		},
 		saveDoc: function(params) {
 			var editor = ace.edit(params.aceEditorId),
 				annotations = editor.getSession().getAnnotations(),
@@ -226,18 +688,14 @@ var tasks = (function() {
 								if (response.success) {
 									directives.createWebixAlert("success", "Document saved.", 2000);
 
-									if (!updateRow(data))
+									if (!tasks.updateTabulatorRow({tabulatorId: params.tabulatorId, rowDataId: response.id, rowData: data}))
 										console.warn("Could not update " + params.tabulatorId + ": " + response.id);
 								}
 								else {
 									directives.createWebixAlert("error", "Failed to save. Try again.", 2000);
 
-									if (!updateRow(response.prevData))
+									if (!tasks.updateTabulatorRow({tabulatorId: params.tabulatorId, rowDataId: response.id, rowData:response.prevData}))
 										console.warn("Could not update " + params.tabulatorId + ": " + response.id);
-								}
-
-								function updateRow(rowData) {
-									return $("#" + params.tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + response.id + "']"), rowData);
 								}
 							},
 							failure: function(error) {
@@ -477,6 +935,12 @@ var tasks = (function() {
 					}
 				}
 			);
+		},
+		updateTabulatorRow: function(params) {
+			return $("#" + params.tabulatorId).tabulator("updateRow", $("div.tabulator-row[data-id='" + params.rowDataId + "']"), params.rowData);
+		},
+		refreshTabulator: function(params) {
+			$("#" + params.tabulatorId).tabulator("setData", params.newData);
 		}
 	}
 })();

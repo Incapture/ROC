@@ -1,0 +1,25 @@
+// A script to return list of all groups and specified user's groups
+
+response = {};
+data = {};
+
+w = (fromjson(widgetParams));
+username = w.key;
+
+data.allGroups = #entitlement.getEntitlementGroups();
+data.userGroups = {};
+
+userGroups = {};
+groups = #admin.findGroupNamesByUser(username);
+for idx = 0 to size(groups) - 1 do
+	if (userGroups[groups[idx]] == null) do
+		userGroups[groups[idx]] = true;
+	end
+end
+
+data.userGroups = userGroups;
+data.userGroupsList = groups;
+
+response.data = data;
+
+return(json(response));

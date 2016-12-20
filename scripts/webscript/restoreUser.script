@@ -1,0 +1,16 @@
+/* script to restore a user */
+
+response = {};
+
+try do
+    #admin.restoreUser(web["username"]);
+
+    if (#admin.getUser(web["username"])["inactive"] == false) do
+    	response.error = false;
+    end
+end
+catch e do
+    response.error = (fromjson(json(e)))["message"];
+end
+
+println(json(response));

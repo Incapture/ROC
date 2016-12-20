@@ -1,0 +1,115 @@
+// A script to return structure (for entitlements datatable)
+// components: webix (window), tabulator (table)
+
+require '///webscript/components' as components;
+
+response = {};
+
+w = (fromjson(widgetParams));
+windowId = "window_entitlements";
+data = fromjson(data);
+
+columns = [];
+k = keys(data["entitlements"][0]);
+for idx = 0 to size(k) - 1 do
+	column = {
+		"id": k[idx],
+		"title": k[idx],
+		"header": k[idx],
+		"field": k[idx],
+		"fieldType": "STRING"
+	};
+
+	columns += column;
+end
+
+columns += {
+		"id": "delete",
+		"field": "delete",
+		"title": "Delete",
+		"header": "Delete",
+		"description": "Delete entitlement",
+		"fieldType": "icon"
+	};
+
+window = {
+	"properties": {
+		"id": windowId,
+		"view": "window",
+		"left": 205,
+		"top": 45,
+		"width": 500,
+		"height": 500,
+		"move": true,
+		"resize": true,
+		"body": {}
+	},
+	"count": {
+		"rows": 2,
+		"row0_cols": 1,
+		"row1_cols": 1
+	},
+	"components": {
+		"head": components.webixHeader({"windowId": windowId, "title": title}),
+		"00": {
+			"view": "form",
+			"id": "form_entitlement_addEntitlement",
+			"cols": [
+				{
+					"name": "entitlementName",
+					"view": "text",
+					"placeholder": "entitlement name"
+				},
+				{
+					"name": "groupName",
+					"view": "select",
+					"options": data["groups"]
+				},
+				{
+					"id": "button_entitlement_addEntitlement",
+					"view": "button",
+					"label": "Add Entitlement",
+					"css": "action-button-container",
+					"click": "tasks.addEntitlement({'tabulatorId': 'tabulator_entitlement', 'formId': 'form_entitlement_addEntitlement'})",
+					"width": 150
+				}
+			]
+		},
+		"10": {
+			"id": "datatable_entitlement",
+			"view": "tabulator",
+			"columns": columns
+		}
+	}
+};
+
+response.window = window;
+
+protoViews = {
+	"datatable_entitlement": {
+		"name": "tabulator",
+		"id": "tabulator_entitlement",
+		"data": data["entitlements"],
+		"config": {
+			"columns": columns,
+			"fitColumns": true,
+			"height": "400px",
+			"pagination": true,
+			"paginationSize": w.limit,
+			"sortBy": "name",
+			"sortDir": "asc"
+		},
+		"innerHtml": "<div id='tabulator_entitlement' style='width:100%'></div>",
+		"formatter": {
+			"delete": "tasks.datatable_renderDeleteIcon"
+		},
+		"onClick": {
+			"groups": "tasks.datatable_editCellList",
+			"delete": "tasks.deleteEntitlement"
+		}
+	}
+};
+
+response.protoViews = protoViews;
+
+return(json(response));

@@ -1,0 +1,16 @@
+/* script to disable a user */
+
+response = {};
+
+try do
+    #admin.deleteUser(web["username"]);
+
+    if (#admin.getUser(web["username"])["inactive"] == true) do
+    	response.error = false;
+    end
+end
+catch e do
+    response.error = (fromjson(json(e)))["message"];
+end
+
+println(json(response));
